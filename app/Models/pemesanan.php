@@ -17,7 +17,7 @@ class Pemesanan extends Model
         'status_pemesanan',
     ];
 
-    protected function casting(): array
+    protected function casts(): array
     {
         return [
             'tanggal_pemesanan' => 'dateTime',   

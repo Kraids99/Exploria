@@ -19,7 +19,7 @@ class review extends Model
         'tanggal_review',
     ];
 
-    protected function casting(): array
+    protected function casts(): array
     {
         return [
             'tanggal_review' => 'dateTime',   

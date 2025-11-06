@@ -22,7 +22,7 @@ class tiket extends Model
         'stok',
     ];
     
-    protected function casting(): array
+    protected function casts(): array
     {
         return [
             'waktu_keberangkatan' => 'dateTime',   
