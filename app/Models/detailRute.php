@@ -6,5 +6,25 @@ use Illuminate\Database\Eloquent\Model;
 
 class detailRute extends Model
 {
-    //
+    use HasFactory;
+    protected $table = 'detail_rutes';
+    protected $primaryKey = 'id_detail_tipe';
+    public $timestamps = false;
+
+    protected $fillable = [
+        'id_rute',
+        'id_lokasi',
+        'keterangan',
+        'waktu',
+    ];
+
+    public function rute()
+    {
+        return $this->belongsTo(Rute::class, 'id_rute');
+    }
+
+    public function lokasi()
+    {
+        return $this->belongsTo(Lokasi::class, 'id_lokasi');
+    }
 }
