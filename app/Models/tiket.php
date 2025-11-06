@@ -22,6 +22,14 @@ class tiket extends Model
         'stok',
     ];
     
+    protected function casting(): array
+    {
+        return [
+            'waktu_keberangkatan' => 'dateTime',   
+            'waktu_tiba' => 'dateTime',
+        ];
+    }
+
     public function rute()
     {
         return $this->belongsTo(Rute::class, 'id_rute');

@@ -25,6 +25,14 @@ class User extends Authenticatable
         'tanggal_lahir',
     ];
 
+    protected function casting(): array
+    {
+        return [
+            'tanggal_lahir' => 'date',   
+            'password' => 'hashed',
+        ];
+    }
+    
     public function admin()
     {
         return $this->hasOne(Admin::class, 'id_user');

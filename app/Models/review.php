@@ -19,6 +19,13 @@ class review extends Model
         'tanggal_review',
     ];
 
+    protected function casting(): array
+    {
+        return [
+            'tanggal_review' => 'dateTime',   
+        ];
+    }
+
     public function pembayaran()
     {
         return $this->belongsTo(Pembayaran::class, 'id_pembayaran');

@@ -17,6 +17,13 @@ class Pemesanan extends Model
         'status_pemesanan',
     ];
 
+    protected function casting(): array
+    {
+        return [
+            'tanggal_pemesanan' => 'dateTime',   
+        ];
+    }
+
     public function user()
     {
         return this->belongTo(User::class, 'id_user');
