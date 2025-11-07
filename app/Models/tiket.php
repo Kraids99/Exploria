@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class tiket extends Model
 {
@@ -25,8 +26,8 @@ class tiket extends Model
     protected function casts(): array
     {
         return [
-            'waktu_keberangkatan' => 'dateTime',   
-            'waktu_tiba' => 'dateTime',
+            'waktu_keberangkatan' => 'datetime',   
+            'waktu_tiba' => 'datetime',
         ];
     }
 
