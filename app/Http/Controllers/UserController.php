@@ -3,114 +3,59 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    // public function register(Request $request)
-    // {
-    //     $request->validate([
-    //         'nama' => 'required|string|max:255',
-    //         'email' => 'required|string|email|max:255|unique:users',
-    //         'password' => 'required|string|min:8|confirmed',
-    //     ]);
+    
+    // Tampilkan profil user login
+    public function show(Request $request)
+    {
+        return response()->json($request->user());
+    }
 
-    //     $user = User::create([
-    //         'name' => $request->name,
-    //         'email' => $request->email,
-    //         'password' => $request->password,
-    //     ]);
+    // Update profil user (nama, email, foto, dll)
+    public function update(Request $request)
+    {
+        $user = $request->user();
 
-    //     Auth::login($user);
+        $validated = $request->validate([
+            'nama' => 'sometimes|string|max:100',
+            'no_telp' => 'sometimes|string|max:20',
+            'email' => ['sometimes', 'email', 'max:255', Rule::unique('users')->ignore($user->id_user, 'id_user')],
+            'foto_user' => 'nullable|string',
+            'tanggal_lahir' => 'nullable|date',
+            'jenis_kelamin' => 'nullable|string|in:Laki-laki,Perempuan',
+        ]);
 
-    //     return response()->json(['message' => 'User registered successfully'], 201);
-    // }
+        $user->update($validated);
 
-    // public function login(Request $request)
-    // {
-    //     $credentials = $request->validate([
-    //         'email' => 'required|email',
-    //         'password' => 'required|string|min:8',
-    //     ]);
+        return response()->json([
+            'message' => 'Profil berhasil diperbarui',
+            'user' => $user
+        ]);
+    }
 
-    //     if (!Auth::attempt($credentials)) {
-    //         return response()->json(['message' => 'Email atau password salah'], 401);
-    //     }
+    // Ubah password user
+    public function updatePassword(Request $request)
+    {
+        $user = $request->user();
 
-    //     $user = Auth::user();
+        $request->validate([
+            'password_lama' => 'required|string',
+            'password_baru' => 'required|string|min:8|confirmed',
+        ]);
 
-    //     $token = $user->createToken('Personal Access Token')->plainTextToken;
+        if(!Hash::check($request->password_lama, $user->password)){
+            return response()->json(['message' => 'Password lama salah'], 400);
+        }
 
-    //     if($user->admin){
-    //         $role = 'admin';
-    //     }elseif($user->customer){
-    //         $role = 'customer';
-    //     }else{
-    //         $role = 'user';
-    //     }
+        $user->update([
+            'password' => $request->password_baru,
+        ]);
 
-    //     return response()->json([
-    //         'message' => 'Login berhasil',
-    //         'user' => $user,
-    //         'role' => $role,
-    //         'token' => $token,
-    //     ]);
-    // }
-
-    // public function updateProfile(Request $request)
-    // {
-    //     $user = Auth::user();
-
-    //     if (!$user) {
-    //        return response()->json(['message' => 'Unauthorized'], 401);
-    //     }
-
-    //     $request->validate([
-    //         'nama' => 'string|max:255',
-    //         'umur' => 'nullable|integer',
-    //         'no_telp' => 'nullable|string|max:20',
-    //         'foto_user' => 'nullable|string',
-    //         'jenis_kelamin' => 'nullable|string',
-    //         'tanggal_lahir' => 'nullable|date',
-    //     ]);
-
-    //     $user->update($request->only([
-    //         'nama', 'umur', 'no_telp', 'foto_user', 'jenis_kelamin', 'tanggal_lahir'
-    //     ]));
-
-    //     return response()->json([
-    //         'message' => 'Profile updated successfully',
-    //         'user' => $user->fresh(),
-    //     ]);
-    // }
-
-    // public function destroy(Request $request)
-    // {
-    //     $user = Auth::user();
-
-    //     if(!$user){
-    //         return response()->json(['message' => 'Unauthorized'], 401);
-    //     }
-
-    //     if($user->admin){
-    //         return response()->json(["message"=> 'Admin user cannot be deleted'], 403);
-    //     }
-
-    //     $user->tokens()->delete();
-    //     $user->delete();   
-    // }
-
-    // public function logout(Request $request)
-    // {
-    //     $user = Auth::user();
-
-    //     if(!$user){
-    //         return response()->json(['message' => 'Unauthorized'], 401);
-    //     }
-
-    //     $user->tokens()->delete();
-
-    //     return response()->json(['message' => 'Logged out successfully']);
-    // }
+        return response()->json(['message' => 'Password berhasil diubah']);
+    }
 }

@@ -11,6 +11,7 @@ class AdminController extends Controller
 {
     public function register(Request $request)
     {
+        // validasi input
         $request->validate([
             'nama' => 'required|string|max:100',
             'no_telp' => 'required|string|max:20',
@@ -34,12 +35,17 @@ class AdminController extends Controller
             'jenis_kelamin' => $request->jenis_kelamin,
         ]);
 
-        // tandai sebagai admin (relasi 1:1 ke users)
+        // create admin
         $admin = Admin::create(['id_user' => $user->id_user]);
 
-        // buat token Sanctum dengan role "admin"
+        // opsi lain untuk membuat admin
+        // $admin = new Admin(['id_user' => $user->id_user]);
+        // $admin->save();
+
+        // buat token Sanctum dengan ability admin
         $token = $user->createToken('Personal Access Token', ['admin'])->plainTextToken;
 
+        // mengembalikan response
         return response()->json([
             'message' => 'Admin registered successfully',
             'user' => $user,

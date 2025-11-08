@@ -9,24 +9,24 @@ use Illluminate\Support\Facades\Auth;
 
 class TiketController extends Controller
 {
+    // Tampilkan semua tiket
     public function index()
     {
         $allTiket = Tiket::all();
-
         return response()->json($allTiket);
     }
 
+    // Tampilan satu tiket berdasarkan id
     public function show($id)
     {
         $tiket = Tiket::with(['company', 'rute'])->find($id);
-
-        if (!$tiket) {
+        if(!$tiket){
             return response()->json(['message' => 'Tiket tidak ditemukan'], 404);
         }
-
         return response()->json($tiket);
     }
 
+    // Buat tiket baru (admin only)
     public function store(Request $request)
     {
         $request->validate([
@@ -61,6 +61,7 @@ class TiketController extends Controller
         ], 201);
     }
 
+    // Update tiket (admin only)
     public function update(Request $request, $id)
     {
 
@@ -90,6 +91,7 @@ class TiketController extends Controller
         ]);
     }
 
+    // Hapus tiket (admin only)
     public function destroy($id)
     {
         $tiket = Tiket::find($id);

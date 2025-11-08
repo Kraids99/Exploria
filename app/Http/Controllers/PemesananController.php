@@ -3,120 +3,117 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pemesanan;
+use App\Models\RincianPemesanan;
+use App\Models\Tiket;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 class PemesananController extends Controller
 {
-    /**
-     * Menampilkan semua pemesanan milik user (customer)
-     */
-    public function index()
+    // Tampilkan semua pemesanan (admin) atau milik sendiri (customer)
+    public function index(Request $request)
     {
-        $user = Auth::user();
+        $user = $request->user();
 
-        $pemesanan = Pemesanan::where('id_user', $user->id_user)
-            ->with(['rincianPemesanan.tiket'])
-            ->get();
+        if($user->tokenCan('admin')){
+            $data = Pemesanan::with(['user', 'rincian.tiket'])->get();
+        }else{
+            $data = Pemesanan::with(['rincian.tiket'])
+                ->where('id_user', $user->id_user)
+                ->get();
+        }
 
-        return response()->json([
-            'message' => 'Daftar pemesanan milik user',
-            'data' => $pemesanan
-        ]);
+        return response()->json($data);
     }
 
-    /**
-     * Membuat pemesanan baru
-     */
-    public function store(Request $request)
-    {
-        $user = Auth::user();
-
-        $request->validate([
-            'total_biaya_pemesanan' => 'required|numeric|min:0',
-            'status_pemesanan' => 'required|string|max:100'
-        ]);
-
-        $pemesanan = Pemesanan::create([
-            'id_user' => $user->id_user,
-            'tanggal_pemesanan' => now(),
-            'total_biaya_pemesanan' => $request->total_biaya_pemesanan,
-            'status_pemesanan' => $request->status_pemesanan
-        ]);
-
-        return response()->json([
-            'message' => 'Pemesanan berhasil dibuat',
-            'data' => $pemesanan
-        ], 201);
-    }
-
-    /**
-     * Lihat detail pemesanan spesifik
-     */
+    // Tampilkan satu pemesanan berdasarkan id
     public function show($id)
     {
-        $user = Auth::user();
+        $pemesanan = Pemesanan::with(['user', 'rincian.tiket', 'pembayaran'])->find($id);
 
-        $pemesanan = Pemesanan::where('id_pemesanan', $id)
-            ->where('id_user', $user->id_user)
-            ->with(['rincianPemesanan.tiket'])
-            ->first();
-
-        if (!$pemesanan) {
+        if(!$pemesanan){
             return response()->json(['message' => 'Pemesanan tidak ditemukan'], 404);
         }
 
-        return response()->json([
-            'message' => 'Detail pemesanan ditemukan',
-            'data' => $pemesanan
-        ]);
+        return response()->json($pemesanan);
     }
 
-    /**
-     * Update status atau data pemesanan
-     */
-    public function update(Request $request, $id)
+    // Tambah pemesanan baru
+    public function store(Request $request)
     {
-        $user = Auth::user();
-
-        $pemesanan = Pemesanan::where('id_pemesanan', $id)
-            ->where('id_user', $user->id_user)
-            ->first();
-
-        if (!$pemesanan) {
-            return response()->json(['message' => 'Pemesanan tidak ditemukan'], 404);
-        }
-
         $request->validate([
-            'status_pemesanan' => 'sometimes|string|max:100',
-            'total_biaya_pemesanan' => 'sometimes|numeric|min:0'
+            'id_user' => 'required|exists:users,id_user',
+            'id_tiket' => 'required|exists:tikets,id_tiket',
+            'jumlah_tiket' => 'required|integer|min:1',
         ]);
 
-        $pemesanan->update($request->only(['status_pemesanan', 'total_biaya_pemesanan']));
+        try{
+            DB::beginTransaction();
 
-        return response()->json([
-            'message' => 'Pemesanan berhasil diupdate',
-            'data' => $pemesanan
-        ]);
+            $tiket = Tiket::findOrFail($request->id_tiket);
+
+            // pastikan stok cukup
+            if($tiket->stok < $request->jumlah_tiket){
+                return response()->json(['message' => 'Stok tiket tidak mencukupi'], 400);
+            }
+
+            // kurangi stok tiket
+            $tiket->stok -= $request->jumlah_tiket;
+            $tiket->save();
+
+            // buat pemesanan utama
+            $pemesanan = Pemesanan::create([
+                'id_user' => $request->id_user,
+                'tanggal_pemesanan' => now(),
+                'total_biaya_pemesanan' => $tiket->harga * $request->jumlah_tiket,
+                'status_pemesanan' => 'Menunggu Pembayaran',
+            ]);
+
+            // buat rincian pemesanan
+            RincianPemesanan::create([
+                'id_pemesanan' => $pemesanan->id_pemesanan,
+                'id_tiket' => $tiket->id_tiket,
+                'jumlah_tiket' => $request->jumlah_tiket,
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Pemesanan berhasil dibuat',
+                'data' => $pemesanan->load(['rincian.tiket'])
+            ], 201);
+
+        }catch(Exception $e){
+            DB::rollBack();
+            return response()->json(['message' => 'Gagal membuat pemesanan', 'error' => $e->getMessage()], 500);
+        }
     }
 
-    /**
-     * Hapus pemesanan
-     */
-    public function destroy($id)
+    // Batalkan pemesanan
+    public function cancel($id)
     {
-        $user = Auth::user();
+        $pemesanan = Pemesanan::find($id);
 
-        $pemesanan = Pemesanan::where('id_pemesanan', $id)
-            ->where('id_user', $user->id_user)
-            ->first();
-
-        if (!$pemesanan) {
+        if(!$pemesanan){
             return response()->json(['message' => 'Pemesanan tidak ditemukan'], 404);
         }
 
-        $pemesanan->delete();
+        if($pemesanan->status_pemesanan === 'Dibatalkan'){
+            return response()->json(['message' => 'Pemesanan sudah dibatalkan']);
+        }
 
-        return response()->json(['message' => 'Pemesanan berhasil dihapus']);
+        // kembalikan stok tiket
+        foreach($pemesanan->rincian as $rincian){
+            $tiket = Tiket::find($rincian->id_tiket);
+            if ($tiket) {
+                $tiket->stok += $rincian->jumlah_tiket;
+                $tiket->save();
+            }
+        }
+
+        $pemesanan->update(['status_pemesanan' => 'Dibatalkan']);
+
+        return response()->json(['message' => 'Pemesanan berhasil dibatalkan']);
     }
 }

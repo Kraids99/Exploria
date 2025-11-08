@@ -9,9 +9,7 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    /**
-     * Login user (admin atau customer)
-     */
+    // Login user dan buat token
     public function login(Request $request)
     {
         $request->validate([
@@ -27,11 +25,13 @@ class AuthController extends Controller
             return response()->json(['message' => 'Email atau password salah'], 401);
         }
 
+        // tentukan abilities berdasarkan role user
         $abilities  = $user->admin()->exists() ? ['admin'] : ['customer'];
 
         // buat token baru
         $token = $user->createToken('Personal Access Token', $abilities)->plainTextToken;
 
+        // mengembalikan response
         return response()->json([
             'message' => 'Login berhasil',
             'user' => $user,
@@ -40,14 +40,13 @@ class AuthController extends Controller
         ], 200);
     }
 
-    /**
-     * Logout user
-     */
+    // Logout user
     public function logout(Request $request)
     {
         if ($request->user()) {
             $temp = $request->user();
-            // hapus token aktif (logout dari sesi ini saja)
+            
+            // hapus token aktif
             $request->user()->currentAccessToken()->delete();
 
             return response()->json(['message' => 'Logout berhasil ' . $temp->email]);

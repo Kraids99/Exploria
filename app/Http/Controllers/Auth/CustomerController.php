@@ -11,6 +11,7 @@ class CustomerController extends Controller
 {
     public function register(Request $request)
     {
+        // validasi input
         $request->validate([
             'nama' => 'required|string|max:100',
             'no_telp' => 'required|string|max:20',
@@ -27,19 +28,20 @@ class CustomerController extends Controller
             'nama' => $request->nama,
             'no_telp' => $request->no_telp,
             'email' => $request->email,
-            'password' => $request->password, // auto hash di model
+            'password' => $request->password,
             'tanggal_lahir' => $request->tanggal_lahir,
             'umur' => $request->umur,
             'foto_user' => $request->foto_user,
             'jenis_kelamin' => $request->jenis_kelamin,
         ]);
 
-        // tandai sebagai customer
+        // create customer
         $customer = Customer::create(['id_user' => $user->id_user]);
 
         // buat token sanctum dengan ability customer
         $token = $user->createToken('Personal Access Token', ['customer'])->plainTextToken;
 
+        // mengembalikan response
         return response()->json([
             'message' => 'Customer registered successfully',
             'user' => $user,

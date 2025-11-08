@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Company;
 use Illuminate\Http\Request;
-use Illluminate\Support\Facades\Auth;
 
 class CompanyController extends Controller
 {
+    // Tampilkan semua company
     public function index()
     {
         $companies = Company::all();
@@ -18,9 +18,22 @@ class CompanyController extends Controller
         ]);
     }
 
-    /**
-     * Tambah company baru (admin only)
-     */
+    // Tampilkan satu company berdasarkan id
+    public function show($id)
+    {
+        $company = Company::find($id);
+
+        if(!$company){
+            return response()->json(['message' => 'Company tidak ditemukan'], 404);
+        }
+
+        return response()->json([
+            'message' => 'Detail company ditemukan',
+            'data' => $company
+        ]);
+    }
+
+    // Tambah company baru (admin only)
     public function store(Request $request)
     {
         $request->validate([
@@ -42,32 +55,13 @@ class CompanyController extends Controller
             'data' => $company
         ], 201);
     }
-
-    /**
-     * Tampilkan satu company berdasarkan ID
-     */
-    public function show($id)
-    {
-        $company = Company::find($id);
-
-        if (!$company) {
-            return response()->json(['message' => 'Company tidak ditemukan'], 404);
-        }
-
-        return response()->json([
-            'message' => 'Detail company ditemukan',
-            'data' => $company
-        ]);
-    }
-
-    /**
-     * Update company (admin only)
-     */
+    
+    // Update company (admin only)
     public function update(Request $request, $id)
     {
         $company = Company::find($id);
 
-        if (!$company) {
+        if(!$company){
             return response()->json(['message' => 'Company tidak ditemukan'], 404);
         }
 
@@ -78,14 +72,13 @@ class CompanyController extends Controller
             'alamat_company' => 'sometimes|string|max:255',
         ]);
 
-        $company->update($data);
-
-        // $company->update($request->only([
-        //     'nama_company',
-        //     'email_company',
-        //     'no_telp_company',
-        //     'alamat_company'
-        // ]));
+        // $company->update($data);
+        $company->update($request->only([
+            'nama_company',
+            'email_company',
+            'no_telp_company',
+            'alamat_company'
+        ]));
 
         return response()->json([
             'message' => 'Company berhasil diupdate',
@@ -93,14 +86,13 @@ class CompanyController extends Controller
         ]);
     }
 
-    /**
-     * Hapus company (admin only)
-     */
+    
+    // Hapus company (admin only)
     public function destroy($id)
     {
         $company = Company::find($id);
 
-        if (!$company) {
+        if(!$company){
             return response()->json(['message' => 'Company tidak ditemukan'], 404);
         }
 
