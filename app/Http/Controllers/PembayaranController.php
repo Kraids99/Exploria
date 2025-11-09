@@ -21,8 +21,7 @@ class PembayaranController extends Controller
             $pembayaran = Pembayaran::with(['pemesanan'])
                 ->whereHas('pemesanan', function ($query) use ($user) {
                     $query->where('id_user', $user->id_user);
-                })
-                ->get();
+                })->get();
         }
 
         return response()->json($pembayaran);
@@ -98,9 +97,7 @@ class PembayaranController extends Controller
             return response()->json(['message' => 'Data pembayaran tidak ditemukan'], 404);
         }
 
-        $pembayaran->update([
-            'status_pembayaran' => $request->status_pembayaran
-        ]);
+        $pembayaran->update(['status_pembayaran' => $request->status_pembayaran]);
 
         return response()->json([
             'message' => 'Status pembayaran berhasil diupdate',

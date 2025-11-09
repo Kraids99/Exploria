@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
+use App\Models\Pembayaran;
+use App\Models\RincianPemesanan;
 
 class Pemesanan extends Model
 {
@@ -21,13 +24,13 @@ class Pemesanan extends Model
     protected function casts(): array
     {
         return [
-            'tanggal_pemesanan' => 'dateTime',   
+            'tanggal_pemesanan' => 'datetime',   
         ];
     }
 
     public function user()
     {
-        return $this->belongTo(User::class, 'id_user');
+        return $this->belongsTo(User::class, 'id_user');
     }
 
     public function pembayaran()

@@ -4,6 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Rute;
+use App\Models\Company;
+use App\Models\Kursi;
+use App\Models\RincianPemesanan;
+use App\Models\Review;
 
 class tiket extends Model
 {

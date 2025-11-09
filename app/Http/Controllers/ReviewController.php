@@ -14,7 +14,8 @@ class ReviewController extends Controller
     // Tampilkan semua review mulai yang paling baru
     public function index()
     {
-        $reviews = Review::with(['user:id_user,nama,foto_user', 'tiket:id_tiket,nama_tiket'])->latest()->get();
+        $reviews = Review::with(['user:id_user,nama,foto_user', 'tiket:id_tiket,nama_tiket'])->orderBy('tanggal_review', 'desc')->get();
+        // bisa pakai latest()-> tapi ga ada created_at
         return response()->json($reviews);
     }
 
@@ -49,8 +50,12 @@ class ReviewController extends Controller
 
         // Cari pemesanan user untuk tiket itu yang sudah dibayar
         $pemesanan = Pemesanan::where('id_user', $user->id_user)
-            ->where('id_tiket', $idTiket)
-            ->where('status_pembayaran', 'sudah_bayar')
+            ->whereHas('rincianPemesanan', function($query) use ($idTiket) {
+                $query->where('id_tiket', $idTiket);
+            })
+            ->whereHas('pembayaran', function($query) {
+                $query->where('status_pembayaran', 'Berhasil');
+            })
             ->first();
 
         if(!$pemesanan){
@@ -93,8 +98,10 @@ class ReviewController extends Controller
         $review = Review::create([
             'id_user'   => $user->id_user,
             'id_tiket'  => $idTiket,
+            'id_pembayaran'  => $pemesanan->pembayaran->id_pembayaran,
             'rating'    => $request->rating,
             'komentar'  => $request->komentar,
+            'tanggal_review' => now(),
         ]);
 
         return response()->json([

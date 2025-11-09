@@ -16,12 +16,14 @@ class PemesananController extends Controller
     {
         $user = $request->user();
 
+        if(!$user){
+            return response()->json(['message' => 'Belum login'], 401);
+        }
+
         if($user->tokenCan('admin')){
-            $data = Pemesanan::with(['user', 'rincian.tiket'])->get();
+            $data = Pemesanan::with(['user', 'rincianPemesanan.tiket'])->get();
         }else{
-            $data = Pemesanan::with(['rincian.tiket'])
-                ->where('id_user', $user->id_user)
-                ->get();
+            $data = Pemesanan::with(['rincianPemesanan.tiket'])->where('id_user', $user->id_user)->get();
         }
 
         return response()->json($data);
@@ -30,7 +32,7 @@ class PemesananController extends Controller
     // Tampilkan satu pemesanan berdasarkan id
     public function show($id)
     {
-        $pemesanan = Pemesanan::with(['user', 'rincian.tiket', 'pembayaran'])->find($id);
+        $pemesanan = Pemesanan::with(['user', 'rincianPemesanan.tiket', 'pembayaran'])->find($id);
 
         if(!$pemesanan){
             return response()->json(['message' => 'Pemesanan tidak ditemukan'], 404);
@@ -43,7 +45,6 @@ class PemesananController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'id_user' => 'required|exists:users,id_user',
             'id_tiket' => 'required|exists:tikets,id_tiket',
             'jumlah_tiket' => 'required|integer|min:1',
         ]);
@@ -51,6 +52,7 @@ class PemesananController extends Controller
         try{
             DB::beginTransaction();
 
+            $user = $request->user();
             $tiket = Tiket::findOrFail($request->id_tiket);
 
             // pastikan stok cukup
@@ -64,7 +66,7 @@ class PemesananController extends Controller
 
             // buat pemesanan utama
             $pemesanan = Pemesanan::create([
-                'id_user' => $request->id_user,
+                'id_user' => $user->id_user,
                 'tanggal_pemesanan' => now(),
                 'total_biaya_pemesanan' => $tiket->harga * $request->jumlah_tiket,
                 'status_pemesanan' => 'Menunggu Pembayaran',
@@ -81,7 +83,7 @@ class PemesananController extends Controller
 
             return response()->json([
                 'message' => 'Pemesanan berhasil dibuat',
-                'data' => $pemesanan->load(['rincian.tiket'])
+                'data' => $pemesanan->load(['rincianPemesanan.tiket'])
             ], 201);
 
         }catch(Exception $e){
@@ -93,7 +95,7 @@ class PemesananController extends Controller
     // Batalkan pemesanan
     public function cancel($id)
     {
-        $pemesanan = Pemesanan::find($id);
+        $pemesanan = Pemesanan::with('rincianPemesanan')->find($id);
 
         if(!$pemesanan){
             return response()->json(['message' => 'Pemesanan tidak ditemukan'], 404);
@@ -104,7 +106,7 @@ class PemesananController extends Controller
         }
 
         // kembalikan stok tiket
-        foreach($pemesanan->rincian as $rincian){
+        foreach($pemesanan->rincianPemesanan as $rincian){
             $tiket = Tiket::find($rincian->id_tiket);
             if ($tiket) {
                 $tiket->stok += $rincian->jumlah_tiket;

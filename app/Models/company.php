@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Tiket;
 
 class company extends Model
 {
@@ -17,6 +18,7 @@ class company extends Model
         'email_company',
         'no_telp_company',
         'alamat_company',
+        'logo_company',
     ];
     
     public function tikets()

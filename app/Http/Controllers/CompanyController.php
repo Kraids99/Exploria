@@ -41,6 +41,7 @@ class CompanyController extends Controller
             'email_company' => 'required|string|email|max:255|unique:companies,email_company',
             'no_telp_company' => 'required|string|max:20',
             'alamat_company' => 'required|string|max:255',
+            'logo_company' => 'sometimes|string|max:255',
         ]);
 
         $company = Company::create([
@@ -48,6 +49,7 @@ class CompanyController extends Controller
             'email_company' => $request->email_company,
             'no_telp_company' => $request->no_telp_company,
             'alamat_company' => $request->alamat_company,
+            'logo_company' => $request->logo_company,
         ]);
 
         return response()->json([
@@ -70,6 +72,7 @@ class CompanyController extends Controller
             'email_company' => 'sometimes|string|email|max:255|unique:companies,email_company,' . $id . ',id_company',
             'no_telp_company' => 'sometimes|string|max:20',
             'alamat_company' => 'sometimes|string|max:255',
+            'logo_company' => 'sometimes|string|max:255',
         ]);
 
         // $company->update($data);
@@ -77,7 +80,8 @@ class CompanyController extends Controller
             'nama_company',
             'email_company',
             'no_telp_company',
-            'alamat_company'
+            'alamat_company',
+            'logo_company',
         ]));
 
         return response()->json([

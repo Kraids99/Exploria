@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Models\User;
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 
 class CustomerController extends Controller
@@ -23,6 +24,8 @@ class CustomerController extends Controller
             'jenis_kelamin' => 'nullable|string',
         ]);
 
+        $umur = Carbon::parse($request->tanggal_lahir)->age;
+
         // buat user baru
         $user = User::create([
             'nama' => $request->nama,
@@ -30,7 +33,7 @@ class CustomerController extends Controller
             'email' => $request->email,
             'password' => $request->password,
             'tanggal_lahir' => $request->tanggal_lahir,
-            'umur' => $request->umur,
+            'umur' => $umur,
             'foto_user' => $request->foto_user,
             'jenis_kelamin' => $request->jenis_kelamin,
         ]);

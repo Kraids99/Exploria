@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Admin;
+use App\Models\Customer;
+use App\Models\Pemesanan;
 
 class User extends Authenticatable
 {
@@ -48,4 +51,8 @@ class User extends Authenticatable
         return $this->hasMany(Pemesanan::class, 'id_user');
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(review::class, 'id_user');
+    }
 }

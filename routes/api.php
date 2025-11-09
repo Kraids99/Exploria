@@ -28,11 +28,16 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // User
     Route::get('/user', [UserController::class, 'show']);
-    Route::put('/user', [UserController::class, 'update']);
-    Route::put('/user/password', [UserController::class, 'updatePassword']);
+    Route::put('/user/update', [UserController::class, 'update']);
+    Route::put('/user/update/password', [UserController::class, 'updatePassword']);
 
-    // Reviews
-    Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
+    // Pemesanan
+    Route::get('/pemesanan', [PemesananController::class, 'index']);
+    Route::get('/pemesanan/{id}', [PemesananController::class, 'show']);
+
+    // Pembayaran
+    Route::get('/pembayaran', [PembayaranController::class, 'index']);
+    Route::get('/pembayaran/{id}', [PembayaranController::class, 'show']);
 });
 
 // Tiket
@@ -51,56 +56,49 @@ Route::get('/lokasi/{id}', [LokasiController::class, 'show']);
 Route::get('/rute', [RuteController::class, 'index']);
 Route::get('/rute/{id}', [RuteController::class, 'show']);
 
-// Pemesanan
-Route::get('/pemesanan', [PemesananController::class, 'index']);
-Route::get('/pemesanan/{id}', [PemesananController::class, 'show']);
-
-// Pembayaran
-Route::get('/pembayaran', [PembayaranController::class, 'index']);
-Route::get('/pembayaran/{id}', [PembayaranController::class, 'show']);
-
 // Review
-Route::get('/reviews', [ReviewController::class, 'index']);
-Route::get('/reviews/{id}', [ReviewController::class, 'show']);
+Route::get('/review', [ReviewController::class, 'index']);
+Route::get('/review/{id}', [ReviewController::class, 'show']);
 
 Route::middleware(['auth:sanctum', 'abilities:customer'])->group(function () {
     // Pemesanan
-    Route::post('/pemesanan', [PemesananController::class, 'store']);
-    Route::put('/pemesanan/{id}/cancel', [PemesananController::class, 'cancel']);
+    Route::post('/pemesanan/create', [PemesananController::class, 'store']);
+    Route::put('/pemesanan/cancel/{id}', [PemesananController::class, 'cancel']);
 
     // Pembayaran
-    Route::post('/pembayaran', [PembayaranController::class, 'store']);
+    Route::post('/pembayaran/create', [PembayaranController::class, 'store']);
 
     // Review
-    Route::post('/reviews', [ReviewController::class, 'store']);
+    Route::post('/review/create', [ReviewController::class, 'store']);
+    Route::delete('/review/delete/{id}', [ReviewController::class, 'destroy']);
 });
 
 // admin
 Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
     // Tiket
     Route::post('/tiket/create', [TiketController::class, 'store']);
-    Route::post('/tiket/update/{id}', [TiketController::class, 'update']);
+    Route::put('/tiket/update/{id}', [TiketController::class, 'update']);
     Route::delete('/tiket/delete/{id}', [TiketController::class, 'destroy']);
 
     // Company
     Route::post('/company/create', [CompanyController::class, 'store']);
-    Route::post('/company/update/{id}', [CompanyController::class, 'update']);
+    Route::put('/company/update/{id}', [CompanyController::class, 'update']);
     Route::delete('/company/delete/{id}', [CompanyController::class, 'destroy']);
 
     // Lokasi
-    Route::post('/lokasi', [LokasiController::class, 'store']);      
-    Route::put('/lokasi/{id}', [LokasiController::class, 'update']); 
-    Route::delete('/lokasi/{id}', [LokasiController::class, 'destroy']);
+    Route::post('/lokasi/create', [LokasiController::class, 'store']);      
+    Route::put('/lokasi/update/{id}', [LokasiController::class, 'update']); 
+    Route::delete('/lokasi/delete/{id}', [LokasiController::class, 'destroy']);
 
     // Rute
-    Route::post('/rute', [RuteController::class, 'store']);
-    Route::put('/rute/{id}', [RuteController::class, 'update']);
-    Route::delete('/rute/{id}', [RuteController::class, 'destroy']);
+    Route::post('/rute/create', [RuteController::class, 'store']);
+    Route::put('/rute/update/{id}', [RuteController::class, 'update']);
+    Route::delete('/rute/delete/{id}', [RuteController::class, 'destroy']);
 
     // Pemesanan
 
     // Pembayaran
-    Route::put('/pembayaran/{id}', [PembayaranController::class, 'update']);
+    Route::put('/pembayaran/update/{id}', [PembayaranController::class, 'update']);
 
     // Review
 });
