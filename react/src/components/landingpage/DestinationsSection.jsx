@@ -1,8 +1,11 @@
 import DestinationCard from "./DestinationCard";
-import bandung from "../assets/destination/bandung.jpg";
-import yogya from "../assets/destination/yogyakarta.jpg";
-import surabaya from "../assets/destination/surabaya.jpg";
-import bali from "../assets/destination/bali.jpg";
+import bandung from "../../assets/destination/bandung.jpg";
+import yogya from "../../assets/destination/yogyakarta.jpg";
+import surabaya from "../../assets/destination/surabaya.jpg";
+import bali from "../../assets/destination/bali.jpg";
+
+import "../../style/landingpage/destinations.css";
+import "../../App.css";
 
 const DESTINATIONS = [
   {

@@ -1,4 +1,5 @@
-// src/components/DealCard.jsx
+import "../../style/landingpage/deals.css";
+import "../../App.css";
 
 function DealCard({ title, highlight, badge, buttonText, image }) {
   return (

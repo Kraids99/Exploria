@@ -1,5 +1,6 @@
-// src/components/Navbar.jsx
-import logoExploria from "../assets/logo.png"; // ← path logo kamu
+import logoExploria from "../../assets/logo.png"; 
+import "../../style/landingpage/navBar.css";
+import "../../App.css";
 
 function Navbar() {
   return (
@@ -16,8 +17,7 @@ function Navbar() {
 
         {/* AKSI KANAN */}
         <div className="nav-actions">
-          <button className="btn-outline">Login</button>
-          <button className="btn-primary">Sign Up</button>
+          <button className="btn-login">Login</button>
         </div>
       </div>
     </header>

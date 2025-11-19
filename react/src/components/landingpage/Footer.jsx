@@ -1,5 +1,6 @@
-// src/components/Footer.jsx
-import logoH from "../assets/logo-h.jpg"; 
+import logoH from "../../assets/logo-h.jpg"; 
+import "../../style/landingpage/footer.css";
+import "../../App.css";
 
 function Footer() {
   return (

@@ -1,3 +1,5 @@
+import "../../style/landingpage/destinations.css";
+import "../../App.css";
 
 function DestinationCard({ name, image, badge }) {
   return (

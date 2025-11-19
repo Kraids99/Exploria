@@ -1,10 +1,11 @@
-import bs1 from "../assets/brand-strip/bs-1.png"; 
-import bs2 from "../assets/brand-strip/bs-2.png"; 
-import bs3 from "../assets/brand-strip/bs-3.png"; 
-import bs4 from "../assets/brand-strip/bs-4.png"; 
-import bs5 from "../assets/brand-strip/bs-5.png"; 
-import bs6 from "../assets/brand-strip/bs-6.png"; 
-
+import bs1 from "../../assets/brand-strip/bs-1.png"; 
+import bs2 from "../../assets/brand-strip/bs-2.png"; 
+import bs3 from "../../assets/brand-strip/bs-3.png"; 
+import bs4 from "../../assets/brand-strip/bs-4.png"; 
+import bs5 from "../../assets/brand-strip/bs-5.png"; 
+import bs6 from "../../assets/brand-strip/bs-6.png"; 
+import "../../style/landingpage/brandStrip.css";
+import "../../App.css";
 
 function BrandStrip() {
   return (

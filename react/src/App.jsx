@@ -1,17 +1,17 @@
 // src/App.jsx
-import Navbar from "./components/Navbar";
-import HeroSection from "./components/HeroSection";
-import BrandStrip from "./components/BrandStrip";
-import AboutSection from "./components/AboutSection";
-import DestinationsSection from "./components/DestinationsSection";
-import DealsSection from "./components/DealsSection";
-import Footer from "./components/Footer";
+import Navbar from "./components/landingpage/Navbar";
+import Dashboard from "./components/landingpage/Dashboard";
+import BrandStrip from "./components/landingpage/BrandStrip";
+import AboutSection from "./components/landingpage/AboutSection";
+import DestinationsSection from "./components/landingpage/DestinationsSection";
+import DealsSection from "./components/landingpage/DealsSection";
+import Footer from "./components/landingpage/Footer";
 
 function App() {
   return (
     <div className="home-page">
       <Navbar />
-      <HeroSection />
+      <Dashboard />
 
       <main>
         <BrandStrip />

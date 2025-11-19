@@ -1,5 +1,7 @@
 // src/components/DealsSection.jsx
 import DealCard from "./DealCard";
+import "../../style/landingpage/deals.css";
+import "../../App.css";
 
 const DEALS = [
   {

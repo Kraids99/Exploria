@@ -1,6 +1,3 @@
-/* src/index.css */
-
-/* RESET SEDERHANA */
 *,
 *::before,
 *::after {
@@ -37,4 +34,8 @@ img {
 
 button {
   font-family: inherit;
+}
+
+.font-red{
+  color: red;
 }

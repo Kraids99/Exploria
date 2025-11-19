@@ -1,4 +1,5 @@
-// src/components/AboutSection.jsx
+import "../../style/landingpage/aboutSection.css";
+import "../../App.css";
 
 function AboutSection() {
   return (
