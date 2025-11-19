@@ -3,6 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Pembayaran;
+use App\Models\Tiket;
+use App\Models\User;
 
 class review extends Model
 {
@@ -14,6 +18,7 @@ class review extends Model
     protected $fillable = [
         'id_pembayaran',
         'id_tiket',
+        'id_user',
         'rating',
         'komentar',
         'tanggal_review',
@@ -22,7 +27,7 @@ class review extends Model
     protected function casts(): array
     {
         return [
-            'tanggal_review' => 'dateTime',   
+            'tanggal_review' => 'datetime',   
         ];
     }
 
@@ -34,5 +39,10 @@ class review extends Model
     public function tiket()
     {
         return $this->belongsTo(Tiket::class, 'id_tiket');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_user');
     }
 }

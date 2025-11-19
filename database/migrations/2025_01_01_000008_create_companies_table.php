@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('email_company');
             $table->string('no_telp_company', 20);
             $table->string('alamat_company');
+            $table->string('logo_company')->nullable();
             $table->timestamps();
         });
     }

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('reviews', function (Blueprint $table) {
             $table->bigIncrements('id_review');
+            $table->unsignedBigInteger('id_user');
             $table->unsignedBigInteger('id_pembayaran');
             $table->unsignedBigInteger('id_tiket');
             $table->float('rating');
@@ -28,6 +29,12 @@ return new class extends Migration
             $table->foreign('id_tiket')
                 ->references('id_tiket')
                 ->on('tikets')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('id_user')
+                ->references('id_user')
+                ->on('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
         });
