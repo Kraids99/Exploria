@@ -1,35 +1,35 @@
-import bs1 from "../../assets/brand-strip/bs-1.png"; 
-import bs2 from "../../assets/brand-strip/bs-2.png"; 
-import bs3 from "../../assets/brand-strip/bs-3.png"; 
-import bs4 from "../../assets/brand-strip/bs-4.png"; 
-import bs5 from "../../assets/brand-strip/bs-5.png"; 
-import bs6 from "../../assets/brand-strip/bs-6.png"; 
-import "../../style/landingpage/brandStrip.css";
-import "../../App.css";
+import rosalia from "../../assets/brand-strip/bs-1.png";
+import nusantara from "../../assets/brand-strip/bs-2.png";
+import kencana from "../../assets/brand-strip/bs-3.png";
+import sinarJaya from "../../assets/brand-strip/bs-4.png";
+import kramatDjati from "../../assets/brand-strip/bs-5.png";
+import mTrans from "../../assets/brand-strip/bs-6.png";
+
+const brands = [
+  { name: "Rosalia Indah", logo: rosalia}, 
+  { name: "Nusantara", logo: nusantara}, 
+  { name: "Kencana", logo: kencana}, 
+  { name: "Sinar Jaya", logo: sinarJaya}, 
+  { name: "Kramat Djati", logo: kramatDjati}, 
+  { name: "MTrans", logo: mTrans}, 
+];
 
 function BrandStrip() {
   return (
-    <section className="brand-strip">
-      <div className="brand-strip-inner">
-        <div className="brand-logo"> 
-          <img src={bs1} alt="Rosalia Indah" className="brand-logo-img"/>
-        </div>
-        <div className="brand-logo"> 
-          <img src={bs2} alt="Nusantara" className="brand-logo-img"/>
-        </div>
-        <div className="brand-logo"> 
-          <img src={bs3} alt="Pahala Kencana" className="brand-logo-img"/>
-        </div>
-        <div className="brand-logo"> 
-          <img src={bs4} alt="Sinar Jaya" className="brand-logo-img"/>
-        </div>
-        <div className="brand-logo"> 
-          <img src={bs5} alt="Kramat Djati" className="brand-logo-img"/>
-        </div>
-        <div className="brand-logo"> 
-          <img src={bs6} alt="MTrans" className="brand-logo-img"/>
-        </div>
-
+    <section className="border-y border-slate-100 bg-white py-6">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-6 px-4 md:justify-between">
+        {brands.map((brand) => (
+          <img
+            key={brand.name}
+            src={brand.logo}
+            alt={brand.name}
+            className="
+                h-8 w-auto
+                filter grayscale opacity-60
+                transition-all duration-200 ease-out
+                hover:grayscale-0 hover:opacity-100"
+          />
+        ))}
       </div>
     </section>
   );

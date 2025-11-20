@@ -1,27 +1,18 @@
-// src/App.jsx
-import Navbar from "./components/landingpage/Navbar";
-import Dashboard from "./components/landingpage/Dashboard";
-import BrandStrip from "./components/landingpage/BrandStrip";
-import AboutSection from "./components/landingpage/AboutSection";
-import DestinationsSection from "./components/landingpage/DestinationsSection";
-import DealsSection from "./components/landingpage/DealsSection";
-import Footer from "./components/landingpage/Footer";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   return (
-    <div className="home-page">
-      <Navbar />
-      <Dashboard />
-
-      <main>
-        <BrandStrip />
-        <AboutSection />
-        <DestinationsSection />
-        <DealsSection />
-      </main>
-
-      <Footer />
-    </div>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
