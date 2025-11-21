@@ -1,19 +1,40 @@
 import HERO_BG from "../../assets/dashboard.jpg"
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getLokasi, getTiket, getRute } from "../../api/apiHero.jsx";
 
-const CITIES = [
-  "Jakarta",
-  "Bandung",
-  "Yogyakarta",
-  "Surabaya",
-  "Semarang",
-  "Medan",
-  "Makassar",
-  "Denpasar",
-];
+
+
+// const CITIES = [
+//   "Jakarta",
+//   "Bandung",
+//   "Yogyakarta",
+//   "Surabaya",
+//   "Semarang",
+//   "Medan",
+//   "Makassar",
+//   "Denpasar",
+// ];
 
 
 function Hero() {
+  const [locations, setLocations] = useState([]);
+
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const data = await getLokasi(); 
+        console.log("Lokasi:", data);
+        // setLocations(data); // simpan data ke state
+        const uniqueCities = [...new Set(data.map(item => item.kota))];
+        setLocations(uniqueCities);
+      } catch (error) {
+        console.log("Error get lokasi:", error);
+      }
+    };
+
+    fetchLocations();
+  }, []);
+
   const [fromCity, setFromCity] = useState("");
   const [toCity, setToCity] = useState("");
   const [date, setDate] = useState("");
@@ -76,14 +97,14 @@ function Hero() {
                 placeholder="Pilih kota asal"
                 value={fromCity}
                 onChange={(e) => setFromCity(e.target.value)}
-                options={CITIES}
+                options={locations}
               />
               <FieldSelect
                 label="Kota tujuan"
                 placeholder="Pilih kota tujuan"
                 value={toCity}
                 onChange={(e) => setToCity(e.target.value)}
-                options={CITIES}
+                options={locations}
               />
               <FieldDate
                 label="Tanggal berangkat"
@@ -124,11 +145,16 @@ function FieldSelect({ label, value, onChange, options, placeholder }) {
         className="mt-1 w-full bg-transparent text-xs font-semibold text-slate-800 outline-none md:text-sm"
       >
         <option value="">{placeholder}</option>
-        {options.map((city) => (
+        {options.map((city, index) => (
+        <option key={index} value={city}>
+          {city}
+        </option>
+        ))}
+        {/* {options.map((city) => (
           <option key={city} value={city}>
             {city}
           </option>
-        ))}
+        ))} */}
       </select>
     </div>
   );
