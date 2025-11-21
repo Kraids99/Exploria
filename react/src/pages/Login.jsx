@@ -150,6 +150,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { SignIn } from "../api/apiAUth.jsx";
+import Footer from "../components/landingpage/Footer.jsx";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -199,7 +200,6 @@ function Login() {
 
   return (
     <div className="min-h-screen bg-[#FDE7DD] font-sans">
-      {/* NAVBAR */}
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <Link to="/" className="flex items-center gap-2">
@@ -299,6 +299,8 @@ function Login() {
           </div>
         </div>
       )}
+
+      <Footer/>
     </div>
   );
 }
