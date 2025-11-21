@@ -1,18 +1,7 @@
 import HERO_BG from "../../assets/dashboard.jpg"
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getLokasi, getTiket, getRute } from "../../api/apiHero.jsx";
-
-// const CITIES = [
-//   "Jakarta",
-//   "Bandung",
-//   "Yogyakarta",
-//   "Surabaya",
-//   "Semarang",
-//   "Medan",
-//   "Makassar",
-//   "Denpasar",
-// ];
-
 
 function Hero() {
   const [locations, setLocations] = useState([]);
@@ -22,7 +11,7 @@ function Hero() {
       try {
         const data = await getLokasi(); 
         console.log("Lokasi:", data);
-        // setLocations(data); // simpan data ke state
+        setLocations(data); // simpan data ke state
         const uniqueCities = [...new Set(data.map(item => item.kota))];
         setLocations(uniqueCities);
       } catch (error) {
@@ -33,6 +22,7 @@ function Hero() {
     fetchLocations();
   }, []);
 
+  const navigate = useNavigate();
   const [fromCity, setFromCity] = useState("");
   const [toCity, setToCity] = useState("");
   const [date, setDate] = useState("");
@@ -40,7 +30,7 @@ function Hero() {
   const handleSubmit = (e) => {
     e.preventDefault();
     // di sini nanti bisa kamu sambungkan ke API / router
-    console.log({ fromCity, toCity, date });
+    navigate(`/search?from=${fromCity}&to=${toCity}&date=${date}`);
   };
 
   return (

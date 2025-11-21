@@ -13,7 +13,7 @@ class TiketSeeder extends Seeder
             [
                 'id_rute' => 1,
                 'id_company' => 1,
-                'nama_tiket' => 'Surabaya - Jakarta (Pagi)',
+                'nama_tiket' => 'Yogyakarta - Semarang (Pagi)',
                 'jumlah_kursi' => 40,
                 'waktu_keberangkatan' => '2025-11-20 08:00:00',
                 'waktu_tiba' => '2025-11-20 20:00:00',
