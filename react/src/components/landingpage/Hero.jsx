@@ -2,8 +2,6 @@ import HERO_BG from "../../assets/dashboard.jpg"
 import { useEffect, useState } from "react";
 import { getLokasi, getTiket, getRute } from "../../api/apiHero.jsx";
 
-
-
 // const CITIES = [
 //   "Jakarta",
 //   "Bandung",

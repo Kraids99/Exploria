@@ -27,12 +27,20 @@ function Navbar() {
               Logout
             </button>
           ) : (
+            <>
             <Link
               to="/login"
               className="rounded-full border border-slate-200 px-4 py-1.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
             >
               Login
             </Link>
+            <Link
+              to="/register"
+              className="rounded-full border border-slate-200 px-4 py-1.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+            >
+              Register
+            </Link>
+            </>
           )}
         </div>
       </nav>
