@@ -14,8 +14,6 @@
   box-sizing: border-box;
 }
 
-@layer base {
-  body {
+body {
     @apply bg-brand-50 text-brand-600 antialiased;
-  }
 }
