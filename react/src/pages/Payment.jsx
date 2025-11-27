@@ -83,7 +83,7 @@ function Payment(){
                                  className="border rounded-lg p-3 text-center shadow-sm hover:shadow-md transition"
                             >
                                 <img 
-                                    src={`/images/bank-${bank.toLowerCase()}.png`}
+                                    src={`/assets/bank/bank-${bank.toLowerCase()}.png`}
                                     alt={bank}
                                     className="h-6 mx-auto mb-2"
                                 />
@@ -101,8 +101,8 @@ function Payment(){
                                  className="border rounded-lg p-3 text-center shadow-sm hover:shadow-md transition"
                             >
                                 <img 
-                                    src={`/images/bank-${bank.toLowerCase()}.png`}
-                                    alt={bank}
+                                    src={`/assets/wallets/wallet-${wallet.toLowerCase()}.png`}
+                                    alt={wallet}
                                     className="h-6 mx-auto mb-2"
                                 />
 
