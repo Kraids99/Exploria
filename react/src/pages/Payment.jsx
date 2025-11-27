@@ -12,7 +12,7 @@ function Payment(){
 
     const fromCity = queryParams.get("from");
     const toCity = queryParams.get("to");
-    const date = query = queryParams.get("date");
+    const date = queryParams.get("date");
 
     return (
         <div className="min-h-screen bg-slate-50 font-sans">
@@ -67,7 +67,7 @@ function Payment(){
                     </div>
 
                     {/* Seat Info */}
-                    <button classname="border border-gray-400 rounded-lg px-3 py-1 text-sm font-medium mb-6">
+                    <button className="border border-gray-400 rounded-lg px-3 py-1 text-sm font-medium mb-6">
                         1 Kursi
                     </button>
 
@@ -80,13 +80,14 @@ function Payment(){
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                         {["BCA", "BNI", "BRI", "Mandiri"].map((bank)=>(
                             <div key={bank}
-                                 className="brder rounded-lg p-3 text-center shadow-sm hover:shadow-md transition"
+                                 className="border rounded-lg p-3 text-center shadow-sm hover:shadow-md transition"
                             >
                                 <img 
                                     src={`/images/bank-${bank.toLowerCase()}.png`}
                                     alt={bank}
-                                    clasName="h-6 mx-auto mb-2"
+                                    className="h-6 mx-auto mb-2"
                                 />
+
                                 <p className="text-sm">{bank}</p>
                             </div>
                         ))}
@@ -97,13 +98,14 @@ function Payment(){
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                         {["Dana", "ShopeePay", "OVO", "GoPay"].map((wallet)=>(
                             <div key={wallet}
-                                 className="brder rounded-lg p-3 text-center shadow-sm hover:shadow-md transition"
+                                 className="border rounded-lg p-3 text-center shadow-sm hover:shadow-md transition"
                             >
                                 <img 
-                                    src={`/images/wallet-${wallet.toLowerCase()}.png`}
-                                    alt={wallet}
-                                    clasName="h-6 mx-auto mb-2"
+                                    src={`/images/bank-${bank.toLowerCase()}.png`}
+                                    alt={bank}
+                                    className="h-6 mx-auto mb-2"
                                 />
+
                                 <p className="text-sm">{wallet}</p>
                             </div>
                         ))}
@@ -117,33 +119,3 @@ function Payment(){
 }
 
 export default Payment;
-
-// function Payment() {
-//   const { search } = useLocation();
-//   const queryParams = new URLSearchParams(search);
-
-//   const fromCity = queryParams.get("from");
-//   const toCity = queryParams.get("to");
-//   const date = queryParams.get("date");
-
-//   return (
-//     <div className="p-6 bg-white rounded-xl shadow-md w-full max-w-3xl mx-auto">
-//       <h2 className="text-xl font-bold mb-4">Detail Perjalanan</h2>
-
-//       <div className="space-y-2">
-//         <p>
-//           <span className="text-gray-500 text-sm">Kota Asal:</span>
-//           <span className="font-semibold"> {formatKota(fromCity)}</span>
-//         </p>
-//         <p>
-//           <span className="text-gray-500 text-sm">Kota Tujuan:</span>
-//           <span className="font-semibold"> {formatKota(toCity)}</span>
-//         </p>
-//         <p>
-//           <span className="text-gray-500 text-sm">Tanggal Berangkat:</span>
-//           <span className="font-semibold"> {formatTanggalIndonesia(date)}</span>
-//         </p>
-//       </div>
-//     </div>
-//   );
-// }
