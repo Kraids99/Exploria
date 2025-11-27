@@ -14,6 +14,8 @@
   box-sizing: border-box;
 }
 
-body {
-  @apply bg-slate-50 text-slate-900 antialiased;
+@layer base {
+  body {
+    @apply bg-brand-50 text-brand-600 antialiased;
+  }
 }
