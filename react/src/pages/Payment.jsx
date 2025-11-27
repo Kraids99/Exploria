@@ -19,27 +19,29 @@ function Payment(){
             <Navbar />
 
             {/*Hero*/}
-            <div className="w-full h-40 md:h-56 lg:h-64 overflow-hidden">
-                <img 
-                    src="src/assets/payment.jpg"
-                    alt="Sinar Jaya"
-                    className="w-full h-full object-cover object-center"
-                />
+            <div className="w-full flex justify-center mt-4">
+                <div className="w-[90%] md:w-[80%] h-28 md:h-40 border rounded-xl overflow-hidden shadow-md">
+                    <img 
+                        src="src/assets/payment.jpg"
+                        alt="Sinar Jaya"
+                        className="w-full h-full object-cover object-center"
+                    />
+                </div>
             </div>
-
+                
             {/* Content Section */}
             <div className="max-w-5xl mx-auto px-4 py-10">
                 <h1 className="text-xl font-bold mb-6">Sinar Jaya</h1>
 
                 <div className="flex justify-between max-w-md mx-auto mb-10">
-                    {["pesan", "Review", "Bayar", "E-Ticket"].map((step, index)=>(
+                    {["Pesan", "Review", "Bayar", "E-Ticket"].map((step, index)=>(
                         <div key={index} className="flex flex-col items-center">
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white
-                                    ${index === 2 ? "bg-blue-600" : "bg-gray-400"}`}
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-orange-600
+                                    ${index === 2 ? "bg-black" : "bg-gray-300"}`}
                             >
                                 {index + 1}
                             </div>
-                            <p className="mt-2 text-sm">{step}</p>
+                            <p className="mt-2 text-sm font-semibold">{step}</p>
                         </div>
                     ))}
                 </div>
@@ -51,17 +53,17 @@ function Payment(){
                     {/* Ticket Info */}
                     <div className="flex flex-col md:flex-row justify-between items-center mb-6 border-b pb-6">
                         <div>
-                            <p className="text-sm font-medium">{formatTanggalIndonesia(date)}</p>
+                            <p className="text-sm font-bold">{formatTanggalIndonesia(date)}</p>
                             <p className="text-gray-600 text-sm">{formatKota(fromCity)}</p>
                         </div>
 
-                        <div className="text-center text-blue-600 font-semibold">
+                        <div className="text-center text-blue-950 font-extrabold">
                             <p>Sinar Jaya</p>
-                            <p className="text-2xl">→</p>
+                            <p className="text-4xl text-orange-600">→</p>
                         </div>
 
                         <div className="text-right">
-                            <p className="text-sm font-medium">{formatTanggalIndonesia(date)}</p>
+                            <p className="text-sm font-bold">{formatTanggalIndonesia(date)}</p>
                             <p className="text-gray-600 text-sm">{formatKota(toCity)}</p>
                         </div>
                     </div>
