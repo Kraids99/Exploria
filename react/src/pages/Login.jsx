@@ -59,21 +59,19 @@ function Login() {
 
 
       {/* FORM LOGIN */}
-      <main className=" relative
-                      min-h-[calc(100vh-56px)]
-                      flex            /* <-- ini yang penting */
-                      items-center
-                      justify-center
-                      px-4">
+      <main className=" relative flex-1 flex justify-center
+                        px-4 py-35        
+                        lg:items-center">
         <div className="absolute inset-0 -z-10">
           <img
             src={background}
             alt="Background Image Exploria"
             className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/50 to-slate-900/90" />
+          <div className="absolute inset-0 bg-linear-to-r from-slate-900/90 via-slate-900/50 to-slate-900/90" />
         </div>
-        <div className="w-full max-w-md rounded-[32px] bg-white p-8 shadow-2xl">
+
+        <div className="w-full max-w-md rounded-4xl bg-white p-8 shadow-2xl">
 
           <h1 className="text-center text-2xl font-bold text-slate-900">
             Masuk ke akunmu
@@ -113,7 +111,10 @@ function Login() {
 
             <button
               type="submit"
-              className="mt-2 w-full rounded-full bg-[#f38f4a] px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-600"
+              className="mt-2 w-full rounded-full bg-[#f38f4a] px-4 py-2.5 
+              text-sm font-semibold text-white
+              shadow-md transition-all duration-200 ease-out
+              hover:bg-brand-600 hover:-translate-y-0.5"
             >
               Login
             </button>
@@ -121,7 +122,7 @@ function Login() {
 
           <p className="mt-4 text-center text-xs text-slate-500">
             Belum punya akun?
-            <Link to="/register" className="font-semibold text-brand-500 ml-1">
+            <Link to="/register" className="font-semibold text- ml-1">
               Daftar di sini
             </Link>
           </p>

@@ -8,6 +8,7 @@ function Navbar() {
 
   const handleLogout = () => {
     logout();
+    localStorage.setItem("token", " ");
     navigate("/");
   };
 

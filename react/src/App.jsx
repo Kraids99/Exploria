@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import { AuthProvider } from "./context/AuthContext";
 import SelectBus from "./pages/SelectBus";
+import DetailTiket from "./pages/DetailTiket";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/search" element={<SelectBus />} />
+          <Route path="/detailTiket/:id" element={<DetailTiket />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

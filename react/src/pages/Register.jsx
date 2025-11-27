@@ -47,25 +47,23 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen font-sans">
+    <div className="relative min-h-screen flex flex-col font-sans">
       <Navbar/>
-          <div className="absolute inset-0">
-            <img
-              src={background}
-              alt="Background Image Exploria"
-              className="h-full w-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/50 to-slate-900/90" />
-          </div>
 
-      <main className="relative
-                      min-h-[calc(120vh-56px)]
-                      flex            
-                      items-center
-                      justify-center
-                      px-4">
-            <div className="w-full max-w-md rounded-[32px] bg-white p-8 shadow-2xl">
-              <h1 className="mb-6 text-center text-xl font-bold">Daftar Akun Customer</h1>
+      <main className="relative flex-1 flex justify-center
+                        px-4 py-20      
+                        lg:items-center">
+            <div className="absolute inset-0 -z-10">
+              <img
+                src={background}
+                alt="Background Image Exploria"
+                className="h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-linear-to-r from-slate-900/90 via-slate-900/50 to-slate-900/90" />
+            </div>
+
+            <div className="w-full max-w-md rounded-4xl bg-white p-8 shadow-2xl">
+              <h1 className="mb-6 text-centertext-center text-2xl font-bold text-slate-900 text-xl font-bold text-center">Daftar Akun Customer</h1>
 
                 <form className="space-y-4 rounded-[15px]" onSubmit={handleRegister}>
                   <input name="nama" onChange={handleChange} placeholder="Nama" className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none"/>
@@ -77,6 +75,15 @@ function Register() {
                   <input name="password" type="password" onChange={handleChange} placeholder="Password" className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none"/>
                   <input name="password_confirmation" type="password" onChange={handleChange} placeholder="Konfirmasi Password" className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none"/>
 
+                  <button
+                    type="submit"
+                    className="mt-2 w-full rounded-full bg-[#f38f4a] px-4 py-2.5 
+                    text-sm font-semibold text-white 
+                    shadow-md transition-all duration-200 ease-out
+                    hover:bg-brand-600 hover:-translate-y-0.5"
+                  >
+                    Register
+                  </button>
                   {errorMsg && <p className="text-red-500 text-sm">{errorMsg}</p>}
 
                   <button 
