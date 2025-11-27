@@ -2,6 +2,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -15,5 +16,5 @@
 }
 
 body {
-    @apply bg-brand-50 text-brand-600 antialiased;
+    @apply bg-slate-50 text-slate-900 antialiased;
 }
