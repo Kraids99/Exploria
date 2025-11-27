@@ -34,45 +34,57 @@ function Payment3() {
             {/* CONTAINER */}
             <div className="w-[90%] md:w-[80%] mx-auto bg-white p-6 rounded-xl shadow mt-6">
 
-                {/* Barcode */}
-                <div className=" mt-6 grid grid-cols-2 border bg-gray-50 rounded-2xl shadow-md p-6 md:p-8 text-2xl">
-                    <img 
-                        src={barcodeImg}
-                        alt="barcode"
-                        className="w-50 h-50"
-                    />
-                    Dont Forget!
-
-                    {/* Ticket Info */}
-                    <div className="flex flex-col md:flex-row justify-between items-center mb-6 pb-6">
-                        <div>
-                            <p className="text-sm font-bold">{formatTanggalIndonesia(date)}</p>
-                            <p className="text-gray-600 text-sm">{formatKota(fromCity)}</p>
+                <div className="mt-6 border bg-gray-50 rounded-2xl shadow-md p-6 md:p-8">
+                    <div className="flex flex-col md:flex-row justify-between items-start gap-6">
+                        
+                        <div className="flex-shrink-0">
+                            <img 
+                                src={barcodeImg}
+                                alt="barcode"
+                                className="w-32 h-32 md:w-40 md:h-40 object-contain" 
+                            />
                         </div>
 
-                        <div className="text-center text-blue-950 font-extrabold">
-                            <p>Sinar Jaya</p>
-                            <p className="text-4xl text-orange-600">→</p>
-                        </div>
+                        {/* Tiket Info */}
+                        <div className="flex-grow items-end">
+                            <h3 className="text-xl font-bold mb-4">Dont Forget!</h3>
 
-                        <div className="text-right">
-                            <p className="text-sm font-bold">{formatTanggalIndonesia(date)}</p>
-                            <p className="text-gray-600 text-sm">{formatKota(toCity)}</p>
+                            <div className="flex justify-between items-center w-full">
+                                <div className="text-left">
+                                    <p className="text-sm font-bold">{formatTanggalIndonesia(date)}</p>
+                                    <p className="text-gray-600 text-sm">{formatKota(fromCity)}</p>
+                                </div>
+
+                                <div className="text-center mx-4 flex-shrink-0">
+                                    <p className="text-blue-950 font-extrabold text-sm">Sinar Jaya</p>
+                                    <p className="text-4xl text-orange-600 font-extrabold">→</p>
+                                </div>
+
+                                <div className="text-right">
+                                    <p className="text-sm font-bold">{formatTanggalIndonesia(date)}</p>
+                                    <p className="text-gray-600 text-sm">{formatKota(toCity)}</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
-                    <button className="border-orange-500 border text-black py-3 rounded-xl mt-6 font-bold text-xl">
+                    
+                    {/* Tombol Download E-Ticket */}
+                    <button className="w-120 border-orange-500 border text-black py-3 rounded-xl mx-40 font-bold text-xl">
                         Download E-Ticket
                     </button>
                 </div>
 
-                <p className="text-center text-black text-3xl mt-2">
+                <p className="text-center text-black text-3xl mt-12 mb-2">
                     Bagaimana Pengalaman Anda?
                 </p>
 
-                <p className="text-center text-gray-500 text-xs mt-2">
+                <p className="text-center text-gray-500 text-xs">
                     Berikan rating dan ulasan terkait dengan layanan kami
                 </p>
+                
+                <div className="flex justify-center my-4">
+                    <span className="text-3xl text-yellow-500">⭐️⭐️⭐️⭐️⭐️</span>
+                </div>
 
                 <button className="w-full bg-orange-500 text-white py-3 rounded-xl mt-6 font-semibold text-xl">
                     Kembali ke Beranda
