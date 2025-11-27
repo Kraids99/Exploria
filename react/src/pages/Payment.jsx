@@ -19,11 +19,11 @@ function Payment(){
             <Navbar />
 
             {/*Hero*/}
-            <div className="w-full h-64 md:h-80 overflow-hidden">
+            <div className="w-full h-40 md:h-56 lg:h-64 overflow-hidden">
                 <img 
-                    src="/assets/payment.jpg"
+                    src="src/assets/payment.jpg"
                     alt="Sinar Jaya"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-center"
                 />
             </div>
 
@@ -80,15 +80,15 @@ function Payment(){
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                         {["BCA", "BNI", "BRI", "Mandiri"].map((bank)=>(
                             <div key={bank}
-                                 className="border rounded-lg p-3 text-center shadow-sm hover:shadow-md transition"
+                                 className="border rounded-lg px-4 py-2 flex items-center gap-3 shadow-sm hover:shadow-md transition"
                             >
                                 <img 
-                                    src={`/assets/bank/bank-${bank.toLowerCase()}.png`}
+                                    src={`src/assets/bank/bank-${bank.toLowerCase()}.png`}
                                     alt={bank}
-                                    className="h-6 mx-auto mb-2"
+                                    className="h-8 w-8 object-contain"
                                 />
 
-                                <p className="text-sm">{bank}</p>
+                                <p className="text-sm font-semibold">{bank}</p>
                             </div>
                         ))}
                     </div>
@@ -98,15 +98,15 @@ function Payment(){
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                         {["Dana", "ShopeePay", "OVO", "GoPay"].map((wallet)=>(
                             <div key={wallet}
-                                 className="border rounded-lg p-3 text-center shadow-sm hover:shadow-md transition"
+                                 className="border rounded-lg px-4 py-2 flex items-center gap-3 shadow-sm hover:shadow-md transition"
                             >
                                 <img 
-                                    src={`/assets/wallets/wallet-${wallet.toLowerCase()}.png`}
+                                    src={`src/assets/wallets/wallet-${wallet.toLowerCase()}.png`}
                                     alt={wallet}
-                                    className="h-6 mx-auto mb-2"
+                                    className="h-8 w-8 object-contain"
                                 />
 
-                                <p className="text-sm">{wallet}</p>
+                                <p className="text-sm font-semibold">{wallet}</p>
                             </div>
                         ))}
                     </div>
