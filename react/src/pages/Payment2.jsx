@@ -56,8 +56,7 @@ function Payment2() {
                         <img 
                             src={kursiIcon} 
                             alt="kursi" 
-                            className="w-5 h-5
-                            "
+                            className="w-5 h-5"
                         />
                         1 Kursi
                     </button>
@@ -94,7 +93,7 @@ function Payment2() {
 
                         <div>
                             <p className="font-semibold mb-1">ATM BCA</p>
-                            <ol className="list-decimal ml-4 space-y-1">
+                            <ol className="list-decimal ml-4 space-y-1 border-r">
                                 <li>Insert kartu ATM Anda.</li>
                                 <li>Pilih Transaksi Lainnya.</li>
                                 <li>Pilih Transfer.</li>
@@ -106,7 +105,7 @@ function Payment2() {
 
                         <div>
                             <p className="font-semibold mb-1">m-BCA</p>
-                            <ol className="list-decimal ml-4 space-y-1">
+                            <ol className="list-decimal ml-4 space-y-1 border-r">
                                 <li>Login ke m-Banking.</li>
                                 <li>Pilih m-Transfer.</li>
                                 <li>Masukkan nomor Virtual Account.</li>
