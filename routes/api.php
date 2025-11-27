@@ -26,6 +26,9 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
+
+   
+    
     // User
     Route::get('/user', [UserController::class, 'show']);
     Route::put('/user/update', [UserController::class, 'update']);
@@ -41,6 +44,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // Tiket
+Route::get('/tiket/search', [TiketController::class, 'search']);
 Route::get('/tiket', [TiketController::class, 'index']);
 Route::get('/tiket/{id}', [TiketController::class, 'show']);
 

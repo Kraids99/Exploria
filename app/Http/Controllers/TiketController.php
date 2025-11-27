@@ -103,4 +103,23 @@ class TiketController extends Controller
         $tiket->delete();
         return response()->json(['message' => 'Tiket berhasil dihapus']);
     }
+
+    // Cari tiket berdasarkan kota asal, kota tujuan, dan tanggal (customer)
+    public function search(Request $request)
+    {
+        $from = $request->from;
+        $to = $request->to;
+        $date = $request->date; // opsional dulu
+
+        $tiket = Tiket::with(['company', 'rute.asal', 'rute.tujuan'])
+            ->whereHas('rute.asal', function($q) use ($from) {
+                $q->where('kota', $from);
+            })
+            ->whereHas('rute.tujuan', function($q) use ($to) {
+                $q->where('kota', $to);
+            })
+            ->get();
+
+        return response()->json($tiket);
+    }
 }
