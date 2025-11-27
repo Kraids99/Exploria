@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Payment from "./pages/Payment";
+import Payment2 from "./pages/Payment2.jsx";
 import { AuthProvider } from "./context/AuthContext";
 import SelectBus from "./pages/SelectBus";
 
@@ -16,6 +17,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/search" element={<SelectBus />} />
           <Route path="/payment" element={<Payment />} />
+          <Route path="/payment2" element={<Payment2 />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
