@@ -1,9 +1,9 @@
-import HERO_BG from "../../assets/dashboard.jpg"
+import background from "../../assets/dashboard.jpg"
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getLokasi, getTiket, getRute } from "../../api/apiHero.jsx";
+import { getLokasi} from "../../api/apiHero.jsx";
 
-function Hero() {
+function DashboardLP() {
   const [locations, setLocations] = useState([]);
 
   useEffect(() => {
@@ -38,7 +38,7 @@ function Hero() {
       {/* BACKGROUND IMAGE */}
       <div className="absolute inset-0">
         <img
-          src={HERO_BG}
+          src={background}
           alt="Terminal bus Exploria"
           className="h-full w-full object-cover"
         />
@@ -105,7 +105,8 @@ function Hero() {
                 className="
                   mt-2 md:mt-0
                   flex h-12 items-center justify-center
-                  rounded-[999px] bg-brand-500 px-6 text-sm font-semibold text-white
+                  bg-[#f38f4a]
+                  rounded-[999px] px-6 text-sm font-semibold text-white
                   shadow-md transition-all duration-200 ease-out
                   hover:bg-brand-600 hover:-translate-y-0.5
                 "
@@ -165,4 +166,4 @@ function FieldDate({ label, value, onChange }) {
   );
 }
 
-export default Hero;
+export default DashboardLP;

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { SignUpCustomer } from "../api/apiAUth.jsx";
 import { useNavigate } from "react-router-dom";
+import background from "../assets/bg-signinsignup.jpg"
 import Navbar from "../components/landingpage/Navbar.jsx";
 import Footer from "../components/landingpage/Footer.jsx";
 function Register() {
@@ -46,22 +47,35 @@ function Register() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-slate-50">
+    <div className="min-h-screen font-sans">
       <Navbar/>
-      <main className="flex flex-1 items-center bg-[#FDE7DD] justify-center px-4 py-12">
-          <div className="m-16 w-full max-w-md rounded-[32px] bg-white shadow-2xl">
-            <div className="p-12 max-w-lg mx-auto">
+          <div className="absolute inset-0">
+            <img
+              src={background}
+              alt="Background Image Exploria"
+              className="h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/50 to-slate-900/90" />
+          </div>
+
+      <main className="relative
+                      min-h-[calc(120vh-56px)]
+                      flex            
+                      items-center
+                      justify-center
+                      px-4">
+            <div className="w-full max-w-md rounded-[32px] bg-white p-8 shadow-2xl">
               <h1 className="mb-6 text-center text-xl font-bold">Daftar Akun Customer</h1>
 
                 <form className="space-y-4 rounded-[15px]" onSubmit={handleRegister}>
-                  <input name="nama" onChange={handleChange} placeholder="Nama" className="border p-2 w-full"/>
-                  <input name="no_telp" onChange={handleChange} placeholder="No Telepon" className="border p-2 w-full"/>
-                  <input name="email" onChange={handleChange} placeholder="Email" className="border p-2 w-full"/>
-                  <input type="date" name="tanggal_lahir" onChange={handleChange} className="border p-2 w-full"/>
-                  <input name="jenis_kelamin" onChange={handleChange} placeholder="Jenis kelamin" className="border p-2 w-full"/>
+                  <input name="nama" onChange={handleChange} placeholder="Nama" className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none"/>
+                  <input name="no_telp" onChange={handleChange} placeholder="No Telepon" className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none"/>
+                  <input name="email" onChange={handleChange} placeholder="Email" className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none"/>
+                  <input type="date" name="tanggal_lahir" onChange={handleChange} className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none"/>
+                  <input name="jenis_kelamin" onChange={handleChange} placeholder="Jenis kelamin" className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none"/>
 
-                  <input name="password" type="password" onChange={handleChange} placeholder="Password" className="border p-2 w-full"/>
-                  <input name="password_confirmation" type="password" onChange={handleChange} placeholder="Konfirmasi Password" className="border p-2 w-full"/>
+                  <input name="password" type="password" onChange={handleChange} placeholder="Password" className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none"/>
+                  <input name="password_confirmation" type="password" onChange={handleChange} placeholder="Konfirmasi Password" className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none"/>
 
                   {errorMsg && <p className="text-red-500 text-sm">{errorMsg}</p>}
 
@@ -72,12 +86,12 @@ function Register() {
                     {loading ? "Memproses..." : "Daftar"}
                   </button>
                 </form>
-
-            </div>
-
           </div>
+
       </main>
-      <Footer/> 
+          <div className="relative">
+            <Footer/> 
+          </div>
     </div>
   );
 }

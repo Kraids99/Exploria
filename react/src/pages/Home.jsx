@@ -1,5 +1,5 @@
 import Navbar from "../components/landingpage/Navbar"; 
-import Hero from "../components/landingpage/Hero"; 
+import Hero from "../components/landingpage/DashboardLP"; 
 import BrandStrip from "../components/landingpage/BrandStrip"; 
 import AboutSection from "../components/landingpage/AboutSection"; 
 import DestinationsSection from "../components/landingpage/DestinationsSection"; 
