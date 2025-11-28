@@ -1,6 +1,6 @@
 // src/pages/DetailTiket.jsx
 import { useEffect, useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams, useNavigate} from "react-router-dom";
 import { FaStar } from "react-icons/fa";
 import Navbar from "../../components/default/Navbar.jsx";
 import Footer from "../../components/default/Footer.jsx";
@@ -8,6 +8,7 @@ import header from "../../assets/busHeader.jpeg";
 import { getTiketByParams } from "../../api/apiTiket.jsx"; 
 
 export default function DetailTiket() {
+  const navigate = useNavigate(); 
   const { id } = useParams();               
   const [searchParams] = useSearchParams(); 
 
@@ -19,6 +20,7 @@ export default function DetailTiket() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const [creatingOrder, setCreatingOrder ] = useState(false); 
   useEffect(() => {
     const fetchDetail = async () => {
       try {
@@ -33,6 +35,7 @@ export default function DetailTiket() {
           : Array.isArray(data.data)
           ? data.data
           : [];
+
         
         const found = list.find(
           (item) => String(item.id_tiket) === String(id)
@@ -64,7 +67,7 @@ export default function DetailTiket() {
       <div className="min-h-screen flex flex-col bg-[#F5F5F7]">
         <Navbar />
         <main className="flex-1 flex items-center justify-center">
-          <p className="text-sm text-slate-600">Memuat detail pemesanan...</p>
+          <p className="text-sm text-slate-600">Memuat detail pemesanan…</p>
         </main>
         <Footer />
       </div>
@@ -95,6 +98,39 @@ export default function DetailTiket() {
     );
   }
 
+  const handleCreatePemesanan = async () => {
+      // try{
+      //   const token = localStorage.getItem("token");
+
+      //   if(!token){
+      //     alert("Anda harus login terlebih dahulu ya"); 
+      //     navigate("/login"); 
+      //     return; 
+      //   }
+
+      //   if(!tiket) return; 
+
+      //   setCreatingOrder(true); 
+
+      //   const today = new Date().toISOString().slice(0, 10);
+
+      //   await createPemesanan({
+      //     id_tiket: tiket.id_tiket, 
+      //     tanggal_pemesanan: today,
+      //     total_biaya_pemesanan: Number(tiket.harga || 0),
+      //   });
+
+        navigate(
+          `/selectpayment/${tiket.id_tiket}?from=${fromCityFilter}&to=${toCityFilter}&date=${dateFilter}`
+        );
+    //   } catch (err) {
+    //     console.log(err);
+    //     alert("Gagal membuat pemesanan. Coba lagi sebentar ya.");
+    //   } finally {
+    //     setCreatingOrder(false);
+    //   }
+    // }
+  }
   const companyName = tiket.company?.nama_company || "Nama Perusahaan";
   const busName = tiket.nama_tiket || "Nama Bus";
 
@@ -119,6 +155,7 @@ export default function DetailTiket() {
   const ratingScore = tiket.rating || 4.9;
   const ratingTotal = tiket.jumlah_ulasan || 48000;
 
+
   return (
     <div className="min-h-screen bg-[#F5F5F7] font-sans flex flex-col">
       <Navbar />
@@ -128,7 +165,7 @@ export default function DetailTiket() {
           <div className="rounded-3xl overflow-hidden shadow-md">
             <img
               src={header}
-              alt="Bus header"
+              alt={companyName}
               className="w-full h-36 md:h-44 lg:h-52 object-cover opacity-70"
             />
           </div>
@@ -147,7 +184,7 @@ export default function DetailTiket() {
 
                   {fromCityFilter && toCityFilter && (
                     <p className="mt-1 text-xs text-slate-500">
-                      {fromCityFilter} {"->"} {toCityFilter} | {dateFilter}
+                      {fromCityFilter} → {toCityFilter} • {dateFilter}
                     </p>
                   )}
                 </div>
@@ -226,8 +263,8 @@ export default function DetailTiket() {
                       Review Ulasan
                     </p>
                     <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm text-slate-700">
-                      "Bus nyaman, sopir ramah, dan tepat waktu. Sangat
-                      direkomendasikan untuk perjalanan ini."
+                      “Bus nyaman, sopir ramah, dan tepat waktu. Sangat
+                      direkomendasikan untuk perjalanan ini.”
                     </div>
                   </div>
                 </div>
@@ -253,7 +290,10 @@ export default function DetailTiket() {
                 </div>
 
                 <div className="mt-6 flex justify-center">
-                  <button className="inline-flex items-center justify-center rounded-full bg-[#E5533D] px-10 py-3 text-sm font-semibold text-white shadow-md hover:bg-[#cf4230] transition-colors">
+                  <button className="inline-flex items-center justify-center rounded-full 
+                                  bg-[#E5533D] px-10 py-3 text-sm font-semibold text-white shadow-md 
+                                  hover:bg-[#cf4230] transition-colors"
+                          onClick={handleCreatePemesanan}>
                     Mulai Pembayaran
                   </button>
                 </div>
@@ -267,3 +307,4 @@ export default function DetailTiket() {
     </div>
   );
 }
+

@@ -21,8 +21,8 @@ function App() {
           <Route path="/search" element={<SelectBus />} />
           <Route path="/detailTiket/:id" element={<DetailTiket />} />
           <Route path="/profile" element={<Profile/>}/>
-          <Route path="/payment/:id" element={<Payment />}/>
-          <Route path="/selectpayment/:id" element={<Payment2 />}/>
+          <Route path="/selectpayment/:id" element={<Payment />}/>
+          <Route path="/payment/:id" element={<Payment2 />}/>
           <Route path="/ereceipt/:id" element={<Payment3 />}/>
         </Routes>
       </BrowserRouter>
