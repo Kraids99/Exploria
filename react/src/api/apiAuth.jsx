@@ -27,4 +27,9 @@ const SignIn = async (data) => {
   }
 };
 
-export { SignUpCustomer, SignUpAdmin, SignIn };
+const checkAuth = async () => {
+  const response = await useAxios.get("/check-auth");
+  return response.data;
+};
+
+export { SignUpCustomer, SignUpAdmin, SignIn, checkAuth};

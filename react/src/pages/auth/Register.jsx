@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { SignUpCustomer } from "../api/apiAUth.jsx";
+import { SignUpCustomer } from "../../api/apiAuth.jsx";
 import { useNavigate } from "react-router-dom";
-import background from "../assets/bg-signinsignup.jpg"
-import Navbar from "../components/landingpage/Navbar.jsx";
-import Footer from "../components/landingpage/Footer.jsx";
+import background from "../../assets/bg-signinsignup.jpg"
+import Navbar from "../../components/default/Navbar.jsx";
+import Footer from "../../components/default/Footer.jsx";
+
 function Register() {
   const navigate = useNavigate();
 
@@ -40,7 +41,12 @@ function Register() {
       navigate("/login");
     } catch (err) {
       console.log(err);
-      setErrorMsg(err?.message || "Registrasi gagal");
+      const apiMsg =
+        err?.message ||
+        err?.error ||
+        err?.errors ||
+        "Registrasi gagal";
+      setErrorMsg(apiMsg);
     } finally {
       setLoading(false);
     }
@@ -70,25 +76,44 @@ function Register() {
                   <input name="no_telp" onChange={handleChange} placeholder="No Telepon" className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none"/>
                   <input name="email" onChange={handleChange} placeholder="Email" className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none"/>
                   <input type="date" name="tanggal_lahir" onChange={handleChange} className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none"/>
-                  <input name="jenis_kelamin" onChange={handleChange} placeholder="Jenis kelamin" className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none"/>
+
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold text-slate-700">Jenis Kelamin</p>
+                    <div className="flex gap-4">
+                      <label className="inline-flex items-center gap-2 text-sm text-slate-700">
+                        <input
+                          type="radio"
+                          name="jenis_kelamin"
+                          value="Laki-laki"
+                          checked={form.jenis_kelamin === "Laki-laki"}
+                          onChange={handleChange}
+                          className="h-4 w-4 text-[#f38f4a] focus:ring-[#f38f4a]"
+                        />
+                        <span>Laki-laki</span>
+                      </label>
+                      <label className="inline-flex items-center gap-2 text-sm text-slate-700">
+                        <input
+                          type="radio"
+                          name="jenis_kelamin"
+                          value="Perempuan"
+                          checked={form.jenis_kelamin === "Perempuan"}
+                          onChange={handleChange}
+                          className="h-4 w-4 text-[#f38f4a] focus:ring-[#f38f4a]"
+                        />
+                        <span>Perempuan</span>
+                      </label>
+                    </div>
+                  </div>
 
                   <input name="password" type="password" onChange={handleChange} placeholder="Password" className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none"/>
                   <input name="password_confirmation" type="password" onChange={handleChange} placeholder="Konfirmasi Password" className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none"/>
 
-                  <button
-                    type="submit"
-                    className="mt-2 w-full rounded-full bg-[#f38f4a] px-4 py-2.5 
-                    text-sm font-semibold text-white 
-                    shadow-md transition-all duration-200 ease-out
-                    hover:bg-brand-600 hover:-translate-y-0.5"
-                  >
-                    Register
-                  </button>
                   {errorMsg && <p className="text-red-500 text-sm">{errorMsg}</p>}
 
                   <button 
+                    type="submit"
                     disabled={loading}
-                    className="bg-brand-500  w-full rounded-full text-white px-4 py-2"
+                    className="bg-brand-500 w-full rounded-full text-white px-4 py-2 shadow-md transition-all duration-200 ease-out hover:bg-brand-600 hover:-translate-y-0.5 disabled:opacity-60"
                   >
                     {loading ? "Memproses..." : "Daftar"}
                   </button>

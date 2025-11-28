@@ -2,11 +2,10 @@
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
-
-import Navbar from "../components/landingpage/Navbar";
-import Footer from "../components/landingpage/Footer";
-import header from "../assets/busHeader.jpeg";
-import { getTiketByParams } from "../api/apiHero.jsx"; 
+import Navbar from "../../components/default/Navbar.jsx";
+import Footer from "../../components/default/Footer.jsx";
+import header from "../../assets/busHeader.jpeg";
+import { getTiketByParams } from "../../api/apiTiket.jsx"; 
 
 export default function DetailTiket() {
   const { id } = useParams();               
@@ -34,7 +33,6 @@ export default function DetailTiket() {
           : Array.isArray(data.data)
           ? data.data
           : [];
-
         
         const found = list.find(
           (item) => String(item.id_tiket) === String(id)
@@ -66,7 +64,7 @@ export default function DetailTiket() {
       <div className="min-h-screen flex flex-col bg-[#F5F5F7]">
         <Navbar />
         <main className="flex-1 flex items-center justify-center">
-          <p className="text-sm text-slate-600">Memuat detail pemesanan…</p>
+          <p className="text-sm text-slate-600">Memuat detail pemesanan...</p>
         </main>
         <Footer />
       </div>
@@ -149,7 +147,7 @@ export default function DetailTiket() {
 
                   {fromCityFilter && toCityFilter && (
                     <p className="mt-1 text-xs text-slate-500">
-                      {fromCityFilter} → {toCityFilter} • {dateFilter}
+                      {fromCityFilter} {"->"} {toCityFilter} | {dateFilter}
                     </p>
                   )}
                 </div>
@@ -228,8 +226,8 @@ export default function DetailTiket() {
                       Review Ulasan
                     </p>
                     <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm text-slate-700">
-                      “Bus nyaman, sopir ramah, dan tepat waktu. Sangat
-                      direkomendasikan untuk perjalanan ini.”
+                      "Bus nyaman, sopir ramah, dan tepat waktu. Sangat
+                      direkomendasikan untuk perjalanan ini."
                     </div>
                   </div>
                 </div>

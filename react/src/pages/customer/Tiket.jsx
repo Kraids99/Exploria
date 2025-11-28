@@ -1,11 +1,12 @@
-import Footer from "../components/landingpage/Footer";
-import Navbar from "../components/landingpage/Navbar";
+import Footer from "../../components/default/Footer.jsx";
+import Navbar from "../../components/default/Navbar.jsx";
+import FieldDate from "../../components/default/FieldDate.jsx";
+import FieldSelect from "../../components/default/FieldSelect.jsx";
+
+import { getLokasi, getTiketByParams } from "../../api/apiTiket.jsx";
+import Tikets from "../../components/tiket/Tikets.jsx";
 import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getLokasi, getTiketByParams } from "../api/apiHero.jsx";
-import FieldDate from "../components/landingpage/FieldDate.jsx";
-import FieldSelect from "../components/landingpage/FieldSelect.jsx";
-import Tikets from "../components/selectbus/Tikets.jsx";
 
 function SelectBus() {
   const [params] = useSearchParams();
@@ -23,8 +24,6 @@ function SelectBus() {
     setToCity(toCity1);
     setDate(date1);
   }, [fromCity1, toCity1, date1]);
-
-
 
   const [locations, setLocations] = useState([]);
   useEffect(() => {

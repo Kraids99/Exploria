@@ -1,10 +1,11 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import Home from "./pages/customer/Home";
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
 import { AuthProvider } from "./context/AuthContext";
-import SelectBus from "./pages/SelectBus";
-import DetailTiket from "./pages/DetailTiket";
+import SelectBus from "./pages/customer/Tiket";
+import DetailTiket from "./pages/customer/DetailTiket";
+import Profile from "./pages/customer/Profile"
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/search" element={<SelectBus />} />
           <Route path="/detailTiket/:id" element={<DetailTiket />} />
+          <Route path="/profile" element={<Profile/>}/>
         </Routes>
       </BrowserRouter>
     </AuthProvider>

@@ -1,11 +1,10 @@
-import logo from "../assets/logo.png"; 
-import background from "../assets/bg-signinsignup.jpg";
+import background from "../../assets/bg-signinsignup.jpg";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { SignIn } from "../api/apiAUth.jsx";
-import Footer from "../components/landingpage/Footer.jsx";
-import Navbar from "../components/landingpage/Navbar.jsx";
+import { useAuth } from "../../context/AuthContext.jsx";
+import { SignIn } from "../../api/apiAuth.jsx";
+import Footer from "../../components/default/Footer.jsx";
+import Navbar from "../../components/default/Navbar.jsx";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -13,7 +12,7 @@ function Login() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  const { login } = useAuth();
+  const { refreshAuth } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -33,11 +32,15 @@ function Login() {
 
       console.log("Login berhasil:", res);
 
-      // simpan token
-      localStorage.setItem("token", res.token);
+      // simpan token (bersihkan jika token terbungkus tanda kutip)
+      const cleanedToken =
+        typeof res.token === "string"
+          ? res.token.replace(/^"+|"+$/g, "").trim()
+          : res.token;
+      localStorage.setItem("token", cleanedToken);
 
-      // update auth state
-      login(res.token);
+      // update auth state dari server
+      await refreshAuth();
 
       // popup sukses
       setShowSuccess(true);
@@ -49,7 +52,12 @@ function Login() {
 
     } catch (err) {
       console.log(err);
-      setErrorMsg(err?.message || "Login gagal");
+      const apiMsg =
+        err?.message ||
+        err?.error ||
+        err?.errors ||
+        "Login gagal";
+      setErrorMsg(apiMsg);
     }
   };
 

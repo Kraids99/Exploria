@@ -1,15 +1,18 @@
 import background from "../../assets/dashboard.jpg";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getLokasi } from "../../api/apiHero.jsx";
-import FieldDate from "./FieldDate.jsx";
-import FieldSelect from "./FieldSelect.jsx";
+import { checkAuth } from "../../api/apiAuth.jsx";
+import { getLokasi } from "../../api/apiTiket.jsx";
+import FieldDate from "../default/FieldDate.jsx";
+import FieldSelect from "../default/FieldSelect.jsx";
+
 
 function DashboardLP() {
   const navigate = useNavigate();
   const [fromCity, setFromCity] = useState("");
   const [toCity, setToCity] = useState("");
   const [date, setDate] = useState("");
+  const [formError, setFormError] = useState("");
 
   const [locations, setLocations] = useState([]);
   useEffect(() => {
@@ -25,19 +28,39 @@ function DashboardLP() {
 
     fetchLocations();
   }, []);
-
-  const handleSubmit = (e) => {
+  
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setFormError("");
 
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      alert("Anda harus login terlebih dahulu yaa...");
-      navigate("/login");
+    if (!fromCity || !toCity || !date) {
+      setFormError("Pilih kota asal, tujuan, dan tanggal terlebih dahulu.");
       return;
     }
 
-    navigate(`/search?from=${fromCity}&to=${toCity}&date=${date}`);
+    try {
+      await checkAuth();  // cek token ke server
+
+      navigate(`/search?from=${fromCity}&to=${toCity}&date=${date}`);
+
+    } catch (err) {
+      console.log("AUTH ERROR:", err);
+
+      alert("Kamu harus login dulu ya.");
+      localStorage.removeItem("token");
+      navigate("/login");
+    }
+    // e.preventDefault();
+
+    // const token = localStorage.getItem("token");
+
+    // if (!token) {
+    //   alert("Anda harus login terlebih dahulu yaa...");
+    //   navigate("/login");
+    //   return;
+    // }
+
+    // navigate(`/search?from=${fromCity}&to=${toCity}&date=${date}`);
   };
 
   return (
@@ -118,6 +141,11 @@ function DashboardLP() {
               Search Trip
             </button>
           </div>
+          {formError && (
+            <p className="mt-3 text-sm font-semibold text-red-500">
+              {formError}
+            </p>
+          )}
         </form>
       </div>
     </section>

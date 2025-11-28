@@ -12,9 +12,9 @@ class RuteSeeder extends Seeder
         DB::table('rutes')->insert([
             ['id_lokasi_asal' => 1, 'id_lokasi_tujuan' => 3],
             ['id_lokasi_asal' => 1, 'id_lokasi_tujuan' => 4],
-            ['id_lokasi_asal' => 3, 'id_lokasi_tujuan' => 5],
+            ['id_lokasi_asal' => 4, 'id_lokasi_tujuan' => 5],
             ['id_lokasi_asal' => 5, 'id_lokasi_tujuan' => 4],
-            ['id_lokasi_asal' => 2, 'id_lokasi_tujuan' => 1],
+            ['id_lokasi_asal' => 3, 'id_lokasi_tujuan' => 1],
         ]);
     }
 }

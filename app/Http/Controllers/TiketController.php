@@ -6,6 +6,7 @@ use App\Models\Tiket;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illluminate\Support\Facades\Auth;
+use Illuminate\Support\Carbon;
 
 class TiketController extends Controller
 {
@@ -109,7 +110,9 @@ class TiketController extends Controller
     {
         $from = $request->from;
         $to = $request->to;
-        $date = $request->date; // opsional dulu
+        $date = $request->date;
+        $start = Carbon::parse($date)->startOfDay();
+        $end   = Carbon::parse($date)->addDays(7)->endOfDay();
 
         $tiket = Tiket::with(['company', 'rute.asal', 'rute.tujuan'])
             ->whereHas('rute.asal', function($q) use ($from) {
@@ -118,6 +121,8 @@ class TiketController extends Controller
             ->whereHas('rute.tujuan', function($q) use ($to) {
                 $q->where('kota', $to);
             })
+            ->whereBetween('waktu_keberangkatan', [$start, $end
+            ])
             ->get();
 
         return response()->json($tiket);

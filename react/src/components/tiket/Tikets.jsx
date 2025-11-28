@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getTiketByParams } from "../../api/apiHero.jsx";
+import { getTiketByParams } from "../../api/apiTiket.jsx";
 import { useNavigate } from "react-router-dom";
 
 export default function Tikets({ fromCity, toCity, date }) {
