@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { LuMail, LuPhone, LuCalendar, LuUser, LuPencilLine, LuCamera, LuTrash2 } from "react-icons/lu";
+import { LuMail, LuPhone, LuCalendar, LuUser, LuPencilLine, LuCamera, LuTrash2, LuLogOut } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/default/Navbar.jsx";
 import Footer from "../../components/default/Footer.jsx";
@@ -31,7 +31,7 @@ const normalizeUrl = (url) => {
 };
 
 function Profile() {
-  const { isAuthenticated, user: authUser, refreshAuth } = useAuth();
+  const { isAuthenticated, user: authUser, refreshAuth, logout } = useAuth();
   const navigate = useNavigate();
 
   // State utama data profil (field text yang dikirim ke backend).
@@ -210,6 +210,11 @@ function Profile() {
     () => formatDate(profile.tanggal_lahir),
     [profile.tanggal_lahir]
   );
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   if (loadingProfile) {
     return (
@@ -507,6 +512,21 @@ function Profile() {
                 </button>
               </div>
             </form>
+
+            <div className="mt-6 border-t border-slate-200 pt-6">
+              <h4 className="text-base font-semibold text-slate-900 mb-2">Keluar Akun</h4>
+              <p className="text-sm text-slate-600 mb-4">
+                Hentikan sesi dan kembali ke halaman masuk.
+              </p>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-100"
+              >
+                <LuLogOut className="h-4 w-4" />
+                Keluar
+              </button>
+            </div>
           </div>
         </div>
       </main>
