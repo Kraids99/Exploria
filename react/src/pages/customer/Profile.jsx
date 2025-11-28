@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { LuMail, LuPhone, LuCalendar, LuUser, LuPencilLine, LuCamera, LuTrash2, LuLogOut } from "react-icons/lu";
+import { MdDelete } from "react-icons/md"; 
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/default/Navbar.jsx";
 import Footer from "../../components/default/Footer.jsx";
@@ -246,7 +247,7 @@ function Profile() {
           )}
 
           {/* Kartu avatar + info singkat */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mt-20">
             <div className="flex flex-col items-center text-center gap-3">
               <div className="relative group">
                 <div className="w-28 h-28 rounded-full overflow-hidden bg-slate-200">
@@ -514,17 +515,17 @@ function Profile() {
             </form>
 
             <div className="mt-6 border-t border-slate-200 pt-6">
-              <h4 className="text-base font-semibold text-slate-900 mb-2">Keluar Akun</h4>
+              <h4 className="text-base font-semibold text-slate-900 mb-2">Hapus Akun</h4>
               <p className="text-sm text-slate-600 mb-4">
-                Hentikan sesi dan kembali ke halaman masuk.
+                Hapus akan secara permanen
               </p>
               <button
                 type="button"
                 onClick={handleLogout}
                 className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-100"
               >
-                <LuLogOut className="h-4 w-4" />
-                Keluar
+                <MdDelete className="h-4 w-4" />
+                Hapus Akun
               </button>
             </div>
           </div>
