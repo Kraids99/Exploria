@@ -27,4 +27,18 @@ const SignIn = async (data) => {
   }
 };
 
-export { SignUpCustomer, SignUpAdmin, SignIn };
+const checkAuth = async () => {
+  const response = await useAxios.get("/check-auth");
+  return response.data;
+};
+
+const deleteAccount = async (data) => {
+  try {
+    const response = await useAxios.post("/delete", data);
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+}
+
+export { SignUpCustomer, SignUpAdmin, SignIn, checkAuth, deleteAccount};

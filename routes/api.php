@@ -22,17 +22,33 @@ Route::post('/register/customer', [CustomerController::class, 'register']);
 // Login
 Route::post('/login', [AuthController::class, 'login']);
 
-// Logout
+// Check Auth
+Route::middleware('auth:sanctum')->get('/check-auth', function (Request $request) {
+    return response()->json([
+        'user' => $request->user(),
+        // gunakan token yang sedang dipakai, null-safe supaya tidak 500
+        'abilities' => $request->user()?->currentAccessToken()?->abilities,
+        'status' => 'ok'
+    ]);
+});
+
 Route::middleware('auth:sanctum')->group(function () {
+    // Logout
     Route::post('/logout', [AuthController::class, 'logout']);
 
+    // Delete
+    Route::delete('/delete', [AuthController::class, 'destroy']);
 
-   
+    // Tiket
+    Route::get('/tiket/search', [TiketController::class, 'search']);
+    Route::get('/tiket', [TiketController::class, 'index']);
+    Route::get('/tiket/{id}', [TiketController::class, 'show']);
     
     // User
     Route::get('/user', [UserController::class, 'show']);
-    Route::put('/user/update', [UserController::class, 'update']);
-    Route::put('/user/update/password', [UserController::class, 'updatePassword']);
+    Route::match(['put', 'patch'], '/user/update', [UserController::class, 'update']);
+    Route::match(['put', 'patch'], '/user/update/password', [UserController::class, 'updatePassword']);
+    Route::delete('/user', [UserController::class, 'destroy']);
 
     // Pemesanan
     Route::get('/pemesanan', [PemesananController::class, 'index']);
@@ -43,10 +59,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/pembayaran/{id}', [PembayaranController::class, 'show']);
 });
 
-// Tiket
-Route::get('/tiket/search', [TiketController::class, 'search']);
-Route::get('/tiket', [TiketController::class, 'index']);
-Route::get('/tiket/{id}', [TiketController::class, 'show']);
+
 
 // Company
 Route::get('/company', [CompanyController::class, 'index']);

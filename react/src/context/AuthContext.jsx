@@ -1,16 +1,60 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { checkAuth } from "../api/apiAuth";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
+  const [role, setRole] = useState(null);
+  const [initializing, setInitializing] = useState(true);
 
-  const login = () => setIsAuthenticated(true);
-  const logout = () => setIsAuthenticated(false);
+  // showLoading true hanya untuk init pertama supaya tidak unmount children saat refreshAuth dipanggil
+  const fetchAuth = async (showLoading = false) => {
+    if (showLoading) setInitializing(true);
+    try {
+      const res = await checkAuth();
+
+      setUser(res.user);
+
+      if (res.abilities?.includes("admin")) {
+        setRole("admin");
+      } else if (res.abilities?.includes("customer")) {
+        setRole("customer");
+      } else {
+        setRole(null);
+      }
+    } catch (err) {
+      setUser(null);
+      setRole(null);
+      localStorage.removeItem("token");
+    } finally {
+      if (showLoading) setInitializing(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAuth(true);
+  }, []);
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    setUser(null);
+    setRole(null);
+  };
+
+  const value = {
+    user,
+    role,
+    isAuthenticated: !!user,
+    isAdmin: role === "admin",
+    isCustomer: role === "customer",
+    refreshAuth: () => fetchAuth(false),
+    logout,
+  };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
-      {children}
+    <AuthContext.Provider value={value}>
+      {!initializing && children}
     </AuthContext.Provider>
   );
 }

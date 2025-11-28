@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
+use Carbon\Carbon;
 use App\Models\Admin;
 use App\Models\Customer;
 use App\Models\Pemesanan;
@@ -35,6 +36,16 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    // // Jika umur kosong atau ingin selalu mengikuti tanggal_lahir,
+    // // hitung umur dinamis dari tanggal_lahir.
+    // public function getUmurAttribute($value)
+    // {
+    //     if ($this->tanggal_lahir) {
+    //         return Carbon::parse($this->tanggal_lahir)->age;
+    //     }
+    //     return $value;
+    // }
     
     public function admin()
     {

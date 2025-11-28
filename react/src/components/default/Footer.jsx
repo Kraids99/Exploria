@@ -2,7 +2,7 @@ import logoH from "../../assets/logo-h.jpg";
 
 function Footer() {
   return (
-    <footer className="mt-4 bg-slate-950 text-slate-200">
+    <footer className="bg-[#020617] text-white py-10">
       <div className="mx-auto max-w-6xl px-4 py-10">
        
 

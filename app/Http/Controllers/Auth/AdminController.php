@@ -20,11 +20,18 @@ class AdminController extends Controller
             'password' => 'required|string|min:8|confirmed',
             'tanggal_lahir' => 'required|date',
             'umur' => 'nullable|integer',
-            'foto_user' => 'nullable|string',
+            'foto_user' => 'nullable|image|mimes:jpg,jpeg,png',
             'jenis_kelamin' => 'nullable|string',
         ]);
 
         $umur = Carbon::parse($request->tanggal_lahir)->age;
+
+        $profilePath = null;
+        if ($request->hasFile('foto_user')) {
+            // simpan di storage/app/public/profile_pictures
+            $profilePath = $request->file('foto_user')->store('foto_user', 'public');
+        }
+
 
         // buat user baru
         $user = User::create([
@@ -34,7 +41,7 @@ class AdminController extends Controller
             'password' => $request->password, // sudah auto-hash di model
             'tanggal_lahir' => $request->tanggal_lahir,
             'umur' => $umur,
-            'foto_user' => $request->foto_user,
+            'foto_user' => $profilePath,
             'jenis_kelamin' => $request->jenis_kelamin,
         ]);
 

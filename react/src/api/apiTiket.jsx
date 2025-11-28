@@ -42,5 +42,4 @@ const getTiketByParams = async (from, to, date) => {
   }
 };
 
-
 export { getLokasi, getRute, getTiket, getTiketByParams};
