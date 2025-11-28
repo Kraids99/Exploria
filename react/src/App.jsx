@@ -1,14 +1,31 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/customer/Home";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import SelectBus from "./pages/customer/Tiket";
 import DetailTiket from "./pages/customer/DetailTiket";
 import Profile from "./pages/customer/Profile"
 import Payment from "./pages/customer/Payment.jsx";
 import Payment2 from "./pages/customer/Payment2.jsx";
 import Payment3 from "./pages/customer/Payment3.jsx";
+import Company from "./pages/admin/company/Company.jsx";
+import CompanyCreate from "./pages/admin/company/CompanyCreate.jsx";
+import CompanyEdit from "./pages/admin/company/CompanyEdit.jsx";
+
+function AdminRoute({ children }) {
+  const { isAuthenticated, isAdmin } = useAuth();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!isAdmin) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+}
 
 function App() {
   return (
@@ -24,6 +41,30 @@ function App() {
           <Route path="/selectpayment/:id" element={<Payment />}/>
           <Route path="/payment/:id" element={<Payment2 />}/>
           <Route path="/ereceipt/:id" element={<Payment3 />}/>
+          <Route
+            path="/admin/company"
+            element={
+              <AdminRoute>
+                <Company />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/company/create"
+            element={
+              <AdminRoute>
+                <CompanyCreate />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/company/:id/edit"
+            element={
+              <AdminRoute>
+                <CompanyEdit />
+              </AdminRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

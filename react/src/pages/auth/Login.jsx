@@ -40,14 +40,15 @@ function Login() {
       localStorage.setItem("token", cleanedToken);
 
       // update auth state dari server
-      await refreshAuth();
+      const authRes = await refreshAuth();
+      const isAdmin = authRes?.abilities?.includes("admin");
 
       // popup sukses
       setShowSuccess(true);
 
       setTimeout(() => {
         setShowSuccess(false);
-        navigate("/");
+        navigate(isAdmin ? "/admin/company" : "/");
       }, 1500);
 
     } catch (err) {
@@ -160,7 +161,7 @@ function Login() {
               Login berhasil
             </h2>
             <p className="mt-1 text-sm text-slate-600">
-              Kamu akan diarahkan ke halaman utama…
+              Kamu akan diarahkan ke halaman utama...
             </p>
           </div>
         </div>
@@ -174,3 +175,5 @@ function Login() {
 }
 
 export default Login;
+
+
