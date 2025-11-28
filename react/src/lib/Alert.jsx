@@ -49,14 +49,14 @@ export function alertWarning(title, text) {
   });
 }
 
-export function alertConfirm({
+export async function alertConfirm({
   title,
   text,
   confirmButtonText = "Ya",
   cancelButtonText = "Batal",
   icon = "warning",
 }) {
-  return MySwal.fire({
+  const result = await MySwal.fire({
     icon,
     title,
     text,
@@ -65,6 +65,9 @@ export function alertConfirm({
     cancelButtonText,
     ...defaultButtons,
   });
+
+  return result.isConfirmed; // true kalau klik "Ya"
 }
+
 
 export default MySwal;

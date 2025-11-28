@@ -6,7 +6,7 @@ import { SignIn } from "../../api/apiAuth.jsx";
 import Footer from "../../components/default/Footer.jsx";
 import Navbar from "../../components/default/Navbar.jsx";
 import { toast } from "react-toastify";
-import { alertSuccess } from "../../lib/Alert.jsx";
+import { alertSuccess, alertError} from "../../lib/Alert.jsx";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -84,11 +84,8 @@ function Login() {
 
     } catch (err) {
       console.log(err);
-      const apiMsg =
-        err?.message ||
-        err?.error ||
-        err?.errors ||
-        "Login gagal";
+      const apiMsg = "Login gagal";
+      alertError("Username & Password salah");
       setErrorMsg(apiMsg);
     }
   };
