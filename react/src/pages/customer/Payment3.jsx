@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import { formatTanggalIndonesia } from "../components/DateFormatter";
-import { formatKota } from "../components/CityFormatter";
-import Footer from "../components/landingpage/Footer";
-import Navbar from "../components/landingpage/Navbar";
-import paymentImg from "../assets/payment.jpg";
-import barcodeImg from "../assets/barcode.jpeg";
+// import { formatTanggalIndonesia } from "../../components/DateFormatter";
+// import { formatKota } from "../../components/CityFormatter";
+import Navbar from "../../components/default/Navbar"; 
+import Footer from "../../components/default/Footer";
+import paymentImg from "../../assets/payment.jpg";
+import barcodeImg from "../../assets/barcode.jpeg";
  
 
 function Payment3() {

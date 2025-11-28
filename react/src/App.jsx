@@ -6,9 +6,9 @@ import { AuthProvider } from "./context/AuthContext";
 import SelectBus from "./pages/customer/Tiket";
 import DetailTiket from "./pages/customer/DetailTiket";
 import Profile from "./pages/customer/Profile"
-import Payment from "./pages/Payment";
-import Payment2 from "./pages/Payment2.jsx";
-import Payment3 from "./pages/Payment3.jsx";
+import Payment from "./pages/customer/Payment.jsx";
+import Payment2 from "./pages/customer/Payment2.jsx";
+import Payment3 from "./pages/customer/Payment3.jsx";
 
 function App() {
   return (
