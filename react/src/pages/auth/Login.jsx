@@ -5,6 +5,8 @@ import { useAuth } from "../../context/AuthContext.jsx";
 import { SignIn } from "../../api/apiAuth.jsx";
 import Footer from "../../components/default/Footer.jsx";
 import Navbar from "../../components/default/Navbar.jsx";
+import { toast } from "react-toastify";
+import { alertSuccess } from "../../lib/Alert.jsx";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -15,14 +17,43 @@ function Login() {
   const { refreshAuth } = useAuth();
   const navigate = useNavigate();
 
+   const validateLogin = () => {
+    // 1. cek kosong
+    if (!email.trim() || !password.trim()) {
+      const msg = "Email dan password wajib diisi";
+      setErrorMsg(msg);
+      toast.error(msg);
+      return false;
+    }
+
+    // 2. cek format email
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      const msg = "Format email tidak valid";
+      setErrorMsg(msg);
+      toast.error(msg);
+      return false;
+    }
+
+    // 3. cek panjang password
+    if (password.length < 8) {
+      const msg = "Password minimal 8 karakter";
+      setErrorMsg(msg);
+      toast.error(msg);
+      return false;
+    }
+
+    setErrorMsg("");
+    return true;
+  };
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg("");
 
-    if (!email || !password) {
-      setErrorMsg("Email dan password wajib diisi");
-      return;
-    }
+     const isValid = validateLogin();
+    if (!isValid) return;
+
 
     try {
       const res = await SignIn({
@@ -43,12 +74,12 @@ function Login() {
       const authRes = await refreshAuth();
       const isAdmin = authRes?.abilities?.includes("admin");
 
-      // popup sukses
-      setShowSuccess(true);
+     
 
       setTimeout(() => {
         setShowSuccess(false);
         navigate(isAdmin ? "/admin/company" : "/");
+        alertSuccess("Selamat, Login Berhasil!")
       }, 1500);
 
     } catch (err) {
@@ -88,9 +119,6 @@ function Login() {
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
 
-            {errorMsg && (
-              <p className="text-red-500 text-sm text-center">{errorMsg}</p>
-            )}
 
             <div>
               <label className="block text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
@@ -137,35 +165,6 @@ function Login() {
           </p>
         </div>
       </main>
-
-      {/* POPUP SUKSES */}
-      {showSuccess && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="w-full max-w-sm rounded-2xl bg-white p-6 text-center shadow-xl">
-            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-              <svg
-                viewBox="0 0 24 24"
-                className="h-6 w-6 text-green-600"
-              >
-                <path
-                  d="M20 6L9 17l-5-5"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-            <h2 className="text-lg font-semibold text-slate-900">
-              Login berhasil
-            </h2>
-            <p className="mt-1 text-sm text-slate-600">
-              Kamu akan diarahkan ke halaman utama...
-            </p>
-          </div>
-        </div>
-      )}
 
       <div className="relative">
         <Footer/>
