@@ -36,6 +36,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // Logout
     Route::post('/logout', [AuthController::class, 'logout']);
 
+    // Delete
+    Route::delete('/delete', [AuthController::class, 'destroy']);
+
     // Tiket
     Route::get('/tiket/search', [TiketController::class, 'search']);
     Route::get('/tiket', [TiketController::class, 'index']);
@@ -45,6 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [UserController::class, 'show']);
     Route::match(['put', 'patch'], '/user/update', [UserController::class, 'update']);
     Route::match(['put', 'patch'], '/user/update/password', [UserController::class, 'updatePassword']);
+    Route::delete('/user', [UserController::class, 'destroy']);
 
     // Pemesanan
     Route::get('/pemesanan', [PemesananController::class, 'index']);

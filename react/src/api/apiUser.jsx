@@ -37,4 +37,13 @@ const updatePassword = async (data) => {
   }
 };
 
-export {getProfile, updateProfile, updatePassword}
+const deleteAccount = async () => {
+  try {
+    const response = await useAxios.delete("/user");
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+
+export {getProfile, updateProfile, updatePassword, deleteAccount}

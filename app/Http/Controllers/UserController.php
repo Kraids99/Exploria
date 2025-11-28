@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -81,5 +82,36 @@ class UserController extends Controller
         ]);
 
         return response()->json(['message' => 'Password berhasil diubah']);
+    }
+
+    // Hapus akun user 
+    public function destroy(Request $request)
+    {
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Belum login'], 401);
+        }
+
+        DB::transaction(function () use ($user) {
+            if ($user->foto_user) {
+                $path = str_replace('/storage/', '', $user->foto_user);
+                Storage::disk('public')->delete($path);
+            }
+
+            if ($user->customer) {
+                $user->customer()->delete();
+            }
+            if ($user->admin) {
+                $user->admin()->delete();
+            }
+
+            // hapus token aktif
+            $user->tokens()->delete();
+
+            $user->delete();
+        });
+
+        return response()->json(['message' => 'Akun berhasil dihapus']);
     }
 }

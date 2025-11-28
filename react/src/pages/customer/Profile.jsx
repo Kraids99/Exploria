@@ -8,6 +8,7 @@ import { useAuth } from "../../context/AuthContext.jsx";
 import { getProfile, updatePassword, updateProfile } from "../../api/apiUser.jsx";
 import { BASE_URL } from "../../api/index.jsx";
 import defaultAvatar from "../../assets/user_default.png";
+import { deleteAccount } from "../../api/apiUser.jsx";
 
 // Format tanggal ke bahasa Indonesia agar label lebih ramah.
 const formatDate = (dateStr) => {
@@ -212,10 +213,24 @@ function Profile() {
     [profile.tanggal_lahir]
   );
 
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
+const [loadingDelete, setLoadingDelete] = useState(false);
+
+const handleHapusAccount = async () => {
+  const confirmed = window.confirm("Hapus akun? Tindakan ini tidak dapat dibatalkan.");
+  if (!confirmed) return;
+    setLoadingDelete(true);
+  try {
+    await deleteAccount();           
+    localStorage.clear();           
+    navigate("/");                   
+  } catch (err) {
+    console.error(err);
+    setError(err?.message || "Gagal menghapus akun.");
+  } finally {
+    setLoadingDelete(false);
+  }
+};
+
 
   if (loadingProfile) {
     return (
@@ -521,7 +536,7 @@ function Profile() {
               </p>
               <button
                 type="button"
-                onClick={handleLogout}
+                onClick={handleHapusAccount}
                 className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-100"
               >
                 <MdDelete className="h-4 w-4" />

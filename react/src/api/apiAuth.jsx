@@ -32,4 +32,13 @@ const checkAuth = async () => {
   return response.data;
 };
 
-export { SignUpCustomer, SignUpAdmin, SignIn, checkAuth};
+const deleteAccount = async (data) => {
+  try {
+    const response = await useAxios.post("/delete", data);
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+}
+
+export { SignUpCustomer, SignUpAdmin, SignIn, checkAuth, deleteAccount};
