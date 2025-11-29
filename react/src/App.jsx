@@ -9,13 +9,14 @@ import Profile from "./pages/customer/Profile"
 import Payment from "./pages/customer/Payment.jsx";
 import Payment2 from "./pages/customer/Payment2.jsx";
 import Payment3 from "./pages/customer/Payment3.jsx";
+import History from "./pages/customer/History.jsx"
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<LandingRoute />} />
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/search" element={<SelectBus />} />
@@ -24,6 +25,7 @@ function App() {
           <Route path="/selectpayment/:id" element={<Payment />}/>
           <Route path="/payment/:id" element={<Payment2 />}/>
           <Route path="/ereceipt/:id" element={<Payment3 />}/>
+          <Route path="/history" element={<History />}/>
         </Routes>
       </BrowserRouter>
     </AuthProvider>

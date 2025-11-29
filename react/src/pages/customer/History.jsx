@@ -10,10 +10,10 @@ function History(){
             status: "Selesai",
             tanggal: "20 Dec 2025",
             waktu: "11:30",
-            asal: "Palembang Palembang Soekarno",
+            asal: "Palembang Soekarno",
             tujuan: "Magelang Muntilan",
             totalBayar: 647700,
-            kelas: "Executive Plus",
+            bus: "Sinar Jaya",
         },
         {
             id: "PB.406",
@@ -24,7 +24,7 @@ function History(){
             asal: "Bandung Cicaheum",
             tujuan: "Jakarta Kampung Rambutan",
             totalBayar: 420000,
-            kelas: "VIP Business",
+            bus : "Rosalia Indah",
         },
         {
             id: "PB.410",
@@ -35,7 +35,7 @@ function History(){
             asal: "Surabaya Purabaya",
             tujuan: "Yogyakarta Giwangan",
             totalBayar: 550000,
-            kelas: "Executive",
+            bus: "Putra Remaja",
         },
     ];
 
@@ -53,11 +53,11 @@ function History(){
                         {historyOrders.map((order) => (
                             <div
                                 key={order.id}
-                                className="bg-white shadow-sm border rounded-2xl p-6 md:p-8"
+                                className="bg-white shadow-sm rounded-2xl p-6 md:p-8"
                             >
                                 <div className="flex justify-between items-start mb-3">
                                     <div>
-                                        <p className="text-lg font-bold">{order.kelas}</p>
+                                        <p className="text-lg font-bold">{order.bus}</p>
                                         <p className="text-sm font-semibold text-gray-600">{order.kode}</p> 
                                     </div>
                                     <button className="text-sm text-blue-600 hover:underline">Lihat Detail</button>
@@ -69,7 +69,7 @@ function History(){
                                         <p className="text-sm">{order.asal}</p>
                                     </div>
 
-                                    <div className="text-center py-2 font-bold text-orange-600 text-2xl">→</div>
+                                    <div className="text-center py-2 font-bold text-orange-600 text-4xl">→</div>
 
                                     <div className="text-right">
                                         <p className="text-sm">{order.tujuan}</p>
@@ -92,7 +92,7 @@ function History(){
                                     <div className="text-right">
                                         <p className="text-xs text-gray-500">Total Bayar</p>
                                         <p className="text-md font-bold">
-                                            IDR{order.totalBayar.toLocaleString("id-ID")}
+                                            RP {order.totalBayar.toLocaleString("id-ID")}
                                         </p>
                                     </div>
                                 </div>
