@@ -23,6 +23,7 @@ import TiketCreate from "./pages/admin/tiket/TiketCreate.jsx";
 import TiketEdit from "./pages/admin/tiket/TiketEdit.jsx";
 import DetailRute from "./pages/admin/detail rute/DetailRute.jsx";
 
+// routernya Admin
 function AdminRoute({ children }) {
   const { isAuthenticated, isAdmin } = useAuth();
 
@@ -47,114 +48,23 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/search" element={<SelectBus />} />
           <Route path="/detailTiket/:id" element={<DetailTiket />} />
-          <Route path="/profile" element={<Profile/>}/>
-          <Route path="/selectpayment/:id" element={<Payment />}/>
-          <Route path="/payment/:id" element={<Payment2 />}/>
-          <Route path="/ereceipt/:id" element={<Payment3 />}/>
-          <Route
-            path="/admin/company"
-            element={
-              <AdminRoute>
-                <Company />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/company/create"
-            element={
-              <AdminRoute>
-                <CompanyCreate />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/company/:id/edit"
-            element={
-              <AdminRoute>
-                <CompanyEdit />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/lokasi"
-            element={
-              <AdminRoute>
-                <Lokasi />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/lokasi/create"
-            element={
-              <AdminRoute>
-                <LokasiCreate />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/lokasi/:id/edit"
-            element={
-              <AdminRoute>
-                <LokasiEdit />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/rute"
-            element={
-              <AdminRoute>
-                <Rute />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/rute/create"
-            element={
-              <AdminRoute>
-                <RuteCreate />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/rute/:id/edit"
-            element={
-              <AdminRoute>
-                <RuteEdit />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/tiket"
-            element={
-              <AdminRoute>
-                <Tiket />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/tiket/create"
-            element={
-              <AdminRoute>
-                <TiketCreate />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/tiket/:id/edit"
-            element={
-              <AdminRoute>
-                <TiketEdit />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/detail-rute"
-            element={
-              <AdminRoute>
-                <DetailRute />
-              </AdminRoute>
-            }
-          />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/selectpayment/:id" element={<Payment />} />
+          <Route path="/payment/:id" element={<Payment2 />} />
+          <Route path="/ereceipt/:id" element={<Payment3 />} />
+          <Route path="/admin/company" element={<AdminRoute><Company /></AdminRoute>} />
+          <Route path="/admin/company/create" element={<AdminRoute><CompanyCreate /></AdminRoute>} />
+          <Route path="/admin/company/:id/edit" element={<AdminRoute><CompanyEdit /></AdminRoute>} />
+          <Route path="/admin/lokasi" element={<AdminRoute><Lokasi /></AdminRoute>} />
+          <Route path="/admin/lokasi/create" element={<AdminRoute><LokasiCreate /></AdminRoute>} />
+          <Route path="/admin/lokasi/:id/edit" element={<AdminRoute><LokasiEdit /></AdminRoute>} />
+          <Route path="/admin/rute" element={<AdminRoute><Rute /></AdminRoute>} />
+          <Route path="/admin/rute/create" element={<AdminRoute><RuteCreate /></AdminRoute>} />
+          <Route path="/admin/rute/:id/edit" element={<AdminRoute><RuteEdit /></AdminRoute>} />
+          <Route path="/admin/tiket" element={<AdminRoute><Tiket /></AdminRoute>} />
+          <Route path="/admin/tiket/create" element={<AdminRoute><TiketCreate /></AdminRoute>} />
+          <Route path="/admin/tiket/:id/edit" element={<AdminRoute><TiketEdit /></AdminRoute>} />
+          <Route path="/admin/detail-rute" element={<AdminRoute><DetailRute /></AdminRoute>} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

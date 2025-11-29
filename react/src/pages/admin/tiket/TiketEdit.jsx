@@ -7,6 +7,25 @@ import { fetchCompanies } from "../../../api/apiAdminCompany.jsx";
 
 const styleForm = "block w-full rounded-xl border border-orange-100 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200 transition";
 
+// Format ISO/string ke value yang cocok untuk <input type="datetime-local">
+const toDateTimeLocal = (value) => {
+  if (!value) return "";
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return value;
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
+
+// Ubah dari input datetime-local (YYYY-MM-DDTHH:mm) ke format backend (YYYY-MM-DD HH:mm:ss)
+const toBackendDateTime = (value) => {
+  if (!value) return "";
+  if (value.includes("T")) {
+    const [date, time] = value.split("T");
+    return `${date} ${time}:00`;
+  }
+  return value;
+};
+
 export default function TiketEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -40,8 +59,8 @@ export default function TiketEdit() {
           id_company: detail.id_company || "",
           nama_tiket: detail.nama_tiket || "",
           jumlah_kursi: detail.jumlah_kursi || "",
-          waktu_keberangkatan: detail.waktu_keberangkatan || "",
-          waktu_tiba: detail.waktu_tiba || "",
+          waktu_keberangkatan: toDateTimeLocal(detail.waktu_keberangkatan || ""),
+          waktu_tiba: toDateTimeLocal(detail.waktu_tiba || ""),
           durasi: detail.durasi || "",
           harga: detail.harga || "",
           stok: detail.stok || "",
@@ -67,7 +86,11 @@ export default function TiketEdit() {
     setErrorMessage("");
 
     try {
-      await updateTiket(id, form);
+      await updateTiket(id, {
+        ...form,
+        waktu_keberangkatan: toBackendDateTime(form.waktu_keberangkatan),
+        waktu_tiba: toBackendDateTime(form.waktu_tiba),
+      });
       navigate("/admin/tiket");
     } catch (err) {
       const apiMessage = err?.response?.data?.message || "Gagal menyimpan perubahan.";
@@ -167,23 +190,23 @@ export default function TiketEdit() {
                 <div>
                   <label className="block text-sm font-medium text-slate-800 mb-1">Waktu Keberangkatan *</label>
                   <input
-                    type="text"
+                    type="datetime-local"
                     value={form.waktu_keberangkatan}
                     onChange={handleChange("waktu_keberangkatan")}
                     required
                     className={styleForm}
-                    placeholder="m/d/Y H:i:s"
+                    placeholder="YYYY-MM-DDTHH:mm"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-800 mb-1">Waktu Tiba *</label>
                   <input
-                    type="text"
+                    type="datetime-local"
                     value={form.waktu_tiba}
                     onChange={handleChange("waktu_tiba")}
                     required
                     className={styleForm}
-                    placeholder="m/d/Y H:i:s"
+                    placeholder="YYYY-MM-DDTHH:mm"
                   />
                 </div>
               </div>
