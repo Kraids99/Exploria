@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Company;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CompanyController extends Controller
 {
@@ -36,21 +37,19 @@ class CompanyController extends Controller
     // Tambah company baru (admin only)
     public function store(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'nama_company' => 'required|string|max:255',
             'email_company' => 'required|string|email|max:255|unique:companies,email_company',
             'no_telp_company' => 'required|string|max:20',
             'alamat_company' => 'required|string|max:255',
-            'logo_company' => 'sometimes|string|max:255',
+            'logo_company' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $company = Company::create([
-            'nama_company' => $request->nama_company,
-            'email_company' => $request->email_company,
-            'no_telp_company' => $request->no_telp_company,
-            'alamat_company' => $request->alamat_company,
-            'logo_company' => $request->logo_company,
-        ]);
+        if ($request->hasFile('logo_company')) {
+            $data['logo_company'] = $request->file('logo_company')->store('company-logos', 'public');
+        }
+
+        $company = Company::create($data);
 
         return response()->json([
             'message' => 'Company berhasil ditambahkan',
@@ -72,17 +71,17 @@ class CompanyController extends Controller
             'email_company' => 'sometimes|string|email|max:255|unique:companies,email_company,' . $id . ',id_company',
             'no_telp_company' => 'sometimes|string|max:20',
             'alamat_company' => 'sometimes|string|max:255',
-            'logo_company' => 'sometimes|string|max:255',
+            'logo_company' => 'sometimes|file|image|max:2048',
         ]);
 
-        // $company->update($data);
-        $company->update($request->only([
-            'nama_company',
-            'email_company',
-            'no_telp_company',
-            'alamat_company',
-            'logo_company',
-        ]));
+        if ($request->hasFile('logo_company')) {
+            if ($company->logo_company) {
+                Storage::disk('public')->delete($company->logo_company);
+            }
+            $data['logo_company'] = $request->file('logo_company')->store('company-logos', 'public');
+        }
+
+        $company->update($data);
 
         return response()->json([
             'message' => 'Company berhasil diupdate',

@@ -5,11 +5,15 @@ import FieldSelect from "../../components/default/FieldSelect.jsx";
 
 import { getLokasi, getTiketByParams } from "../../api/apiTiket.jsx";
 import Tikets from "../../components/tiket/Tikets.jsx";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate} from "react-router-dom";
 import { useEffect, useState } from "react";
+
+import { toast } from "react-toastify";
 
 function SelectBus() {
   const [params] = useSearchParams();
+  const navigate = useNavigate(); 
+
   const fromCity1 = params.get("from") || "";
   const toCity1 = params.get("to") || "";
   const date1 = params.get("date") || "";
@@ -40,8 +44,25 @@ function SelectBus() {
     fetchLocations();
   }, []);
 
+  const validateData = () => {
+    if(!date){
+      toast.error("Tanggal tidak boleh kosong"); 
+      return false; 
+    }
+    
+    if(fromCity === toCity){
+      toast.error("Kota Asal dan Tujuan tidak boleh sama"); 
+      return false;
+    }
+
+    return true; 
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    const isValid = validateData(); 
+    if(!isValid) return; 
 
     navigate(`/search?from=${fromCity}&to=${toCity}&date=${date}`);
   };

@@ -5,6 +5,7 @@ import { checkAuth } from "../../api/apiAuth.jsx";
 import { getLokasi } from "../../api/apiTiket.jsx";
 import FieldDate from "../default/FieldDate.jsx";
 import FieldSelect from "../default/FieldSelect.jsx";
+import { toast } from "react-toastify";
 
 
 function DashboardLP() {
@@ -12,7 +13,6 @@ function DashboardLP() {
   const [fromCity, setFromCity] = useState("");
   const [toCity, setToCity] = useState("");
   const [date, setDate] = useState("");
-  const [formError, setFormError] = useState("");
 
   const [locations, setLocations] = useState([]);
   useEffect(() => {
@@ -28,40 +28,41 @@ function DashboardLP() {
 
     fetchLocations();
   }, []);
-  
+
+  const validateForm = () => {
+    if (!fromCity || !toCity || !date) {
+      toast.error("Pilih kota asal, tujuan, dan tanggal terlebih dahulu.");
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setFormError("");
 
-    if (!fromCity || !toCity || !date) {
-      setFormError("Pilih kota asal, tujuan, dan tanggal terlebih dahulu.");
+    
+    try {
+      await checkAuth(); 
+      
+      
+    } catch (err) {
+      console.log("AUTH ERROR:", err);
+      
+      toast.error("Kamu harus login dulu ya . . .");
+      localStorage.removeItem("token");
+      navigate("/login");
       return;
     }
 
-    try {
-      await checkAuth();  // cek token ke server
+    const isValid = validateForm();
+    if(!isValid) return; 
 
-      navigate(`/search?from=${fromCity}&to=${toCity}&date=${date}`);
-
-    } catch (err) {
-      console.log("AUTH ERROR:", err);
-
-      alert("Kamu harus login dulu ya.");
-      localStorage.removeItem("token");
-      navigate("/login");
-    }
-    // e.preventDefault();
-
-    // const token = localStorage.getItem("token");
-
-    // if (!token) {
-    //   alert("Anda harus login terlebih dahulu yaa...");
-    //   navigate("/login");
-    //   return;
-    // }
-
-    // navigate(`/search?from=${fromCity}&to=${toCity}&date=${date}`);
+    navigate(
+      `/search?from=${fromCity}&to=${toCity}&date=${date}`
+    );
   };
+
 
   return (
     <section className="relative overflow-hidden pb-24 pt-24">
@@ -72,7 +73,7 @@ function DashboardLP() {
           alt="Terminal bus Exploria"
           className="h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-slate-900/50 to-slate-900/10" />
+        <div className="absolute inset-0 bg-linear-to-r from-slate-900/80 via-slate-900/50 to-slate-900/10" />
       </div>
 
       {/* KONTEN */}
@@ -141,11 +142,8 @@ function DashboardLP() {
               Search Trip
             </button>
           </div>
-          {formError && (
-            <p className="mt-3 text-sm font-semibold text-red-500">
-              {formError}
-            </p>
-          )}
+
+
         </form>
       </div>
     </section>

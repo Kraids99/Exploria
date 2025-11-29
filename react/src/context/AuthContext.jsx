@@ -10,10 +10,11 @@ export function AuthProvider({ children }) {
 
   // showLoading true hanya untuk init pertama supaya tidak unmount children saat refreshAuth dipanggil
   const fetchAuth = async (showLoading = false) => {
+    let responseData = null;
     if (showLoading) setInitializing(true);
     try {
       const res = await checkAuth();
-
+      responseData = res;
       setUser(res.user);
 
       if (res.abilities?.includes("admin")) {
@@ -30,6 +31,8 @@ export function AuthProvider({ children }) {
     } finally {
       if (showLoading) setInitializing(false);
     }
+
+    return responseData;
   };
 
   useEffect(() => {
