@@ -10,7 +10,7 @@ use App\Models\Kursi;
 use App\Models\RincianPemesanan;
 use App\Models\Review;
 
-class tiket extends Model
+class Tiket extends Model
 {
     use HasFactory;
     protected $primaryKey = 'id_tiket';
@@ -40,30 +40,37 @@ class tiket extends Model
     {
         return $this->belongsTo(Rute::class, 'id_rute');
     }
+    //satu tiket punya satu rute 
 
     public function company()
     {
         return $this->belongsTo(Company::class, 'id_company');
     }
+    //satu tiket punya satu company 
 
     public function kursi()
     {
         return $this->hasMany(Kursi::class, 'id_tiket');
     }
+    //satu tiket punya banyak kursi 
 
-    public function rincian()
-    {
-        return $this->hasMany(RincianPemesanan::class, 'id_tiket');
-    }
+    // public function rincian()
+    // {
+    //     return $this->hasMany(RincianPemesanan::class, 'id_tiket');
+    // }
 
-    public function reviews()
-    {
-        return $this->hasMany(Review::class, 'id_tiket');
-    }
+    // public function reviews()
+    // {
+    //     return $this->hasMany(Review::class, 'id_tiket');
+    // }
 
     // public function getKodeTiketAttribute()
     // {
     //     return 'T' . $this->id_tiket;
     // }
+
+    //alasan di komen : relasinya skrg belum di butuhkan di user 
+
+    
 
 }

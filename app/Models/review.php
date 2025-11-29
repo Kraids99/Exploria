@@ -8,7 +8,7 @@ use App\Models\Pembayaran;
 use App\Models\Tiket;
 use App\Models\User;
 
-class review extends Model
+class Review extends Model
 {
     use HasFactory;
     protected $table = 'reviews';
@@ -30,19 +30,23 @@ class review extends Model
             'tanggal_review' => 'datetime',   
         ];
     }
+    //kolom tanggal_reviw otomatis dikonversi jadi objectTime 
 
     public function pembayaran()
     {
         return $this->belongsTo(Pembayaran::class, 'id_pembayaran');
     }
+    //satu review punya satu pembayaran yang direferensiin 
 
     public function tiket()
     {
         return $this->belongsTo(Tiket::class, 'id_tiket');
     }
+    //sati review untuk satu tiket 
 
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user');
     }
+    //satu review dibuat oleh satu user 
 }

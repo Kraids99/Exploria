@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Tiket;
 use App\Models\Pemesanan;
 
-class rincianPemesanan extends Model
+class RincianPemesanan extends Model
 {
     use HasFactory;
     protected $table = 'rincian_pemesanans';
@@ -24,9 +24,11 @@ class rincianPemesanan extends Model
     {
         return $this->belongsTo(Tiket::class, 'id_tiket');
     }
+    //1 tiket 
 
     public function pemesanan()
     {
         return $this->belongsTo(Pemesanan::class, 'id_pemesanan');
     }
+    //1 pemesanan 
 }

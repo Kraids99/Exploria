@@ -13,6 +13,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\AdminController;
 use App\Http\Controllers\Auth\CustomerController;
+use App\Http\Controllers\KursiController;
 
 // Public routes
 // Register
@@ -43,7 +44,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/tiket/search', [TiketController::class, 'search']);
     Route::get('/tiket', [TiketController::class, 'index']);
     Route::get('/tiket/{id}', [TiketController::class, 'show']);
-    
+    Route::get("/tiket/{id_tiket}/kursi", [KursiController::class,'byTiket']);
     // User
     Route::get('/user', [UserController::class, 'show']);
     Route::match(['put', 'patch'], '/user/update', [UserController::class, 'update']);
@@ -53,10 +54,14 @@ Route::middleware('auth:sanctum')->group(function () {
     // Pemesanan
     Route::get('/pemesanan', [PemesananController::class, 'index']);
     Route::get('/pemesanan/{id}', [PemesananController::class, 'show']);
+    Route::post('/pemesanan', [PemesananController::class, 'store']); 
+    Route::post('/pemesanan/{id}/cancel', [PemesananController::class, 'cancel']); 
 
     // Pembayaran
     Route::get('/pembayaran', [PembayaranController::class, 'index']);
     Route::get('/pembayaran/{id}', [PembayaranController::class, 'show']);
+    Route::post('/pembayaran/create', [PembayaranController::class, 'store']); 
+    Route::put('/pembayaran/update/{id}', [PembayaranController::class, 'update']); 
 });
 
 
@@ -76,6 +81,7 @@ Route::get('/rute/{id}', [RuteController::class, 'show']);
 // Review
 Route::get('/review', [ReviewController::class, 'index']);
 Route::get('/review/{id}', [ReviewController::class, 'show']);
+Route::post('/review/create', [ReviewController::class, 'store']);
 
 Route::middleware(['auth:sanctum', 'abilities:customer'])->group(function () {
     // Pemesanan
@@ -114,8 +120,8 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
 
     // Pemesanan
 
-    // Pembayaran
-    Route::put('/pembayaran/update/{id}', [PembayaranController::class, 'update']);
+    // // Pembayaran
+    // Route::put('/pembayaran/update/{id}', [PembayaranController::class, 'update']);
 
     // Review
 });

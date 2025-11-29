@@ -9,3 +9,39 @@
 body {
   @apply bg-slate-50 text-slate-900 antialiased;
 }
+
+/* ==== Bus Loader Animation ==== */
+.bus-loader-bus {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  width: 70px;
+  height: 30px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #ff7a45, #ff5a1f);
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.25);
+  animation: bus-move 1.6s linear infinite;
+}
+
+/* supaya kelihatan kayak goyang dikit */
+.bus-loader-bus {
+  transform-origin: center bottom;
+}
+
+@keyframes bus-move {
+  0% {
+    transform: translateX(0) translateY(0);
+  }
+  25% {
+    transform: translateX(30%) translateY(-1px);
+  }
+  50% {
+    transform: translateX(60%) translateY(0);
+  }
+  75% {
+    transform: translateX(30%) translateY(-1px);
+  }
+  100% {
+    transform: translateX(0) translateY(0);
+  }
+}

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Tiket;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illluminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
 
 class TiketController extends Controller
@@ -20,12 +20,18 @@ class TiketController extends Controller
     // Tampilan satu tiket berdasarkan id
     public function show($id)
     {
-        $tiket = Tiket::with(['company', 'rute'])->find($id);
-        if(!$tiket){
+        $tiket = Tiket::with(['company', 'rute.asal', 'rute.tujuan'])->find($id);
+
+        if (!$tiket) {
             return response()->json(['message' => 'Tiket tidak ditemukan'], 404);
         }
-        return response()->json($tiket);
+
+        return response()->json([
+            'message' => 'Detail tiket',
+            'data' => $tiket,
+        ]);
     }
+
 
     // Buat tiket baru (admin only)
     public function store(Request $request)
@@ -53,7 +59,7 @@ class TiketController extends Controller
             'waktu_tiba' => $request['waktu_tiba'],
             'durasi' => $request['durasi'],
             'harga' => $request['harga'],
-            'stok' => $request['stok'],            
+            'stok' => $request['stok'],
         ]);
 
         return response()->json([
@@ -68,7 +74,7 @@ class TiketController extends Controller
 
         $tiket = Tiket::find($id);
 
-        if(!$tiket){
+        if (!$tiket) {
             return response()->json(['message' => 'Tiket tidak ditemukan'], 404);
         }
 
@@ -97,7 +103,7 @@ class TiketController extends Controller
     {
         $tiket = Tiket::find($id);
 
-        if(!$tiket){
+        if (!$tiket) {
             return response()->json(['message' => 'Tiket tidak ditemukan'], 404);
         }
 
@@ -112,16 +118,18 @@ class TiketController extends Controller
         $to = $request->to;
         $date = $request->date;
         $start = Carbon::parse($date)->startOfDay();
-        $end   = Carbon::parse($date)->addDays(7)->endOfDay();
+        $end = Carbon::parse($date)->addDays(7)->endOfDay();
 
         $tiket = Tiket::with(['company', 'rute.asal', 'rute.tujuan'])
-            ->whereHas('rute.asal', function($q) use ($from) {
+            ->whereHas('rute.asal', function ($q) use ($from) {
                 $q->where('kota', $from);
             })
-            ->whereHas('rute.tujuan', function($q) use ($to) {
+            ->whereHas('rute.tujuan', function ($q) use ($to) {
                 $q->where('kota', $to);
             })
-            ->whereBetween('waktu_keberangkatan', [$start, $end
+            ->whereBetween('waktu_keberangkatan', [
+                $start,
+                $end
             ])
             ->get();
 

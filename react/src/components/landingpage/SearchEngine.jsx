@@ -15,6 +15,8 @@ function DashboardLP() {
   const [date, setDate] = useState("");
 
   const [locations, setLocations] = useState([]);
+  //menyimpan kota asal, kota tujuan, tanggal dan daftar kota lokasi yang dipakai di dropdown 
+
   useEffect(() => {
     const fetchLocations = async () => {
       try {
@@ -28,6 +30,10 @@ function DashboardLP() {
 
     fetchLocations();
   }, []);
+  //dipanggil sekali saat komponen pertama kali muncul 
+  //list kota itu disimpan ke locations untuk di pass ke FieldSelect 
+  //getlokasi() diambil dr API 
+
 
   const validateForm = () => {
     if (!fromCity || !toCity || !date) {
@@ -37,6 +43,7 @@ function DashboardLP() {
 
     return true;
   };
+  //ngecek 3 field udah keisi atau belom 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,7 +51,7 @@ function DashboardLP() {
     
     try {
       await checkAuth(); 
-      
+      //ngecek tokennya masi valid ga 
       
     } catch (err) {
       console.log("AUTH ERROR:", err);
@@ -62,11 +69,12 @@ function DashboardLP() {
       `/search?from=${fromCity}&to=${toCity}&date=${date}`
     );
   };
+  
 
 
   return (
     <section className="relative overflow-hidden pb-24 pt-24">
-      {/* BACKGROUND */}
+      {/* Background bus */}
       <div className="absolute inset-0">
         <img
           src={background}
@@ -76,9 +84,8 @@ function DashboardLP() {
         <div className="absolute inset-0 bg-linear-to-r from-slate-900/80 via-slate-900/50 to-slate-900/10" />
       </div>
 
-      {/* KONTEN */}
       <div className="relative z-10 mx-auto max-w-6xl px-4">
-        {/* TEKS DI TENGAH */}
+
         <div className="flex flex-col items-center text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-200">
             Bus Ticketing Platform
@@ -94,7 +101,7 @@ function DashboardLP() {
           </p>
         </div>
 
-        {/* FORM NGAMBANG DI TENGAH, SATU BARIS */}
+    
         <form
           onSubmit={handleSubmit}
           className="
@@ -136,12 +143,13 @@ function DashboardLP() {
                 bg-[#f38f4a]
                 rounded-[999px] px-6 text-sm font-semibold text-white
                 shadow-md transition-all duration-200 ease-out
-                hover:bg-brand-600 hover:-translate-y-0.5
+                hover:bg-[#cf4230] transition-colors
               "
             >
               Search Trip
             </button>
           </div>
+          {/* Bagian form untuk menjadi tiket */}
 
 
         </form>

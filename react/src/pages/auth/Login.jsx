@@ -6,7 +6,8 @@ import { SignIn } from "../../api/apiAuth.jsx";
 import Footer from "../../components/default/Footer.jsx";
 import Navbar from "../../components/default/Navbar.jsx";
 import { toast } from "react-toastify";
-import { alertSuccess, alertError} from "../../lib/Alert.jsx";
+import { alertSuccess, alertError } from "../../lib/Alert.jsx";
+import { getProfile } from "../../api/apiUser.jsx";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -17,7 +18,7 @@ function Login() {
   const { refreshAuth } = useAuth();
   const navigate = useNavigate();
 
-   const validateLogin = () => {
+  const validateLogin = () => {
     // 1. cek kosong
     if (!email.trim() || !password.trim()) {
       const msg = "Email dan password wajib diisi";
@@ -51,9 +52,8 @@ function Login() {
     e.preventDefault();
     setErrorMsg("");
 
-     const isValid = validateLogin();
+    const isValid = validateLogin();
     if (!isValid) return;
-
 
     try {
       const res = await SignIn({
@@ -72,14 +72,29 @@ function Login() {
 
       // update auth state dari server
       const authRes = await refreshAuth();
-      const isAdmin = authRes?.abilities?.includes("admin");
+      console.log("refreshAuth:", authRes);
 
-     
+      // --- AMBIL DATA USER & SIMPAN KE LOCALSTORAGE ---
+      // opsi 1: kalau refreshAuth sudah mengembalikan user
+      let userData = authRes?.user ?? authRes?.data ?? null;
+
+      // kalau masih null, pakai endpoint /user (getProfile)
+      if (!userData) {
+        const profileRes = await getProfile();      // GET /user
+        userData = profileRes?.data ?? profileRes;  // sesuaikan sama bentuk respons backend
+      }
+
+      if (userData) {
+        localStorage.setItem("user", JSON.stringify(userData));
+        console.log("user disimpan ke localStorage:", userData);
+      }
+
+      const isAdmin = authRes?.abilities?.includes("admin");
 
       setTimeout(() => {
         setShowSuccess(false);
+        alertSuccess("Selamat, Login Berhasil!");
         navigate(isAdmin ? "/admin/company" : "/");
-        alertSuccess("Selamat, Login Berhasil!")
       }, 1500);
 
     } catch (err) {
@@ -90,9 +105,10 @@ function Login() {
     }
   };
 
+
   return (
     <div className="relative min-h-screen flex flex-col font-sans">
-      <Navbar/>
+      <Navbar />
 
 
       {/* FORM LOGIN */}
@@ -164,7 +180,7 @@ function Login() {
       </main>
 
       <div className="relative">
-        <Footer/>
+        <Footer />
       </div>
     </div>
   );

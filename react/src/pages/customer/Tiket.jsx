@@ -5,14 +5,16 @@ import FieldSelect from "../../components/default/FieldSelect.jsx";
 
 import { getLokasi, getTiketByParams } from "../../api/apiTiket.jsx";
 import Tikets from "../../components/tiket/Tikets.jsx";
-import { useSearchParams, useNavigate} from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import { toast } from "react-toastify";
 
+import BusLoader from "../../components/default/BusLoader.jsx";
+
 function SelectBus() {
   const [params] = useSearchParams();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const fromCity1 = params.get("from") || "";
   const toCity1 = params.get("to") || "";
@@ -30,14 +32,20 @@ function SelectBus() {
   }, [fromCity1, toCity1, date1]);
 
   const [locations, setLocations] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const fetchLocations = async () => {
       try {
+        setLoading(true);
         const data = await getLokasi();
         const uniqueCities = [...new Set(data.map(item => item.kota))];
         setLocations(uniqueCities);
       } catch (error) {
         console.log("Error get lokasi:", error);
+        toast.error("Gagal memuat daftar kota");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -45,27 +53,43 @@ function SelectBus() {
   }, []);
 
   const validateData = () => {
-    if(!date){
-      toast.error("Tanggal tidak boleh kosong"); 
-      return false; 
-    }
-    
-    if(fromCity === toCity){
-      toast.error("Kota Asal dan Tujuan tidak boleh sama"); 
+    if (!date) {
+      toast.error("Tanggal tidak boleh kosong");
       return false;
     }
 
-    return true; 
+    if (fromCity === toCity) {
+      toast.error("Kota Asal dan Tujuan tidak boleh sama");
+      return false;
+    }
+
+    return true;
   }
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    const isValid = validateData(); 
-    if(!isValid) return; 
+
+    const isValid = validateData();
+    if (!isValid) return;
 
     navigate(`/search?from=${fromCity}&to=${toCity}&date=${date}`);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#F9FAFB] font-sans flex flex-col">
+        <Navbar />
+
+        <main className="flex-1 mx-auto max-w-6xl px-4 pt-10 pb-16 flex items-center justify-center">
+          <BusLoader message="Memuat daftar kota keberangkatan & tujuan..." />
+        </main>
+
+        <Footer />
+      </div>
+    );
+  }
+
+
   return (
     <div className="min-h-screen bg-[#F9FAFB] font-sans">
       <Navbar />
@@ -110,7 +134,7 @@ function SelectBus() {
                             bg-[#2b1302]
                             rounded-[999px] px-6 text-sm font-semibold text-white
                             shadow-md transition-all duration-200 ease-out
-                            hover:bg-brand-600 hover:-translate-y-0.5"
+                            hover:bg-[#440d05] transition-colors"
                 >
                   Ubah Pencarian
                 </button>

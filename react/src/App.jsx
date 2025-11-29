@@ -21,6 +21,8 @@ import RuteEdit from "./pages/admin/rute/RuteEdit.jsx";
 import Tiket from "./pages/admin/tiket/Tiket.jsx";
 import TiketCreate from "./pages/admin/tiket/TiketCreate.jsx";
 import TiketEdit from "./pages/admin/tiket/TiketEdit.jsx";
+import Pemesanan from "./pages/customer/Pemesanan.jsx";
+import ReviewPemesanan from "./pages/customer/ReviewPemesanan.jsx"; 
 
 // routernya Admin
 function AdminRoute({ children }) {
@@ -56,10 +58,12 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/search" element={<SelectBus />} />
           <Route path="/detailTiket/:id" element={<DetailTiket />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/selectpayment/:id" element={<Payment />} />
-          <Route path="/payment/:id" element={<Payment2 />} />
+          <Route path="/pesan/:id_tiket" element={<Pemesanan/>}/>
+          <Route path="/reviewPesanan/:id_pemesanan" element={<ReviewPemesanan/>}/>
+          <Route path="/selectpayment/:id_pemesanan" element={<Payment />} />
+          <Route path="/payment/:id_pembayaran" element={<Payment2 />} />
           <Route path="/ereceipt/:id" element={<Payment3 />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/admin/company" element={<AdminRoute><Company /></AdminRoute>} />
           <Route path="/admin/company/create" element={<AdminRoute><CompanyCreate /></AdminRoute>} />
           <Route path="/admin/company/:id/edit" element={<AdminRoute><CompanyEdit /></AdminRoute>} />

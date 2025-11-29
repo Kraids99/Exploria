@@ -1,16 +1,20 @@
 // src/pages/DetailTiket.jsx
 import { useEffect, useState } from "react";
-import { useParams, useSearchParams, useNavigate} from "react-router-dom";
+import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
+
 import Navbar from "../../components/default/Navbar.jsx";
 import Footer from "../../components/default/Footer.jsx";
+import BusLoader from "../../components/default/BusLoader.jsx";
 import header from "../../assets/busHeader.jpeg";
-import { getTiketByParams } from "../../api/apiTiket.jsx"; 
+
+import { getTiketByParams } from "../../api/apiTiket.jsx";
+import { getReviewByTiket } from "../../api/apiReview.jsx";
 
 export default function DetailTiket() {
-  const navigate = useNavigate(); 
-  const { id } = useParams();               
-  const [searchParams] = useSearchParams(); 
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const [searchParams] = useSearchParams();
 
   const fromCityFilter = searchParams.get("from") || "";
   const toCityFilter = searchParams.get("to") || "";
@@ -20,14 +24,25 @@ export default function DetailTiket() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const [creatingOrder, setCreatingOrder ] = useState(false); 
+  const [creatingOrder, setCreatingOrder] = useState(false);
+
+  // state untuk review
+  const [reviews, setReviews] = useState([]);
+  const [ratingScore, setRatingScore] = useState(null);
+  const [ratingTotal, setRatingTotal] = useState(0);
+
+  // --- ambil detail tiket ---
   useEffect(() => {
     const fetchDetail = async () => {
       try {
         setLoading(true);
         setError("");
 
-        const data = await getTiketByParams(fromCityFilter, toCityFilter, dateFilter);
+        const data = await getTiketByParams(
+          fromCityFilter,
+          toCityFilter,
+          dateFilter
+        );
         console.log("detail getTiketByParams =", data);
 
         const list = Array.isArray(data)
@@ -36,7 +51,6 @@ export default function DetailTiket() {
           ? data.data
           : [];
 
-        
         const found = list.find(
           (item) => String(item.id_tiket) === String(id)
         );
@@ -62,12 +76,52 @@ export default function DetailTiket() {
     }
   }, [id, fromCityFilter, toCityFilter, dateFilter]);
 
+  // --- ambil review berdasarkan id_tiket ---
+  useEffect(() => {
+    const fetchReviews = async () => {
+      if (!tiket?.id_tiket) return;
+
+      try {
+        const data = await getReviewByTiket(tiket.id_tiket);
+        console.log("reviews by tiket =", data);
+
+        const list = Array.isArray(data)
+          ? data
+          : Array.isArray(data?.data)
+          ? data.data
+          : [];
+
+        setReviews(list);
+
+        if (list.length === 0) {
+          setRatingScore(null);
+          setRatingTotal(0);
+        } else {
+          const total = list.length;
+          const sum = list.reduce(
+            (acc, r) => acc + (Number(r.rating) || 0),
+            0
+          );
+          const avg = sum / total;
+
+          setRatingScore(Number(avg.toFixed(1))); // misal 4.3
+          setRatingTotal(total);
+        }
+      } catch (err) {
+        console.log("fetchReviews error =", err);
+        // kalau error, biarkan rating fallback saja
+      }
+    };
+
+    fetchReviews();
+  }, [tiket?.id_tiket]);
+
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col bg-[#F5F5F7]">
         <Navbar />
         <main className="flex-1 flex items-center justify-center">
-          <p className="text-sm text-slate-600">Memuat detail pemesanan…</p>
+          <BusLoader message="Memuat detail tiket..." />
         </main>
         <Footer />
       </div>
@@ -91,48 +145,22 @@ export default function DetailTiket() {
       <div className="min-h-screen flex flex-col bg-[#F5F5F7]">
         <Navbar />
         <main className="flex-1 flex items-center justify-center">
-          <p className="text-sm text-slate-600">Tiket tidak ditemukan.</p>
+          <p className="text-sm text-slate-600">
+            Tiket tidak ditemukan.
+          </p>
         </main>
         <Footer />
       </div>
     );
   }
 
-  const handleCreatePemesanan = async () => {
-      // try{
-      //   const token = localStorage.getItem("token");
+  const handleSubmit = () => {
+    navigate(
+      `/pesan/${tiket.id_tiket}?from=${fromCityFilter}&to=${toCityFilter}&date=${dateFilter}`
+    );
+  };
 
-      //   if(!token){
-      //     alert("Anda harus login terlebih dahulu ya"); 
-      //     navigate("/login"); 
-      //     return; 
-      //   }
-
-      //   if(!tiket) return; 
-
-      //   setCreatingOrder(true); 
-
-      //   const today = new Date().toISOString().slice(0, 10);
-
-      //   await createPemesanan({
-      //     id_tiket: tiket.id_tiket, 
-      //     tanggal_pemesanan: today,
-      //     total_biaya_pemesanan: Number(tiket.harga || 0),
-      //   });
-
-        navigate(
-          `/selectpayment/${tiket.id_tiket}?from=${fromCityFilter}&to=${toCityFilter}&date=${dateFilter}`
-        );
-    //   } catch (err) {
-    //     console.log(err);
-    //     alert("Gagal membuat pemesanan. Coba lagi sebentar ya.");
-    //   } finally {
-    //     setCreatingOrder(false);
-    //   }
-    // }
-  }
   const companyName = tiket.company?.nama_company || "Nama Perusahaan";
-  const busName = tiket.nama_tiket || "Nama Bus";
 
   const departureTime =
     tiket.waktu_keberangkatan?.substring(11, 16) || "--:--";
@@ -148,13 +176,16 @@ export default function DetailTiket() {
   const arrivalTerminal =
     tiket.rute?.tujuan?.terminal || "-";
 
-  const duration = tiket.durasi
-    ? `${tiket.durasi} jam`
-    : "Durasi tidak tersedia";
+  // fallback kalau belum ada review sama sekali
+  const displayRatingScore =
+    ratingScore ?? tiket.rating ?? 4.9;
+  const displayRatingTotal =
+    ratingTotal || tiket.jumlah_ulasan || 0;
 
-  const ratingScore = tiket.rating || 4.9;
-  const ratingTotal = tiket.jumlah_ulasan || 48000;
-
+  const latestReviewText =
+    reviews.length > 0 && reviews[0].komentar
+      ? `“${reviews[0].komentar}”`
+      : "Belum ada ulasan untuk perjalanan ini.";
 
   return (
     <div className="min-h-screen bg-[#F5F5F7] font-sans flex flex-col">
@@ -174,9 +205,7 @@ export default function DetailTiket() {
         <section className="max-w-6xl mx-auto px-4 pb-12">
           <div className="mt-6 rounded-[32px] bg-white shadow-lg border border-slate-100">
             <div className="px-6 py-6 md:px-10 md:py-8">
-            
               <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-               
                 <div>
                   <h1 className="text-2xl md:text-3xl font-bold text-slate-900">
                     {companyName}
@@ -190,6 +219,7 @@ export default function DetailTiket() {
                 </div>
               </div>
 
+              {/* DETAIL RUTE */}
               <section className="mt-12">
                 <h2 className="text-xs font-semibold tracking-[0.18em] uppercase text-slate-500">
                   Detail Rute
@@ -203,7 +233,8 @@ export default function DetailTiket() {
                       {/* titik awal */}
                       <div className="flex flex-col items-center text-center text-[11px] text-slate-500">
                         <div className="mt-6 border-t border-slate-200" />
-                        <div className="w-4 h-4 rounded-full border-2 border-slate-900 bg-[#f38f4a]" /><br/>
+                        <div className="w-4 h-4 rounded-full border-2 border-slate-900 bg-[#f38f4a]" />
+                        <br />
                         <span className="mt-2 font-semibold text-slate-700">
                           {departureCity}
                         </span>
@@ -218,7 +249,8 @@ export default function DetailTiket() {
                       {/* titik akhir */}
                       <div className="flex flex-col items-center text-center text-[11px] text-slate-500">
                         <div className="mt-6 border-t border-slate-200" />
-                        <div className="w-4 h-4 rounded-full border-2 border-slate-900 bg-[#f38f4a]" /><br/>
+                        <div className="w-4 h-4 rounded-full border-2 border-slate-900 bg-[#f38f4a]" />
+                        <br />
                         <span className="mt-2 font-semibold text-slate-700">
                           {arrivalCity}
                         </span>
@@ -234,7 +266,6 @@ export default function DetailTiket() {
                 </div>
               </section>
 
-              
               <div className="mt-6 border-t border-slate-200" />
 
               {/* PENILAIAN DAN ULASAN */}
@@ -246,7 +277,7 @@ export default function DetailTiket() {
                 <div className="mt-4 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                   <div className="flex flex-col items-center md:items-start">
                     <p className="text-4xl font-bold text-slate-900">
-                      {ratingScore}
+                      {displayRatingScore}
                     </p>
                     <div className="mt-1 flex gap-1 text-[#FFB547]">
                       {Array.from({ length: 5 }).map((_, i) => (
@@ -254,7 +285,9 @@ export default function DetailTiket() {
                       ))}
                     </div>
                     <p className="mt-1 text-xs text-slate-500">
-                      {ratingTotal.toLocaleString()} ulasan
+                      {displayRatingTotal > 0
+                        ? `${displayRatingTotal.toLocaleString()} ulasan`
+                        : "Belum ada ulasan"}
                     </p>
                   </div>
 
@@ -263,14 +296,12 @@ export default function DetailTiket() {
                       Review Ulasan
                     </p>
                     <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm text-slate-700">
-                      “Bus nyaman, sopir ramah, dan tepat waktu. Sangat
-                      direkomendasikan untuk perjalanan ini.”
+                      {latestReviewText}
                     </div>
                   </div>
                 </div>
               </section>
 
-              {/* GARIS PEMISAH */}
               <div className="mt-6 border-t border-slate-200" />
 
               {/* KEBIJAKAN + BUTTON */}
@@ -290,11 +321,13 @@ export default function DetailTiket() {
                 </div>
 
                 <div className="mt-6 flex justify-center">
-                  <button className="inline-flex items-center justify-center rounded-full 
+                  <button
+                    className="inline-flex items-center justify-center rounded-full 
                                   bg-[#E5533D] px-10 py-3 text-sm font-semibold text-white shadow-md 
                                   hover:bg-[#cf4230] transition-colors"
-                          onClick={handleCreatePemesanan}>
-                    Mulai Pembayaran
+                    onClick={handleSubmit}
+                  >
+                    Mulai Pemesanan
                   </button>
                 </div>
               </section>
@@ -307,4 +340,3 @@ export default function DetailTiket() {
     </div>
   );
 }
-

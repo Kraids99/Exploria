@@ -42,4 +42,23 @@ const getTiketByParams = async (from, to, date) => {
   }
 };
 
-export { getLokasi, getRute, getTiket, getTiketByParams};
+
+const getTiketById = async (id_tiket) => {
+  try {
+    const response = await useAxios.get(`/tiket/${id_tiket}`);
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
+const getKursiByTiket = async (id_tiket) => {
+  try {
+    const response = await useAxios.get(`/tiket/${id_tiket}/kursi`);
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
+export { getLokasi, getRute, getTiket, getTiketByParams, getTiketById, getKursiByTiket};

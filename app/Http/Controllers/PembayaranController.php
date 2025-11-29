@@ -10,14 +10,14 @@ use Illuminate\Support\Facades\DB;
 
 class PembayaranController extends Controller
 {
-    // Tampilkan semua pembayaran (admin) atau milik sendiri (customer)
+    // Tampilan semua pembayaran (admin) atau milik sendiri (customer)
     public function index(Request $request)
     {
         $user = $request->user();
 
-        if($user->tokenCan('admin')){
+        if ($user->tokenCan('admin')) {
             $pembayaran = Pembayaran::with(['pemesanan.user'])->get();
-        }else{
+        } else {
             $pembayaran = Pembayaran::with(['pemesanan'])
                 ->whereHas('pemesanan', function ($query) use ($user) {
                     $query->where('id_user', $user->id_user);
@@ -32,7 +32,7 @@ class PembayaranController extends Controller
     {
         $pembayaran = Pembayaran::with(['pemesanan'])->find($id);
 
-        if(!$pembayaran){
+        if (!$pembayaran) {
             return response()->json(['message' => 'Data pembayaran tidak ditemukan'], 404);
         }
 
@@ -41,28 +41,31 @@ class PembayaranController extends Controller
 
     // Tambah pembayaran baru
     public function store(Request $request)
-    {
+    {   
+        //validasi input dari FE
         $request->validate([
             'id_pemesanan' => 'required|exists:pemesanans,id_pemesanan',
-            'metode_pembayaran' => 'required|string|max:50',
-            'total_bayar' => 'required|numeric|min:0',
+            'metode_pembayaran' => 'required|string',
+            'jenis_channel' => 'required|in:bank,wallet',
         ]);
 
         DB::beginTransaction();
         try {
+            //pastikan pemesanan ada 
             $pemesanan = Pemesanan::find($request->id_pemesanan);
 
-            if(!$pemesanan){
+            if (!$pemesanan) {
                 return response()->json(['message' => 'Pemesanan tidak ditemukan'], 404);
             }
+
+            // total bayar diambil dari pemesanan
+            $totalBayar = $pemesanan->total_biaya_pemesanan;
 
             // buat pembayaran baru
             $pembayaran = Pembayaran::create([
                 'id_pemesanan' => $request->id_pemesanan,
-                'metode_pembayaran' => $request->metode_pembayaran,
-                'tanggal_pembayaran' => now(),
-                'total_bayar' => $request->total_bayar,
-                'status_pembayaran' => 'Berhasil',
+                'metode_pembayaran' => $request->metode_pembayaran,    // pastikan kolom ini ADA, kalau tidak, hapus baris ini
+                'status_pembayaran' => 1,         // atau 'Berhasil' kalau kolom-nya VARCHAR
             ]);
 
             // update status pemesanan
@@ -72,10 +75,12 @@ class PembayaranController extends Controller
             DB::commit();
             return response()->json([
                 'message' => 'Pembayaran berhasil dilakukan',
-                'data' => $pembayaran
+                'data' => $pembayaran,
+                // kalau mau, ikut kirim totalBayar biar FE enak:
+                'total_bayar' => $totalBayar,
             ], 201);
 
-        }catch(Exception $e){
+        } catch (Exception $e) {
             DB::rollBack();
             return response()->json([
                 'message' => 'Terjadi kesalahan saat memproses pembayaran',
@@ -84,24 +89,37 @@ class PembayaranController extends Controller
         }
     }
 
+
     // Update status pembayaran (hanya admin)
     public function update(Request $request, $id)
     {
         $request->validate([
-            'status_pembayaran' => 'required|string',
+            // 0 = belum bayar, 1 = sudah bayar
+            'status_pembayaran' => 'required|integer|in:0,1',
         ]);
 
         $pembayaran = Pembayaran::find($id);
 
-        if(!$pembayaran){
+        if (!$pembayaran) {
             return response()->json(['message' => 'Data pembayaran tidak ditemukan'], 404);
         }
 
-        $pembayaran->update(['status_pembayaran' => $request->status_pembayaran]);
+        $pembayaran->status_pembayaran = $request->status_pembayaran;
+        $pembayaran->save();
+
+        // kalau sudah bayar, sekalian update status_pemesanan
+        if ($request->status_pembayaran == 1) {
+            $pemesanan = $pembayaran->pemesanan;
+            if ($pemesanan) {
+                $pemesanan->status_pemesanan = 'Sudah Dibayar';
+                $pemesanan->save();
+            }
+        }
 
         return response()->json([
             'message' => 'Status pembayaran berhasil diupdate',
             'data' => $pembayaran
         ]);
     }
+
 }

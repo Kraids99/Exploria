@@ -2,29 +2,41 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Review;
-use App\Models\Tiket;
+use App\Models\Pembayaran;
 use App\Models\Pemesanan;
-use Carbon\Carbon;
+use App\Models\Review;
 use Illuminate\Http\Request;
-use Illluminate\Support\Facades\Auth;
+
 
 class ReviewController extends Controller
 {
+
+
     // Tampilkan semua review mulai yang paling baru
-    public function index()
+    public function index(Request $request)
     {
-        $reviews = Review::with(['user:id_user,nama,foto_user', 'tiket:id_tiket,nama_tiket'])->orderBy('tanggal_review', 'desc')->get();
-        // bisa pakai latest()-> tapi ga ada created_at
+        $query = Review::with([
+            'user:id_user,nama,foto_user',
+            'tiket:id_tiket,nama_tiket'
+        ]);
+
+        // kalau ada ?id_tiket=... di URL, filter berdasarkan itu
+        if ($request->filled('id_tiket')) {
+            $query->where('id_tiket', $request->id_tiket);
+        }
+
+        $reviews = $query->orderBy('tanggal_review', 'desc')->get();
+
         return response()->json($reviews);
     }
+
 
     // Tampilkan satu review berdasarkan id
     public function show($id)
     {
         $review = Review::with(['user', 'tiket'])->find($id);
 
-        if(!$review){
+        if (!$review) {
             return response()->json(['message' => 'Review tidak ditemukan'], 404);
         }
 
@@ -36,79 +48,70 @@ class ReviewController extends Controller
     {
         $user = $request->user();
 
-        if(!$user->tokenCan('customer')){
-            return response()->json(['message' => 'Hanya customer yang dapat menulis review'], 403);
-        }
-
         $request->validate([
+            'id_pembayaran' => 'required|exists:pembayarans,id_pembayaran',
             'id_tiket' => 'required|exists:tikets,id_tiket',
-            'rating'   => 'required|integer|min:1|max:5',
-            'komentar' => 'nullable|string|max:500',
+            'rating' => 'required|integer|min:1|max:5',
+            'komentar' => 'nullable|string',
         ]);
 
-        $idTiket = $request->id_tiket;
 
-        // Cari pemesanan user untuk tiket itu yang sudah dibayar
-        $pemesanan = Pemesanan::where('id_user', $user->id_user)
-            ->whereHas('rincianPemesanan', function($query) use ($idTiket) {
-                $query->where('id_tiket', $idTiket);
-            })
-            ->whereHas('pembayaran', function($query) {
-                $query->where('status_pembayaran', 'Berhasil');
+
+        // 1. Pastikan pembayaran milik user ini dan SUDAH dibayar (status = 1)
+        $pembayaran = Pembayaran::with('pemesanan.rincianPemesanan')
+            ->where('id_pembayaran', $request->id_pembayaran)
+            ->whereHas('pemesanan', function ($q) use ($user) {
+                $q->where('id_user', $user->id_user);
             })
             ->first();
 
-        if(!$pemesanan){
+        if (!$pembayaran) {
             return response()->json([
-                'message' => 'Kamu belum melakukan pemesanan tiket ini atau belum membayar'
+                'message' => 'Kamu belum melakukan pemesanan tiket ini atau belum membayar',
             ], 403);
         }
 
-        // ambil waktu tiba dari tiket
-        $tiket = Tiket::find($idTiket);
+        // 2. Pastikan tiket yang di-review ada di pemesanan ini
+        $pemesanan = $pembayaran->pemesanan;
 
-        $now = now();
-        $tiba = Carbon::parse($tiket->waktu_tiba);
+        $punyaTiket = $pemesanan->rincianPemesanan
+            ->contains(fn($r) => $r->id_tiket == $request->id_tiket);
 
-        // pastikan perjalanan sudah selesai dan masih dalam 1 hari setelahnya
-        if($now->lt($tiba)){
+        if (!$punyaTiket) {
             return response()->json([
-                'message' => 'Review hanya bisa dilakukan setelah perjalanan selesai'
+                'message' => 'Kamu belum melakukan pemesanan tiket ini atau belum membayar',
             ], 403);
         }
 
-        if($now->diffInHours($tiba) > 24){
-            return response()->json([
-                'message' => 'Waktu untuk memberikan review sudah berakhir (lebih dari 1 hari)'
-            ], 403);
-        }
-
-        // cek apakah user sudah pernah review tiket ini
+        // 3. Cegah double review
         $sudahReview = Review::where('id_user', $user->id_user)
-            ->where('id_tiket', $idTiket)
+            ->where('id_pembayaran', $pembayaran->id_pembayaran)
+            ->where('id_tiket', $request->id_tiket)
             ->exists();
 
-        if($sudahReview){
+        if ($sudahReview) {
             return response()->json([
-                'message' => 'Kamu sudah pernah memberikan review untuk tiket ini'
-            ], 400);
+                'message' => 'Kamu sudah memberikan review untuk tiket ini',
+            ], 422);
         }
 
-        // buat review baru
+        // 4. Simpan review
         $review = Review::create([
-            'id_user'   => $user->id_user,
-            'id_tiket'  => $idTiket,
-            'id_pembayaran'  => $pemesanan->pembayaran->id_pembayaran,
-            'rating'    => $request->rating,
-            'komentar'  => $request->komentar,
-            'tanggal_review' => now(),
+            'id_user' => $user->id_user,
+            'id_pembayaran' => $pembayaran->id_pembayaran,
+            'id_tiket' => $request->id_tiket,
+            'rating' => $request->rating,
+            'komentar' => $request->komentar,
+            'tanggal_review' => now(),   // ⬅️ TAMBAHAN PENTING
         ]);
 
+
         return response()->json([
-            'message' => 'Review berhasil ditambahkan',
-            'data' => $review
+            'message' => 'Review berhasil dibuat',
+            'data' => $review,
         ], 201);
     }
+
 
     // Hapus review
     public function destroy($id, Request $request)
@@ -116,7 +119,7 @@ class ReviewController extends Controller
         $user = $request->user();
         $review = Review::find($id);
 
-        if(!$review){
+        if (!$review) {
             return response()->json(['message' => 'Review tidak ditemukan'], 404);
         }
 

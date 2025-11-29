@@ -5,12 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class pembayaran extends Model
+class Pembayaran extends Model   // ← huruf besar
 {
     use HasFactory;
+
     protected $table = 'pembayarans';
     protected $primaryKey = 'id_pembayaran';
     public $timestamps = false;
+    //kasi tau laravel nama databse 
 
     protected $fillable = [
         'id_pemesanan',
@@ -22,9 +24,12 @@ class pembayaran extends Model
     {
         return $this->belongsTo(Pemesanan::class, 'id_pemesanan');
     }
+    //satu pembayaran dimiliki satu pemesanan 
 
     public function review()
     {
         return $this->hasOne(Review::class, 'id_pembayaran');
     }
+    //satu pembayaran punya satu review 
 }
+

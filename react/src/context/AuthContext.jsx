@@ -57,7 +57,13 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={value}>
-      {!initializing && children}
+      {initializing ? (
+        <div className="min-h-screen flex items-center justify-center bg-orange-50 text-orange-800 text-sm">
+          Memeriksa sesi...
+        </div>
+      ) : (
+        children
+      )}
     </AuthContext.Provider>
   );
 }

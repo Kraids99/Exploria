@@ -7,6 +7,7 @@ export default function Tikets({ fromCity, toCity, date }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate(); 
+  //variabel untuk menampilkan masing" kebutuhannya 
 
   useEffect(() => {
     const fetchTiket = async () => {
@@ -38,10 +39,13 @@ export default function Tikets({ fromCity, toCity, date }) {
       setTikets([]);
     }
   }, [fromCity, toCity, date]);
+  //ambil data tiket dari API melalui getTiketByParams
+  //akan berjalan setiap fromCity, toCity atau date berubah 
 
   if (loading) return <p>Loading tiket...</p>;
   if (error) return <p className="text-red-500 text-sm">{error}</p>;
   if (!tikets || tikets.length === 0) return <p>Tidak ada tiket untuk rute ini.</p>;
+  //print aja ngasi validasi 
 
   return (
     <div className="space-y-4">
@@ -95,7 +99,7 @@ export default function Tikets({ fromCity, toCity, date }) {
               <button className="mt-2 rounded-full bg-[#f38f4a] 
                 px-5 py-2 text-xs font-semibold text-white
                 shadow-md transition-all duration-200 ease-out
-                hover:bg-brand-600 hover:-translate-y-0.5"
+                hover:bg-[#cf4230] transition-colors"
                 onClick={ () =>    navigate(
                                 `/detailTiket/${tiket.id_tiket}?from=${fromCity}&to=${toCity}&date=${date}`
                                 )}
@@ -104,7 +108,10 @@ export default function Tikets({ fromCity, toCity, date }) {
               </button>
             </div>
           </div>
+           {/*Loop semua tiket dalam bentuk card*/}
         </article>
+
+     
       ))}
     </div>
   );
