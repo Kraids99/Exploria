@@ -20,7 +20,8 @@
     "react-toastify": "^11.0.5",
     "sweetalert2": "^11.26.3",
     "sweetalert2-react-content": "^5.1.0",
-    "tailwindcss": "^4.1.17"
+    "tailwindcss": "^4.1.17",
+    "toastify": "^2.0.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^5.1.1",

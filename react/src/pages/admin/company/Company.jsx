@@ -2,28 +2,45 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PencilLine, Plus, Trash2 } from "lucide-react";
 import NavbarAdmin from "../../../components/default/NavbarAdmin";
-import useAxios, { BASE_URL } from "../../../api/index.jsx";
+import { BASE_URL } from "../../../api/index.jsx";
+import { fetchCompanies, deleteCompany} from "../../../api/apiAdminCompany.jsx";
 import companyPlaceholder from "../../../assets/building.png";
 
 export default function Company() {
   const navigate = useNavigate();
   const [companies, setCompanies] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // main ()
+  // main () otomatis
   useEffect(() => {
-    const fetchCompanies = async () => {
+    // ambil data company
+    const Companies = async () => {
       try {
-        const response = await useAxios.get("/company");
-        setCompanies(response.data?.data || []);
-        // ngecek console log nya
-        console.log(response.data);
+        const data = await fetchCompanies();
+        setCompanies(data);
       } catch (error) {
         console.error("Gagal memuat data company", error);
+      } finally {
+        setLoading(false);
       }
     };
-
-    fetchCompanies();
+    Companies();
   }, []);
+
+  // delete data company
+  const handleDelete = async (id) => {
+    if (!id) return;
+    const confirmed = window.confirm("Hapus company ini?");
+    if (!confirmed) return;
+
+    try {
+      await deleteCompany(id);
+      // ngefilter array lama dari variabel prev 
+      setCompanies((prev) => prev.filter((item) => (item.id_company) !== id));
+    } catch (error) {
+      console.error("Gagal menghapus company", error);
+    }
+  };
 
   return (
     <div className="min-h-screen flex bg-orange-50">
@@ -63,6 +80,13 @@ export default function Company() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-orange-100">
+                {loading && (
+                  <tr>
+                    <td className="px-4 py-3 text-sm text-slate-700" colSpan={6}>
+                      Memuat data company...
+                    </td>
+                  </tr>
+                )}
                 {companies.map((company) => {
                   const id = company.id ?? company.id_company ?? company.idCompany ?? "-";
                   const name = company.name ?? company.nama_company ?? "Tidak ada nama";
@@ -110,7 +134,7 @@ export default function Company() {
                           type="button"
                           className="text-red-600 hover:text-red-700 transition"
                           title="Hapus"
-                          onClick={() => window.alert("Hapus company belum diimplementasi")}
+                          onClick={() => handleDelete(id)}
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>

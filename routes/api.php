@@ -99,7 +99,7 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
 
     // Company
     Route::post('/company/create', [CompanyController::class, 'store']);
-    Route::put('/company/update/{id}', [CompanyController::class, 'update']);
+    Route::match(['put', 'patch'], '/company/update/{id}', [CompanyController::class, 'update']);
     Route::delete('/company/delete/{id}', [CompanyController::class, 'destroy']);
 
     // Lokasi

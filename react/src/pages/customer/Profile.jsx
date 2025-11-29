@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { LuMail, LuPhone, LuCalendar, LuUser, LuPencilLine, LuCamera, LuTrash2, LuLogOut } from "react-icons/lu";
+import { LuMail, LuPhone, LuCalendar, LuUser, LuPencilLine, LuCamera, LuTrash2 } from "react-icons/lu";
 import { MdDelete } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../../components/default/Navbar.jsx";
 import Footer from "../../components/default/Footer.jsx";
 import { useAuth } from "../../context/AuthContext.jsx";
@@ -60,6 +60,9 @@ const normalizeUrl = (url) => {
 function Profile() {
   const { isAuthenticated, user: authUser, refreshAuth, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const isAdminView = searchParams.get("admin") === "1";
 
   // State utama data profil (field text yang dikirim ke backend).
   const [profile, setProfile] = useState({
@@ -488,18 +491,18 @@ function Profile() {
   if (loadingProfile) {
     return (
       <div className="min-h-screen flex flex-col bg-slate-50">
-        <Navbar />
+        {!isAdminView && <Navbar />}
         <main className="flex-1 flex items-center justify-center">
           <p className="text-slate-600 text-sm">Memuat profil...</p>
         </main>
-        <Footer />
+        {!isAdminView && <Footer />}
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Navbar />
+      {!isAdminView && <Navbar />}
 
       <main className="flex-1">
         <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
@@ -527,9 +530,14 @@ function Profile() {
 
                   />
                 </div>
-                <label className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition cursor-pointer text-white gap-2 text-sm font-semibold">
-                  <LuCamera />
-                  <span>Ganti foto</span>
+                <label className="absolute inset-0 rounded-full cursor-pointer">
+                  <div className="flex items-center justify-center h-full w-full rounded-full bg-black/45 opacity-0 group-hover:opacity-100 transition text-white gap-2 text-sm font-semibold">
+                    <LuPencilLine />
+                    <span>Edit foto</span>
+                  </div>
+                  <span className="absolute -right-2 -bottom-2 h-9 w-9 rounded-full bg-white shadow-md shadow-black/20 flex items-center justify-center text-slate-700 border border-slate-200">
+                    <LuPencilLine className="h-4 w-4" />
+                  </span>
                   <input type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
                 </label>
               </div>
@@ -808,7 +816,7 @@ function Profile() {
         </div>
       </main>
 
-      <Footer />
+      {!isAdminView && <Footer />}
     </div>
   );
 }

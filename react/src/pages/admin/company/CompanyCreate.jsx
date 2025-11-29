@@ -1,15 +1,13 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
-import useAxios from "../../../api/index.jsx";
+import { createCompany } from "../../../api/apiAdminCompany.jsx";
 import companyPlaceholder from "../../../assets/building.png";
 
-const inputBase =
-  "block w-full rounded-xl border border-orange-100 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200 transition";
+const styleForm = "block w-full rounded-xl border border-orange-100 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200 transition";
 
 export default function CompanyCreate() {
   const navigate = useNavigate();
-  const api = useAxios;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [form, setForm] = useState({
@@ -20,6 +18,7 @@ export default function CompanyCreate() {
     logo: null,
   });
 
+  // menampilkan preview logo sebelum upload
   const preview = useMemo(() => {
     if (form.logo instanceof File) {
       return URL.createObjectURL(form.logo);
@@ -27,10 +26,12 @@ export default function CompanyCreate() {
     return companyPlaceholder;
   }, [form.logo]);
 
+  // Input handler umum (error handler)
   const handleChange = (field) => (e) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
   };
 
+  // error handler logo
   const handleLogo = (e) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -38,6 +39,7 @@ export default function CompanyCreate() {
     }
   };
 
+  // kondisi tekan reset
   const handleReset = () => {
     setForm({
       name: "",
@@ -49,30 +51,22 @@ export default function CompanyCreate() {
     setErrorMessage("");
   };
 
+  // kalau submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setErrorMessage("");
 
     try {
-      const payload = new FormData();
-      payload.append("nama_company", form.name);
-      payload.append("email_company", form.email);
-      payload.append("no_telp_company", form.phone);
-      payload.append("alamat_company", form.address);
-      if (form.logo) {
-        payload.append("logo_company", form.logo);
-      }
-
-      await api.post("/company/create", payload, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      await createCompany(form);
       navigate("/admin/company");
     } catch (err) {
       const apiMessage =
+      // back end message
         err?.response?.data?.message ||
         err?.response?.data?.errors?.[0] ||
-        "Gagal menambah company. Coba lagi.";
+      // default message
+        "Gagal menambah company. Silahkan Coba lagi.";
       setErrorMessage(apiMessage);
     } finally {
       setIsSubmitting(false);
@@ -136,7 +130,7 @@ export default function CompanyCreate() {
                         value={form.name}
                         onChange={handleChange("name")}
                         required
-                        className={inputBase}
+                        className={styleForm}
                         placeholder="Nama perusahaan"
                       />
                     </div>
@@ -149,7 +143,7 @@ export default function CompanyCreate() {
                         value={form.email}
                         onChange={handleChange("email")}
                         required
-                        className={inputBase}
+                        className={styleForm}
                         placeholder="email@perusahaan.com"
                       />
                     </div>
@@ -165,7 +159,7 @@ export default function CompanyCreate() {
                         value={form.phone}
                         onChange={handleChange("phone")}
                         required
-                        className={inputBase}
+                        className={styleForm}
                         placeholder="08xxxxxxxxxx"
                       />
                     </div>
@@ -178,7 +172,7 @@ export default function CompanyCreate() {
                         value={form.address}
                         onChange={handleChange("address")}
                         required
-                        className={inputBase}
+                        className={styleForm}
                         placeholder="Alamat lengkap perusahaan"
                       />
                     </div>

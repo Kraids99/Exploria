@@ -1,16 +1,16 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
-import useAxios, { BASE_URL } from "../../../api/index.jsx";
-import buildingPlaceholder from "../../../assets/building.png";
+import { BASE_URL } from "../../../api/index.jsx";
+// API admin company (get detail + update)
+import { fetchCompanyById, updateCompany } from "../../../api/apiAdminCompany.jsx";
+import companyPlaceholder from "../../../assets/building.png";
 
-const inputBase =
-  "block w-full rounded-xl border border-orange-100 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200 transition";
+const styleForm = "block w-full rounded-xl border border-orange-100 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200 transition";
 
 export default function CompanyEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const api = useAxios;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(true);
@@ -20,21 +20,21 @@ export default function CompanyEdit() {
     phone: "",
     address: "",
     logo: null,
-    existingLogo: null,
+    prevLogo: null,
   });
 
   useEffect(() => {
+    // ambil data company sesuai id
     const fetchCompany = async () => {
       try {
-        const res = await api.get(`/company/${id}`);
-        const data = res.data?.data || {};
+        const data = await fetchCompanyById(id);
         setForm({
-          name: data.nama_company || data.name || "",
-          email: data.email_company || data.email || "",
-          phone: data.no_telp_company || data.phone || "",
-          address: data.alamat_company || data.address || "",
+          name: data.nama_company || "",
+          email: data.email_company || "",
+          phone: data.no_telp_company || "",
+          address: data.alamat_company || "",
           logo: null,
-          existingLogo: data.logo_company || data.logo || null,
+          prevLogo: data.logo_company || null,
         });
       } catch (err) {
         const msg =
@@ -46,24 +46,25 @@ export default function CompanyEdit() {
     };
 
     fetchCompany();
-  }, [api, id]);
+  }, [id]);
 
   const preview = useMemo(() => {
     if (form.logo instanceof File) {
       return URL.createObjectURL(form.logo);
     }
-    if (form.existingLogo) {
-      return form.existingLogo.startsWith("http")
-        ? form.existingLogo
-        : `${BASE_URL}/storage/${form.existingLogo}`;
+    if (form.prevLogo) {
+      return form.prevLogo.startsWith("http")
+        ? form.prevLogo
+        : `${BASE_URL}/storage/${form.prevLogo}`;
     }
-    return buildingPlaceholder;
-  }, [form.logo, form.existingLogo]);
+    return companyPlaceholder;
+  }, [form.logo, form.prevLogo]);
 
   const handleChange = (field) => (e) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
   };
 
+  // Simpan file logo baru ke state
   const handleLogo = (e) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -78,7 +79,7 @@ export default function CompanyEdit() {
       phone: "",
       address: "",
       logo: null,
-      existingLogo: prev.existingLogo,
+      prevLogo: prev.prevLogo,
     }));
     setErrorMessage("");
   };
@@ -89,18 +90,8 @@ export default function CompanyEdit() {
     setErrorMessage("");
 
     try {
-      const payload = new FormData();
-      payload.append("nama_company", form.name);
-      payload.append("email_company", form.email);
-      payload.append("no_telp_company", form.phone);
-      payload.append("alamat_company", form.address);
-      if (form.logo) {
-        payload.append("logo_company", form.logo);
-      }
-
-      await api.post(`/company/update/${id}?_method=PUT`, payload, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      // update
+      await updateCompany(id, form);
       navigate("/admin/company");
     } catch (err) {
       const apiMessage =
@@ -152,7 +143,7 @@ export default function CompanyEdit() {
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         e.currentTarget.onerror = null;
-                        e.currentTarget.src = buildingPlaceholder;
+                        e.currentTarget.src = companyPlaceholder;
                       }}
                     />
                   </div>
@@ -181,7 +172,7 @@ export default function CompanyEdit() {
                         value={form.name}
                         onChange={handleChange("name")}
                         required
-                        className={inputBase}
+                        className={styleForm}
                         placeholder="Nama perusahaan"
                       />
                     </div>
@@ -194,7 +185,7 @@ export default function CompanyEdit() {
                         value={form.email}
                         onChange={handleChange("email")}
                         required
-                        className={inputBase}
+                        className={styleForm}
                         placeholder="email@perusahaan.com"
                       />
                     </div>
@@ -210,7 +201,7 @@ export default function CompanyEdit() {
                         value={form.phone}
                         onChange={handleChange("phone")}
                         required
-                        className={inputBase}
+                        className={styleForm}
                         placeholder="08xxxxxxxxxx"
                       />
                     </div>
@@ -223,7 +214,7 @@ export default function CompanyEdit() {
                         value={form.address}
                         onChange={handleChange("address")}
                         required
-                        className={inputBase}
+                        className={styleForm}
                         placeholder="Alamat lengkap perusahaan"
                       />
                     </div>
