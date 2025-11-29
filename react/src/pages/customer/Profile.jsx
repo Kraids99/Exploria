@@ -440,8 +440,8 @@ function Profile() {
 
       setError(apiMsg);     // banner atas (kalau mau dipakai)
       setPwdError(apiMsg);  // pesan khusus blok password
-      toast.error("Email dan Password Salah");  // ⬅️ cuma SEKALI di sini
-      toast.error(apiMsg);  // ⬅️ cuma SEKALI di sini
+      toast.error("Email dan Password Salah");  // cuma SEKALI di sini
+      toast.error(apiMsg);  // cuma SEKALI di sini
     } finally {
       setSavingPassword(false);
     }
@@ -473,7 +473,7 @@ function Profile() {
     try {
       await deleteAccount();        // hapus di backend
 
-      logout();                     // ⬅️ RESET auth context (user, token, isAuthenticated)
+      logout();                     // RESET auth context (user, token, isAuthenticated)
       // localStorage.clear();      // biasanya sudah dikerjain di logout(), boleh dihapus
 
       toast.success("Akun berhasil dihapus");

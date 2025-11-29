@@ -21,7 +21,6 @@ import RuteEdit from "./pages/admin/rute/RuteEdit.jsx";
 import Tiket from "./pages/admin/tiket/Tiket.jsx";
 import TiketCreate from "./pages/admin/tiket/TiketCreate.jsx";
 import TiketEdit from "./pages/admin/tiket/TiketEdit.jsx";
-import DetailRute from "./pages/admin/detail rute/DetailRute.jsx";
 
 // routernya Admin
 function AdminRoute({ children }) {
@@ -38,12 +37,21 @@ function AdminRoute({ children }) {
   return children;
 }
 
+// Landing route: jika admin sudah login, langsung ke dashboard admin
+function LandingRoute() {
+  const { isAuthenticated, isAdmin } = useAuth();
+  if (isAuthenticated && isAdmin) {
+    return <Navigate to="/admin/company" replace />;
+  }
+  return <Home />;
+}
+
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<LandingRoute />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/search" element={<SelectBus />} />
@@ -64,7 +72,6 @@ function App() {
           <Route path="/admin/tiket" element={<AdminRoute><Tiket /></AdminRoute>} />
           <Route path="/admin/tiket/create" element={<AdminRoute><TiketCreate /></AdminRoute>} />
           <Route path="/admin/tiket/:id/edit" element={<AdminRoute><TiketEdit /></AdminRoute>} />
-          <Route path="/admin/detail-rute" element={<AdminRoute><DetailRute /></AdminRoute>} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

@@ -9,7 +9,6 @@ import {
   User,
   LogOut,
   ChevronDown,
-  CreditCard,
 } from "lucide-react";
 import { BASE_URL } from "../../api";
 import { useAuth } from "../../context/AuthContext";
@@ -30,10 +29,9 @@ const normalizeAvatarUrl = (raw) => {
 const defaultItems = [
   { label: "Company", icon: Building2, path: "/admin/company" },
   { label: "Lokasi", icon: MapPin, path: "/admin/lokasi" },
-  { label: "Detail Rute", icon: FileText, path: "/admin/detail-rute" },
   { label: "Rute", icon: Route, path: "/admin/rute" },
   { label: "Tiket", icon: Ticket, path: "/admin/tiket" },
-  { label: "Pembayaran", icon: CreditCard, path: "/admin/pembayaran" },
+  { label: "Laporan", icon: FileText, path: "/admin/laporan" },
 ];
 
 export default function NavbarAdmin({ items }) {

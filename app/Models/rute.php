@@ -27,11 +27,6 @@ class rute extends Model
         return $this->belongsTo(Lokasi::class, 'id_lokasi_tujuan');
     }
 
-    public function detailRute()
-    {
-        return $this->hasMany(DetailRute::class, 'id_rute');
-    }
-
     public function tikets()
     {
         return $this->hasMany(Tiket::class, 'id_rute');

@@ -84,8 +84,6 @@ function Register() {
       return false;
     }
 
-
-
     // Kalau semua lolos
     setErrorMsg("");
     return true;
@@ -117,7 +115,7 @@ function Register() {
 
       const data = res.data ?? res;
 
-      // ⬇️ ganti alertSuccess dengan toast.success biasa
+      // ganti alertSuccess dengan toast.success biasa
       alertSuccess("Registrasi berhasil! Selamat datang.");
 
       navigate("/login");

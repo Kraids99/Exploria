@@ -29,8 +29,4 @@ class lokasi extends Model
         return $this->hasMany(Rute::class, 'id_lokasi_tujuan');
     }
 
-    public function detailRute()
-    {
-        return $this->hasMany(DetailRute::class, 'id_lokasi');
-    }
 }

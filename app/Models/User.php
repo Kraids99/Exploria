@@ -20,7 +20,6 @@ class User extends Authenticatable
 
     protected $fillable = [
         'nama',
-        'umur',
         'no_telp',
         'email',
         'password',
@@ -36,16 +35,6 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-
-    // // Jika umur kosong atau ingin selalu mengikuti tanggal_lahir,
-    // // hitung umur dinamis dari tanggal_lahir.
-    // public function getUmurAttribute($value)
-    // {
-    //     if ($this->tanggal_lahir) {
-    //         return Carbon::parse($this->tanggal_lahir)->age;
-    //     }
-    //     return $value;
-    // }
     
     public function admin()
     {

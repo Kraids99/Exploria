@@ -7,6 +7,26 @@ import { fetchCompanies } from "../../../api/apiAdminCompany.jsx";
 
 const styleForm = "block w-full rounded-xl border border-orange-100 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200 transition";
 
+// Format input datetime-local ke format backend (m/d/Y H:i:s)
+const toBackendDateTime = (value) => {
+  if (!value) return "";
+  if (value.includes("T")) {
+    const [date, time] = value.split("T");
+    const [y, m, d] = date.split("-");
+    return `${m}/${d}/${y} ${time}:00`;
+  }
+  return value;
+};
+
+// Hitung durasi dalam menut
+const countDuration = (start, end) => {
+  const d1 = new Date(start);
+  const d2 = new Date(end);
+  if (Number.isNaN(d1.getTime()) || Number.isNaN(d2.getTime())) return "";
+  const count = d2.getTime() - d1.getTime();
+  return count > 0 ? Math.round(count / 60000) : "";
+};
+
 export default function TiketCreate() {
   const navigate = useNavigate();
   const [ruteOptions, setRuteOptions] = useState([]);
@@ -45,7 +65,19 @@ export default function TiketCreate() {
   }, []);
 
   const handleChange = (field) => (e) => {
-    setForm((prev) => ({ ...prev, [field]: e.target.value }));
+    const value = e.target.value;
+    setForm((prev) => {
+      const next = { ...prev, [field]: value };
+      // auto hitung durasi jika waktu berubah
+      if (field === "waktu_keberangkatan" || field === "waktu_tiba") {
+        const dur = countDuration(
+          field === "waktu_keberangkatan" ? value : next.waktu_keberangkatan,
+          field === "waktu_tiba" ? value : next.waktu_tiba
+        );
+        if (dur !== "") next.durasi = dur;
+      }
+      return next;
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -54,7 +86,11 @@ export default function TiketCreate() {
     setErrorMessage("");
 
     try {
-      await createTiket(form);
+      await createTiket({
+        ...form,
+        waktu_keberangkatan: toBackendDateTime(form.waktu_keberangkatan),
+        waktu_tiba: toBackendDateTime(form.waktu_tiba),
+      });
       navigate("/admin/tiket");
     } catch (err) {
       const apiMessage = err?.response?.data?.message || "Gagal menambah tiket.";
@@ -143,37 +179,35 @@ export default function TiketCreate() {
                 <div>
                   <label className="block text-sm font-medium text-slate-800 mb-1">Waktu Keberangkatan *</label>
                   <input
-                    type="text"
+                    type="datetime-local"
                     value={form.waktu_keberangkatan}
                     onChange={handleChange("waktu_keberangkatan")}
                     required
                     className={styleForm}
-                    placeholder="m/d/Y H:i:s"
+                    placeholder="YYYY-MM-DDTHH:mm"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-800 mb-1">Waktu Tiba *</label>
                   <input
-                    type="text"
+                    type="datetime-local"
                     value={form.waktu_tiba}
                     onChange={handleChange("waktu_tiba")}
                     required
                     className={styleForm}
-                    placeholder="m/d/Y H:i:s"
+                    placeholder="YYYY-MM-DDTHH:mm"
                   />
                 </div>
               </div>
 
               <div className="grid gap-4 md:grid-cols-3">
                 <div>
-                  <label className="block text-sm font-medium text-slate-800 mb-1">Durasi (menit) *</label>
+                  <label className="block text-sm font-medium text-slate-800 mb-1">Durasi (menit)</label>
                   <input
                     type="number"
                     value={form.durasi}
-                    onChange={handleChange("durasi")}
-                    required
-                    className={styleForm}
-                    placeholder="cth: 120"
+                    disabled
+                    className={`${styleForm} bg-slate-50`}
                   />
                 </div>
                 <div>

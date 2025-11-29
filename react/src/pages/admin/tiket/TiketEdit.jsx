@@ -7,24 +7,36 @@ import { fetchCompanies } from "../../../api/apiAdminCompany.jsx";
 
 const styleForm = "block w-full rounded-xl border border-orange-100 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200 transition";
 
-// Format ISO/string ke value yang cocok untuk <input type="datetime-local">
+// Format ISO/string ke value yang cocok untuk <input type="datetime-local"> (lokal, tanpa Z)
 const toDateTimeLocal = (value) => {
   if (!value) return "";
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return value;
+  const clean = typeof value === "string" ? value.replace("Z", "") : value;
+  const d = new Date(clean);
+  if (Number.isNaN(d.getTime())) return "";
   const pad = (n) => String(n).padStart(2, "0");
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 };
 
-// Ubah dari input datetime-local (YYYY-MM-DDTHH:mm) ke format backend (YYYY-MM-DD HH:mm:ss)
+// Ubah dari input datetime-local (YYYY-MM-DDTHH:mm) ke format backend (m/d/Y H:i:s)
 const toBackendDateTime = (value) => {
   if (!value) return "";
   if (value.includes("T")) {
     const [date, time] = value.split("T");
-    return `${date} ${time}:00`;
+    const [y, m, d] = date.split("-");
+    return `${m}/${d}/${y} ${time}:00`;
   }
   return value;
 };
+
+// Hitung durasi dalam menit
+const countDuration = (start, end) => {
+  const d1 = new Date(start);
+  const d2 = new Date(end);
+  if (Number.isNaN(d1.getTime()) || Number.isNaN(d2.getTime())) return "";
+  const count = d2.getTime() - d1.getTime();
+  return count > 0 ? Math.round(count / 60000) : "";
+};
+
 
 export default function TiketEdit() {
   const { id } = useParams();
@@ -77,7 +89,19 @@ export default function TiketEdit() {
   }, [id]);
 
   const handleChange = (field) => (e) => {
-    setForm((prev) => ({ ...prev, [field]: e.target.value }));
+    const value = e.target.value;
+    setForm((prev) => {
+      const next = { ...prev, [field]: value };
+      // jika mengubah waktu, auto hitung durasi
+      if (field === "waktu_keberangkatan" || field === "waktu_tiba") {
+        const dur = countDuration(
+          field === "waktu_keberangkatan" ? value : next.waktu_keberangkatan,
+          field === "waktu_tiba" ? value : next.waktu_tiba
+        );
+        if (dur !== "") next.durasi = dur;
+      }
+      return next;
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -213,14 +237,12 @@ export default function TiketEdit() {
 
               <div className="grid gap-4 md:grid-cols-3">
                 <div>
-                  <label className="block text-sm font-medium text-slate-800 mb-1">Durasi (menit) *</label>
+                  <label className="block text-sm font-medium text-slate-800 mb-1">Durasi (menit)</label>
                   <input
                     type="number"
                     value={form.durasi}
-                    onChange={handleChange("durasi")}
-                    required
-                    className={styleForm}
-                    placeholder="cth: 120"
+                    disabled
+                    className={`${styleForm} bg-slate-50`}
                   />
                 </div>
                 <div>

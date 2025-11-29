@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Models\User;
 use App\Models\Customer;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 
 class CustomerController extends Controller
@@ -19,12 +18,9 @@ class CustomerController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
             'tanggal_lahir' => 'required|date',
-            'umur' => 'nullable|integer',
             'foto_user' => 'nullable|image|mimes:jpg,jpeg,png',
             'jenis_kelamin' => 'nullable|string',
         ]);
-
-        $umur = Carbon::parse($request->tanggal_lahir)->age;
 
         $profilePath = null;
         if ($request->hasFile('foto_user')) {
@@ -39,7 +35,6 @@ class CustomerController extends Controller
             'email' => $request->email,
             'password' => $request->password,
             'tanggal_lahir' => $request->tanggal_lahir,
-            'umur' => $umur,
             'foto_user' => $profilePath,
             'jenis_kelamin' => $request->jenis_kelamin,
         ]);
