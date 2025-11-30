@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_tiket');
             $table->float('rating');
             $table->string('komentar')->nullable();
-            $table->date('tanggal_review');
+            $table->date('tanggal_review')->nullable();
 
             $table->foreign('id_pembayaran')
                 ->references('id_pembayaran')

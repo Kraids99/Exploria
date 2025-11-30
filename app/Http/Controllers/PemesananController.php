@@ -113,7 +113,7 @@ class PemesananController extends Controller
             ]);
 
             // update status kursi
-            \App\Models\Kursi::whereIn('id_kursi', $request->kursi_ids)
+            Kursi::whereIn('id_kursi', $request->kursi_ids)
                 ->where('id_tiket', $tiket->id_tiket)
                 ->update(['status_kursi' => true]);
             

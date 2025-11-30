@@ -55,9 +55,7 @@ class ReviewController extends Controller
             'komentar' => 'nullable|string',
         ]);
 
-
-
-        // 1. Pastikan pembayaran milik user ini dan SUDAH dibayar (status = 1)
+        // Pastikan pembayaran milik user ini dan SUDAH dibayar (status = 1)
         $pembayaran = Pembayaran::with('pemesanan.rincianPemesanan')
             ->where('id_pembayaran', $request->id_pembayaran)
             ->whereHas('pemesanan', function ($q) use ($user) {
@@ -71,7 +69,7 @@ class ReviewController extends Controller
             ], 403);
         }
 
-        // 2. Pastikan tiket yang di-review ada di pemesanan ini
+        // Pastikan tiket yang di-review ada di pemesanan ini
         $pemesanan = $pembayaran->pemesanan;
 
         $punyaTiket = $pemesanan->rincianPemesanan
@@ -83,7 +81,7 @@ class ReviewController extends Controller
             ], 403);
         }
 
-        // 3. Cegah double review
+        // Cegah double review
         $sudahReview = Review::where('id_user', $user->id_user)
             ->where('id_pembayaran', $pembayaran->id_pembayaran)
             ->where('id_tiket', $request->id_tiket)
@@ -95,14 +93,14 @@ class ReviewController extends Controller
             ], 422);
         }
 
-        // 4. Simpan review
+        // Simpan review
         $review = Review::create([
             'id_user' => $user->id_user,
             'id_pembayaran' => $pembayaran->id_pembayaran,
             'id_tiket' => $request->id_tiket,
             'rating' => $request->rating,
             'komentar' => $request->komentar,
-            'tanggal_review' => now(),   // ⬅️ TAMBAHAN PENTING
+            'tanggal_review' => now(),   // TAMBAHAN PENTING
         ]);
 
 

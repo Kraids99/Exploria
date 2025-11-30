@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('pemesanans', function (Blueprint $table) {
             $table->bigIncrements('id_pemesanan');
+            $table->string('kode_tiket', 50)->nullable()->unique();
             $table->unsignedBigInteger('id_user');
             $table->date('tanggal_pemesanan');
             $table->decimal('total_biaya_pemesanan', 10, 2);

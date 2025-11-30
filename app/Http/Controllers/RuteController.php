@@ -19,7 +19,7 @@ class RuteController extends Controller
     // Tampilkan satu rute berdasarkan id
     public function show($id)
     {
-        $rute = Rute::with(['asal', 'tujuan', 'detailRute.lokasi'])->find($id);
+        $rute = Rute::with(['asal', 'tujuan'])->find($id);
 
         if(!$rute){
             return response()->json(['message' => 'Rute tidak ditemukan'], 404);

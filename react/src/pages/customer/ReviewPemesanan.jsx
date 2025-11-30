@@ -19,18 +19,6 @@ export default function SelectPayment() {
     const [tiket, setTiket] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // helper umur
-    const hitungUmur = (tgl) => {
-        if (!tgl) return "-";
-        const birth = new Date(tgl);
-        if (Number.isNaN(birth.getTime())) return "-";
-        const today = new Date();
-        let age = today.getFullYear() - birth.getFullYear();
-        const m = today.getMonth() - birth.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
-        return `${age} tahun`;
-    };
-
     const formatTanggalJam = (datetime) => {
         if (!datetime) return { tanggal: "-", jam: "--:--" };
         const d = new Date(datetime);
@@ -130,8 +118,6 @@ export default function SelectPayment() {
     const { tanggal: tglTiba, jam: jamTiba } = formatTanggalJam(
         tiket?.waktu_tiba
     );
-
-    const umur = hitungUmur(user.tanggal_lahir);
 
     const handleNext = () => {
         navigate(`/selectpayment/${pemesanan.id_pemesanan}`);
@@ -261,9 +247,6 @@ export default function SelectPayment() {
                                 <p className="mb-1">
                                     Nama :{" "}
                                     <span className="font-medium">{user.nama || "-"}</span>
-                                </p>
-                                <p className="mb-1">
-                                    Umur : <span className="font-medium">{umur}</span>
                                 </p>
                                 <p className="mb-1">
                                     Jenis Kelamin :{" "}
