@@ -33,15 +33,15 @@ body {
     transform: translateX(0) translateY(0);
   }
   25% {
-    transform: translateX(30%) translateY(-1px);
+    transform: translateX(30%) translateY(0px);
   }
   50% {
     transform: translateX(60%) translateY(0);
   }
   75% {
-    transform: translateX(30%) translateY(-1px);
+    transform: translateX(70%) translateY(0px);
   }
   100% {
-    transform: translateX(0) translateY(0);
+    transform: translateX(100%) translateY(0);
   }
 }

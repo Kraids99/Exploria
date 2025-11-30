@@ -178,7 +178,7 @@ export default function DetailTiket() {
 
   // fallback kalau belum ada review sama sekali
   const displayRatingScore =
-    ratingScore ?? tiket.rating ?? 4.9;
+    ratingScore ?? tiket.rating ?? 0;
   const displayRatingTotal =
     ratingTotal || tiket.jumlah_ulasan || 0;
 
