@@ -25,6 +25,7 @@ import PembayaranAdmin from "./pages/admin/pembayaran/Pembayaran.jsx";
 import Laporan from "./pages/admin/laporan/Laporan.jsx";
 import Pemesanan from "./pages/customer/Pemesanan.jsx";
 import ReviewPemesanan from "./pages/customer/ReviewPemesanan.jsx"; 
+import History from "./pages/customer/History.jsx";
 
 // routernya Admin
 function AdminRoute({ children }) {
@@ -55,7 +56,7 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<LandingRoute />} />
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/search" element={<SelectBus />} />
@@ -80,6 +81,7 @@ function App() {
           <Route path="/admin/tiket/:id/edit" element={<AdminRoute><TiketEdit /></AdminRoute>} />
           <Route path="/admin/pembayaran" element={<AdminRoute><PembayaranAdmin /></AdminRoute>} />
           <Route path="/admin/laporan" element={<AdminRoute><Laporan /></AdminRoute>} />
+          <Route path="/history" element={<History />}/>
         </Routes>
       </BrowserRouter>
     </AuthProvider>
