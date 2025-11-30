@@ -93,8 +93,8 @@ function Login() {
 
       setTimeout(() => {
         setShowSuccess(false);
-        alertSuccess("Selamat, Login Berhasil!");
         navigate(isAdmin ? "/admin/company" : "/");
+        alertSuccess("Selamat, Login Berhasil!");
       }, 1500);
 
     } catch (err) {

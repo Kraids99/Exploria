@@ -4,6 +4,8 @@ import { PencilLine, Plus, Trash2 } from "lucide-react";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
 import { fetchRute, deleteRute } from "../../../api/apiAdminRute.jsx";
 
+import { alertConfirm, alertSuccess } from "../../../lib/Alert.jsx";
+import { toast } from "react-toastify";
 export default function RuteList() {
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
@@ -27,13 +29,22 @@ export default function RuteList() {
 
   const handleDelete = async (id) => {
     if (!id) return;
-    const confirmed = window.confirm("Hapus rute ini?");
+
+    const confirmed = await alertConfirm({
+      title: "Hapus Rute ini?",
+      text: "Tindakan ini tidak dapat dibatalkan.",
+      icon: "warning",
+      confirmButtonText: "Ya",
+      cancelButtonText: "Batal",
+    });
     if (!confirmed) return;
     try {
       await deleteRute(id);
       setItems((prev) => prev.filter((item) => String(item.id_rute || item.id) !== String(id)));
+      alertSuccess("Rute berhasil dihapus!"); 
     } catch (err) {
       setError("Gagal menghapus rute");
+      toast.error("Gagal menghapus rute"); 
     }
   };
 

@@ -3,6 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { PencilLine, Plus, Trash2 } from "lucide-react";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
 // API admin lokasi (list/detail/delete)
+
+import { toast } from "react-toastify";
+import { alertSuccess, alertConfirm } from "../../../lib/Alert.jsx";
 import {
   fetchLokasi,
   deleteLokasi,
@@ -32,13 +35,24 @@ export default function LokasiList() {
   // Hapus data
   const handleDelete = async (id) => {
     if (!id) return;
-    const confirmed = window.confirm("Hapus lokasi ini?");
+
+    const confirmed = await alertConfirm({
+      title: "Hapus Lokasi ini?",
+      text: "Tindakan ini tidak dapat dibatalkan.",
+      icon: "warning",
+      confirmButtonText: "Ya",
+      cancelButtonText: "Batal",
+    });
+
     if (!confirmed) return;
+
     try {
       await deleteLokasi(id);
       setItems((prev) => prev.filter((item) => String(item.id_lokasi || item.id) !== String(id)));
+      alertSuccess("Berhasil menghapus data!"); 
     } catch (err) {
       setError("Gagal menghapus lokasi");
+      toast.error("Gagal menghapus company ini, silahkan coba lagi"); 
     }
   };
 

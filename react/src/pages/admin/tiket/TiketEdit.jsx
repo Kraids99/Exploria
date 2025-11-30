@@ -5,6 +5,9 @@ import { fetchTiketById, updateTiket } from "../../../api/apiAdminTiket.jsx";
 import { fetchRute } from "../../../api/apiAdminRute.jsx";
 import { fetchCompanies } from "../../../api/apiAdminCompany.jsx";
 
+import { toast } from "react-toastify";
+import { alertSuccess } from "../../../lib/Alert.jsx";
+
 const styleForm = "block w-full rounded-xl border border-orange-100 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200 transition";
 
 // Format ISO/string ke value yang cocok untuk <input type="datetime-local"> (lokal, tanpa Z)
@@ -104,10 +107,83 @@ export default function TiketEdit() {
     });
   };
 
+
+  const validateData = () => {
+    // 1. Cek field wajib (tanpa durasi dulu)
+    if (
+      !form.id_rute ||
+      !form.id_company ||
+      !form.nama_tiket ||
+      !form.jumlah_kursi ||
+      !form.waktu_keberangkatan ||
+      !form.waktu_tiba ||
+      !form.harga ||
+      !form.stok
+    ) {
+      setErrorMessage("Inputan tidak boleh kosong!");
+      toast.error("Inputan tidak boleh kosong!");
+      return false;
+    }
+
+    // 2. jumlah_kursi minimal 1
+    if (form.jumlah_kursi < 1) {
+      setErrorMessage("Jumlah kursi minimal 1");
+      toast.error("Jumlah kursi minimal 1");
+      return false;
+    }
+
+    // 3. Validasi waktu: keberangkatan harus < tiba (tidak boleh sama/lebih)
+    const start = new Date(form.waktu_keberangkatan);
+    const end = new Date(form.waktu_tiba);
+
+    if (!Number.isNaN(start.getTime()) && !Number.isNaN(end.getTime())) {
+      if (start >= end) {
+        setErrorMessage(
+          "Waktu keberangkatan harus lebih awal dari waktu tiba (tidak boleh sama atau setelahnya)"
+        );
+        toast.error(
+          "Waktu keberangkatan harus lebih awal dari waktu tiba (tidak boleh sama atau setelahnya)"
+        );
+        return false;
+      }
+    }
+
+    // 4. Durasi hasil hitung otomatis (opsional, kalau mau dipastikan keisi)
+    if (!form.durasi) {
+      setErrorMessage("Durasi tidak valid, periksa kembali waktu keberangkatan & tiba");
+      toast.error("Durasi tidak valid, periksa kembali waktu keberangkatan & tiba");
+      return false;
+    }
+
+    // 5. Harga & stok
+    if (form.harga < 1) {
+      setErrorMessage("Harga tidak boleh kurang dari 1");
+      toast.error("Harga tidak boleh kurang dari 1");
+      return false;
+    }
+
+    if (form.stok < 1) {
+      setErrorMessage("Stok tidak boleh kurang dari 1");
+      toast.error("Stok tidak boleh kurang dari 1");
+      return false;
+    }
+
+    setErrorMessage("");
+    return true;
+  };
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setErrorMessage("");
+
+
+    const isValid = validateData();
+    if (!isValid) {
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       await updateTiket(id, {
@@ -116,9 +192,11 @@ export default function TiketEdit() {
         waktu_tiba: toBackendDateTime(form.waktu_tiba),
       });
       navigate("/admin/tiket");
+      alertSuccess("Berhasil menambahkan tiket!");
     } catch (err) {
       const apiMessage = err?.response?.data?.message || "Gagal menyimpan perubahan.";
       setErrorMessage(apiMessage);
+      toast.error(apiMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -149,7 +227,7 @@ export default function TiketEdit() {
 
         <div className="mt-6 rounded-2xl bg-white shadow-lg border border-orange-100/80">
           <div className="p-6 lg:p-8">
-            <form className="space-y-6" onSubmit={handleSubmit}>
+            <form className="space-y-6" onSubmit={handleSubmit} noValidate>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
                   <label className="block text-sm font-medium text-slate-800 mb-1">Rute *</label>
@@ -268,12 +346,6 @@ export default function TiketEdit() {
                   />
                 </div>
               </div>
-
-              {errorMessage && (
-                <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-                  {errorMessage}
-                </div>
-              )}
 
               <div className="flex flex-wrap items-center gap-3">
                 <button

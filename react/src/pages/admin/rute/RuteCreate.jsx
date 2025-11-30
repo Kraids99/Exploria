@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
 import { createRute } from "../../../api/apiAdminRute.jsx";
 import { fetchLokasi } from "../../../api/apiAdminLokasi.jsx";
+import { toast } from "react-toastify";
+import { alertSuccess } from "../../../lib/Alert.jsx";
 
 const styleForm = "block w-full rounded-xl border border-orange-100 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200 transition";
 
@@ -24,6 +26,7 @@ export default function RuteCreate() {
         setLokasiOptions(data);
       } catch (err) {
         setErrorMessage("Gagal memuat daftar lokasi.");
+        toast.error("Gagal memuat daftar lokasi.");
       } finally {
         setLoadingLokasi(false);
       }
@@ -42,9 +45,11 @@ export default function RuteCreate() {
     try {
       await createRute(form);
       navigate("/admin/rute");
+      alertSuccess("Berhasil Menambahkan Rute!"); 
     } catch (err) {
       const apiMessage = err?.response?.data?.message || "Gagal menambah rute.";
       setErrorMessage(apiMessage);
+      toast.error(apiMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -99,15 +104,6 @@ export default function RuteCreate() {
                   </select>
                 </div>
               </div>
-
-              {errorMessage && (
-                <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-                  {errorMessage}
-                </div>
-              )}
-              {loadingLokasi && (
-                <div className="text-sm text-slate-600">Memuat daftar lokasi...</div>
-              )}
 
               <div className="flex flex-wrap items-center gap-3">
                 <button

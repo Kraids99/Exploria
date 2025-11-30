@@ -5,6 +5,9 @@ import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
 import { fetchTiket, deleteTiket } from "../../../api/apiAdminTiket.jsx";
 import { fetchCompanies } from "../../../api/apiAdminCompany.jsx";
 
+import { alertConfirm, alertSuccess } from "../../../lib/Alert.jsx";
+import { toast } from "react-toastify";
+
 // Format waktu ke tampilan dd-MM-YYYY HH:mm
 const formatDateTime = (value) => {
   if (!value) return "-";
@@ -47,13 +50,22 @@ export default function TiketList() {
 
   const handleDelete = async (id) => {
     if (!id) return;
-    const confirmed = window.confirm("Hapus tiket ini?");
+
+    const confirmed = await alertConfirm({
+      title: "Hapus Tiket ini?",
+      text: "Tindakan ini tidak dapat dibatalkan.",
+      icon: "warning",
+      confirmButtonText: "Ya",
+      cancelButtonText: "Batal",
+    });
     if (!confirmed) return;
     try {
       await deleteTiket(id);
       setItems((prev) => prev.filter((item) => String(item.id_tiket || item.id) !== String(id)));
+      alertSuccess("Rute berhasil dihapus!"); 
     } catch (err) {
       setError("Gagal menghapus tiket");
+      toast.error("Gagal menghapus rute"); 
     }
   };
 

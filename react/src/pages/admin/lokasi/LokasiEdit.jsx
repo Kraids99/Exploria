@@ -3,6 +3,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
 import { fetchLokasiById, updateLokasi } from "../../../api/apiAdminLokasi.jsx";
 
+import { toast } from "react-toastify";
+import { alertSuccess } from "../../../lib/Alert.jsx";
+
 const styleForm = "block w-full rounded-xl border border-orange-100 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200 transition";
 
 export default function LokasiEdit() {
@@ -35,17 +38,36 @@ export default function LokasiEdit() {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
   };
 
+  const validateData = () => {
+    if (!form.kota || !form.terminal) {
+      setErrorMessage("Kota dan Terminal tidak boleh kosong!");
+      toast.error("Kota dan Terminal tidak boleh kosong!");
+      return false;
+    }
+
+    setErrorMessage("");
+    return true;
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setErrorMessage("");
 
+    const isValid = validateData();
+    if (!isValid) {
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       await updateLokasi(id, form);
       navigate("/admin/lokasi");
+      alertSuccess("Berhasil Mengubah Lokasi Terminal!"); 
     } catch (err) {
-      const apiMessage = err?.response?.data?.message || "Gagal menyimpan perubahan.";
+      const apiMessage = "Gagal menyimpan perubahan.";
       setErrorMessage(apiMessage);
+      toast.error(apiMessage); 
     } finally {
       setIsSubmitting(false);
     }
@@ -76,7 +98,7 @@ export default function LokasiEdit() {
 
         <div className="mt-6 rounded-2xl bg-white shadow-lg border border-orange-100/80">
           <div className="p-6 lg:p-8">
-            <form className="space-y-6" onSubmit={handleSubmit}>
+            <form className="space-y-6" onSubmit={handleSubmit} noValidate>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
                   <label className="block text-sm font-medium text-slate-800 mb-1">Terminal *</label>
@@ -101,12 +123,6 @@ export default function LokasiEdit() {
                   />
                 </div>
               </div>
-
-              {errorMessage && (
-                <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-                  {errorMessage}
-                </div>
-              )}
 
               <div className="flex flex-wrap items-center gap-3">
                 <button

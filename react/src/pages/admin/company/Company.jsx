@@ -3,8 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { PencilLine, Plus, Trash2 } from "lucide-react";
 import NavbarAdmin from "../../../components/default/NavbarAdmin";
 import { BASE_URL } from "../../../api/index.jsx";
-import { fetchCompanies, deleteCompany} from "../../../api/apiAdminCompany.jsx";
+import { fetchCompanies, deleteCompany } from "../../../api/apiAdminCompany.jsx";
 import companyPlaceholder from "../../../assets/building.png";
+import { toast } from "react-toastify";
+import { alertSuccess, alertConfirm} from "../../../lib/Alert.jsx";
 
 export default function Company() {
   const navigate = useNavigate();
@@ -30,15 +32,25 @@ export default function Company() {
   // delete data company
   const handleDelete = async (id) => {
     if (!id) return;
-    const confirmed = window.confirm("Hapus company ini?");
+
+    const confirmed = await alertConfirm({
+      title: "Hapus Company ini?",
+      text: "Tindakan ini tidak dapat dibatalkan.",
+      icon: "warning",
+      confirmButtonText: "Ya",
+      cancelButtonText: "Batal",
+    });
+
     if (!confirmed) return;
 
     try {
       await deleteCompany(id);
       // ngefilter array lama dari variabel prev 
       setCompanies((prev) => prev.filter((item) => (item.id_company) !== id));
+      alertSuccess("Berhasil menghapus data!"); 
     } catch (error) {
       console.error("Gagal menghapus company", error);
+      toast.error("Gagal menghapus company ini, silahkan coba lagi"); 
     }
   };
 
@@ -105,12 +117,12 @@ export default function Company() {
                             className="w-full h-full object-cover"
                             // perintah ke browser Jangan load gambar sekarang, kecuali gambarnya kelihatan di layar. 
                             loading="lazy"
-                            
+
                             // kebalikan dari loading lazy
                             // loading="eager"
                             onError={(e) => {
                               e.currentTarget.onerror = null;
-                              {/*kalau gagal load set ke gambar default*/}
+                              {/*kalau gagal load set ke gambar default*/ }
                               e.currentTarget.src = companyPlaceholder;
                             }}
                           />
@@ -124,17 +136,17 @@ export default function Company() {
                         <div className="inline-flex items-center gap-3">
                           {/* Link ke halaman edit company */}
                           <Link
-                          to={`/admin/company/${id}/edit`}
-                          className="text-orange-600 hover:text-orange-700 transition"
-                          title="Edit"
+                            to={`/admin/company/${id}/edit`}
+                            className="text-orange-600 hover:text-orange-700 transition"
+                            title="Edit"
                           >
-                          <PencilLine className="w-4 h-4" />
-                        </Link>
-                        <button
-                          type="button"
-                          className="text-red-600 hover:text-red-700 transition"
-                          title="Hapus"
-                          onClick={() => handleDelete(id)}
+                            <PencilLine className="w-4 h-4" />
+                          </Link>
+                          <button
+                            type="button"
+                            className="text-red-600 hover:text-red-700 transition"
+                            title="Hapus"
+                            onClick={() => handleDelete(id)}
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>

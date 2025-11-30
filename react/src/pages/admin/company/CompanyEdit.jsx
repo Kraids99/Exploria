@@ -5,6 +5,8 @@ import { BASE_URL } from "../../../api/index.jsx";
 // API admin company (get detail + update)
 import { fetchCompanyById, updateCompany } from "../../../api/apiAdminCompany.jsx";
 import companyPlaceholder from "../../../assets/building.png";
+import { alertSuccess } from "../../../lib/Alert.jsx";
+import { toast } from "react-toastify";
 
 const styleForm = "block w-full rounded-xl border border-orange-100 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200 transition";
 
@@ -67,6 +69,18 @@ export default function CompanyEdit() {
   // Simpan file logo baru ke state
   const handleLogo = (e) => {
     const file = e.target.files?.[0];
+
+    if (!file) return;
+
+
+    //pengecekan 
+    const tipeFiles = ["image/png", "image/jpeg"];
+    if (!tipeFiles.includes(file.type)) {
+      setErrorMessage("Format file harus PNG, JPG, atau JPEG!");
+      toast.error("Format file harus PNG, JPG, atau JPEG!");
+      e.target.value = "";
+      return;
+    }
     if (file) {
       setForm((prev) => ({ ...prev, logo: file }));
     }
@@ -84,21 +98,66 @@ export default function CompanyEdit() {
     setErrorMessage("");
   };
 
+  const validateDataForm = () => {
+    if (!form.name || !form.email || !form.phone
+      || !form.address
+    ) {
+      setErrorMessage("Inputan tidak boleh kosong!");
+      toast.error("Inputan data tidak boleh kosong!");
+      return false;
+    }
+
+    if (!/^[0-9]{10,13}$/.test(form.phone)) {
+      setErrorMessage("No telepon harus berupa 10-13 digit angka");
+      toast.error("No telepon harus berupa 10-13 digit angka");
+      return false;
+    }
+
+    // 3. Format email
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      setErrorMessage("Format email tidak valid");
+      toast.error("Format email tidak valid");
+      return false;
+    }
+
+    setErrorMessage("");
+    return true;
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setErrorMessage("");
 
+    const isValid = validateDataForm();
+    if (!isValid) {
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       // update
       await updateCompany(id, form);
       navigate("/admin/company");
+      alertSuccess("Berhasil mengubah data Company" + form.name);
     } catch (err) {
-      const apiMessage =
-        err?.response?.data?.message ||
-        err?.response?.data?.errors?.[0] ||
-        "Gagal menyimpan perubahan. Coba lagi.";
+      let apiMessage = "Gagal menambah company. Silahkan Coba lagi."; // ⬅️ pakai let
+
+      const data = err.response?.data;
+
+      // buat debug kalau mau liat bentuk responsenya
+      // console.log("error data", data);
+
+      if (data?.errors?.email_company?.length) {
+        // dari Laravel validator 'email_company'
+        // contoh isi: ["The email company has already been taken."]
+        apiMessage = "Email sudah terdaftar, silakan gunakan email lain.";
+      } else if (typeof data?.message === "string") {
+        apiMessage = data.message;
+      }
+
       setErrorMessage(apiMessage);
+      toast.error(apiMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -133,7 +192,7 @@ export default function CompanyEdit() {
 
         <div className="mt-6 rounded-2xl bg-white shadow-lg border border-orange-100/80">
           <div className="p-6 lg:p-8">
-            <form className="space-y-6" onSubmit={handleSubmit}>
+            <form className="space-y-6" onSubmit={handleSubmit} noValidate>
               <div className="grid grid-cols-1 lg:grid-cols-[auto,1fr] gap-6">
                 <div className="flex flex-col items-start gap-3">
                   <div className="w-28 h-28 rounded-2xl border border-orange-100 bg-orange-50 shadow-inner overflow-hidden flex items-center justify-center">
@@ -221,12 +280,6 @@ export default function CompanyEdit() {
                   </div>
                 </div>
               </div>
-
-              {errorMessage && (
-                <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-                  {errorMessage}
-                </div>
-              )}
 
               <div className="flex flex-wrap items-center gap-3">
                 <button

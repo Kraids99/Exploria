@@ -116,9 +116,9 @@ function Register() {
       const data = res.data ?? res;
 
       // ganti alertSuccess dengan toast.success biasa
-      alertSuccess("Registrasi berhasil! Selamat datang.");
-
+      
       navigate("/login");
+      alertSuccess("Registrasi berhasil! Silahkan login terlebih dahulu!");
     } catch (err) {
       console.log("ERROR REGISTER:", err);
 
