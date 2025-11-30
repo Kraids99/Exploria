@@ -23,6 +23,7 @@ import TiketCreate from "./pages/admin/tiket/TiketCreate.jsx";
 import TiketEdit from "./pages/admin/tiket/TiketEdit.jsx";
 import Pemesanan from "./pages/customer/Pemesanan.jsx";
 import ReviewPemesanan from "./pages/customer/ReviewPemesanan.jsx"; 
+import History from "./pages/customer/History.jsx";
 
 // routernya Admin
 function AdminRoute({ children }) {
@@ -53,7 +54,7 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<LandingRoute />} />
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/search" element={<SelectBus />} />
@@ -76,6 +77,7 @@ function App() {
           <Route path="/admin/tiket" element={<AdminRoute><Tiket /></AdminRoute>} />
           <Route path="/admin/tiket/create" element={<AdminRoute><TiketCreate /></AdminRoute>} />
           <Route path="/admin/tiket/:id/edit" element={<AdminRoute><TiketEdit /></AdminRoute>} />
+          <Route path="/history" element={<History />}/>
         </Routes>
       </BrowserRouter>
     </AuthProvider>
