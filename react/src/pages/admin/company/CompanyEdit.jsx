@@ -185,7 +185,7 @@ export default function CompanyEdit() {
             </p>
             <h1 className="text-2xl font-bold text-slate-900 mt-1">Edit Company</h1>
             <p className="text-sm text-orange-800/80">
-              Perbarui data company dan simpan perubahan.
+              Perbarui Company
             </p>
           </div>
         </div>

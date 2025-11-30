@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Pemesanan;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\EticketMail;
 
 class PembayaranController extends Controller
 {
@@ -96,23 +98,50 @@ class PembayaranController extends Controller
         $request->validate([
             // 0 = belum bayar, 1 = sudah bayar
             'status_pembayaran' => 'required|integer|in:0,1',
+            'send_email' => 'sometimes|boolean',
         ]);
 
-        $pembayaran = Pembayaran::find($id);
+        $pembayaran = Pembayaran::with(['pemesanan.user'])->find($id);
 
         if (!$pembayaran) {
             return response()->json(['message' => 'Data pembayaran tidak ditemukan'], 404);
         }
 
+        $emailAlreadySent = (bool) $pembayaran->mail_tiket;
+        $shouldSendEmail = (bool) $request->boolean('send_email');      
+
         $pembayaran->status_pembayaran = $request->status_pembayaran;
         $pembayaran->save();
 
         // kalau sudah bayar, sekalian update status_pemesanan
-        if ($request->status_pembayaran == 1) {
+        if($request->status_pembayaran == 1)
+        {
             $pemesanan = $pembayaran->pemesanan;
-            if ($pemesanan) {
+            if($pemesanan)
+            {
                 $pemesanan->status_pemesanan = 'Sudah Dibayar';
                 $pemesanan->save();
+            }
+        }
+
+        // kirim e-ticket
+        $sendTiket = $request->status_pembayaran == 1 && !$emailAlreadySent && $shouldSendEmail;
+        if($sendTiket)
+        {
+            $pemesanan = $pembayaran->pemesanan;
+            if($pemesanan && $pemesanan->user?->email) 
+            {
+                $pemesanan->loadMissing([
+                    'user',
+                    'rincianPemesanan.tiket.company',
+                    'rincianPemesanan.tiket.rute.asal',
+                    'rincianPemesanan.tiket.rute.tujuan',
+                ]);
+
+                Mail::to($pemesanan->user->email)->send(new EticketMail($pemesanan));
+                $pembayaran->mail_tiket = true;                      // tandai sudah kirim
+                $pembayaran->tanggal_pembayaran = now()->toDateString(); // isi tanggal kirim
+                $pembayaran->save();
             }
         }
 

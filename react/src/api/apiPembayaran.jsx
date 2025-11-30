@@ -18,6 +18,16 @@ const createPembayaran = async (data) => {
   }
 };
 
+const fetchPembayaran = async () => {
+  try {
+    const response = await useAxios.get("/pembayaran");
+    return response.data;
+  } catch (error) {
+    console.error("Pembayaran error:", error.response?.data || error);
+    throw error.response?.data || error;
+  }
+};
+
 const getPembayaranById = async (id) => {
   try {
     const response = await useAxios.get(`/pembayaran/${id}`);
@@ -40,4 +50,17 @@ const updatePembayaranStatus = async (id, status) => {
   }
 };
 
-export { createPembayaran, getPembayaranById, updatePembayaranStatus };
+const sendEticket = async (id) => {
+  try {
+    const response = await useAxios.put(`/pembayaran/update/${id}`, {
+      status_pembayaran: 1,
+      send_email: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("sendEticket error:", error.response?.data || error);
+    throw error.response?.data || error;
+  }
+};
+
+export { createPembayaran, fetchPembayaran, getPembayaranById, updatePembayaranStatus, sendEticket };

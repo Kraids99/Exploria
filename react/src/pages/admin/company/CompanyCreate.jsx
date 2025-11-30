@@ -146,7 +146,7 @@ return (
           </p>
           <h1 className="text-2xl font-bold text-slate-900 mt-1">Tambah Company</h1>
           <p className="text-sm text-orange-800/80">
-            Isi detail company, unggah logo, dan simpan untuk menambahkan data baru.
+            Isi Company
           </p>
         </div>
       </div>

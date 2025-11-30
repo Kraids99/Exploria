@@ -63,7 +63,7 @@ export default function LokasiList() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-semibold text-orange-900">Manajemen Lokasi</h1>
-            <p className="text-sm text-orange-700 mt-1">Kelola terminal dan kota.</p>
+            <p className="text-sm text-orange-700 mt-1">Kelola Lokasi</p>
           </div>
           <button
             type="button"

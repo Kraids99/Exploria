@@ -9,9 +9,10 @@ import { toast } from "react-toastify";
 import { alertSuccess } from "../../../lib/Alert.jsx";
 
 const styleForm = "block w-full rounded-xl border border-orange-100 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200 transition";
+const styleFormDisabled = `${styleForm} bg-slate-100 text-slate-500 cursor-not-allowed focus:ring-0 focus:border-orange-100`;
 
 // Format input datetime-local ke format backend (m/d/Y H:i:s)
-const toBackendDateTime = (value) => {
+const dateTime = (value) => {
   if (!value) return "";
   if (value.includes("T")) {
     const [date, time] = value.split("T");
@@ -25,10 +26,13 @@ const toBackendDateTime = (value) => {
 const countDuration = (start, end) => {
   const d1 = new Date(start);
   const d2 = new Date(end);
-  if (Number.isNaN(d1.getTime()) || Number.isNaN(d2.getTime())) return "";
+  if (Number(d1.getTime()) || Number(d2.getTime())) return "";
   const count = d2.getTime() - d1.getTime();
   return count > 0 ? Math.round(count / 60000) : "";
 };
+
+// Ambil waktu sekarang dalam format yang cocok untuk input datetime-local (YYYY-MM-DDTHH:mm)
+const toLocalInputValue = () => new Date().toISOString().slice(0, 16);
 
 export default function TiketCreate() {
   const navigate = useNavigate();
@@ -111,6 +115,14 @@ export default function TiketCreate() {
     // 3. Validasi waktu: keberangkatan harus < tiba (tidak boleh sama/lebih)
     const start = new Date(form.waktu_keberangkatan);
     const end = new Date(form.waktu_tiba);
+    const now = new Date();
+
+    if(!Number.isNaN(start.getTime()) && start < now) 
+    {
+      setErrorMessage("Waktu keberangkatan tidak boleh di masa lalu");
+      toast.error("Waktu keberangkatan tidak boleh di masa lalu");
+      return false;
+    }
 
     if (!Number.isNaN(start.getTime()) && !Number.isNaN(end.getTime())) {
       if (start >= end) {
@@ -163,8 +175,8 @@ export default function TiketCreate() {
     try {
       await createTiket({
         ...form,
-        waktu_keberangkatan: toBackendDateTime(form.waktu_keberangkatan),
-        waktu_tiba: toBackendDateTime(form.waktu_tiba),
+        waktu_keberangkatan: dateTime(form.waktu_keberangkatan),
+        waktu_tiba: dateTime(form.waktu_tiba),
       });
 
       navigate("/admin/tiket");
@@ -186,7 +198,7 @@ export default function TiketCreate() {
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-orange-700">Admin Panel</p>
             <h1 className="text-2xl font-bold text-slate-900 mt-1">Tambah Tiket</h1>
-            <p className="text-sm text-orange-800/80">Isi detail tiket dan simpan.</p>
+            <p className="text-sm text-orange-800/80">Isi Tiket</p>
           </div>
         </div>
 
@@ -263,6 +275,7 @@ export default function TiketCreate() {
                     required
                     className={styleForm}
                     placeholder="YYYY-MM-DDTHH:mm"
+                    min={toLocalInputValue()}
                   />
                 </div>
                 <div>
@@ -285,7 +298,7 @@ export default function TiketCreate() {
                     type="number"
                     value={form.durasi}
                     disabled
-                    className={`${styleForm} bg-slate-50`}
+                    className={styleFormDisabled}
                   />
                 </div>
                 <div>

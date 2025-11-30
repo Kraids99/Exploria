@@ -6,7 +6,7 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
-  const [initializing, setInitializing] = useState(true);
+  const [initializing, setInitializing] = useState(false);
 
   // showLoading true hanya untuk init pertama supaya tidak unmount children saat refreshAuth dipanggil
   const fetchAuth = async (showLoading = false) => {
@@ -56,15 +56,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={value}>
-      {initializing ? (
-        <div className="min-h-screen flex items-center justify-center bg-orange-50 text-orange-800 text-sm">
-          Memeriksa sesi...
-        </div>
-      ) : (
-        children
-      )}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
   );
 }
 

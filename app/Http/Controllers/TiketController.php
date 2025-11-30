@@ -50,6 +50,15 @@ class TiketController extends Controller
             'stok' => 'required|integer|min:0',
         ]);
 
+        // Pastikan waktu keberangkatan tidak di masa lalu
+        $berangkat = Carbon::createFromFormat('m/d/Y H:i:s', $request->waktu_keberangkatan);
+        if($berangkat->isPast()) 
+        {
+            return response()->json([
+                'message' => 'Waktu keberangkatan tidak boleh di masa lalu'
+            ], 422);
+        }
+
         $tiket = Tiket::create([
             'id_rute' => $request['id_rute'],
             'id_company' => $request['id_company'],

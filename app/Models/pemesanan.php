@@ -20,7 +20,7 @@ class Pemesanan extends Model
         'tanggal_pemesanan',
         'total_biaya_pemesanan',
         'status_pemesanan',
-        'kode_eticket',
+        'kode_tiket',
     ];
 
     protected function casts(): array

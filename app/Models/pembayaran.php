@@ -18,6 +18,8 @@ class Pembayaran extends Model   // ← huruf besar
         'id_pemesanan',
         'metode_pembayaran',
         'status_pembayaran',
+        'mail_tiket',
+        'tanggal_pembayaran',
     ];
 
     public function pemesanan()
@@ -32,4 +34,3 @@ class Pembayaran extends Model   // ← huruf besar
     }
     //satu pembayaran punya satu review 
 }
-

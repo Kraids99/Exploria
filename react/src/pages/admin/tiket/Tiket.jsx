@@ -76,7 +76,7 @@ export default function TiketList() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-semibold text-orange-900">Manajemen Tiket</h1>
-            <p className="text-sm text-orange-700 mt-1">Kelola data tiket.</p>
+            <p className="text-sm text-orange-700 mt-1">Kelola Tiket</p>
           </div>
           <button
             type="button"

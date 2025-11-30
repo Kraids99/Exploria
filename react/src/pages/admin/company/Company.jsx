@@ -63,7 +63,7 @@ export default function Company() {
           <div>
             <h1 className="text-2xl font-semibold text-orange-900">Manajemen Company</h1>
             <p className="text-sm text-orange-700 mt-1">
-              Tambah, ubah, dan kelola company yang tampil di aplikasi.
+              Kelola Company
             </p>
           </div>
 
@@ -95,7 +95,7 @@ export default function Company() {
                 {loading && (
                   <tr>
                     <td className="px-4 py-3 text-sm text-slate-700" colSpan={6}>
-                      Memuat data company...
+                      Memuat company...
                     </td>
                   </tr>
                 )}

@@ -55,7 +55,7 @@ export default function RuteList() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-semibold text-orange-900">Manajemen Rute</h1>
-            <p className="text-sm text-orange-700 mt-1">Kelola asal dan tujuan rute.</p>
+            <p className="text-sm text-orange-700 mt-1">Kelola Rute</p>
           </div>
           <button
             type="button"

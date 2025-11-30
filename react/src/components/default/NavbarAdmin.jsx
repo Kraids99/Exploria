@@ -6,6 +6,7 @@ import {
   MapPin,
   Route,
   Ticket,
+  CreditCard,
   User,
   LogOut,
   ChevronDown,
@@ -31,6 +32,7 @@ const defaultItems = [
   { label: "Lokasi", icon: MapPin, path: "/admin/lokasi" },
   { label: "Rute", icon: Route, path: "/admin/rute" },
   { label: "Tiket", icon: Ticket, path: "/admin/tiket" },
+  { label: "Pembayaran", icon: CreditCard, path: "/admin/pembayaran" },
   { label: "Laporan", icon: FileText, path: "/admin/laporan" },
 ];
 

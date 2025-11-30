@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_pemesanan');
             $table->string('metode_pembayaran', 50);
             $table->string('status_pembayaran', 50);
+            $table->boolean('mail_tiket')->default(false);
             $table->date('tanggal_pembayaran')->nullable();
 
             $table->foreign('id_pemesanan')

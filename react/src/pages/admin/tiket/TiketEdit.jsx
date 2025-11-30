@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { alertSuccess } from "../../../lib/Alert.jsx";
 
 const styleForm = "block w-full rounded-xl border border-orange-100 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200 transition";
+const styleFormDisabled = `${styleForm} bg-slate-100 text-slate-500 cursor-not-allowed focus:ring-0 focus:border-orange-100`;
 
 // Format ISO/string ke value yang cocok untuk <input type="datetime-local"> (lokal, tanpa Z)
 const toDateTimeLocal = (value) => {
@@ -221,7 +222,7 @@ export default function TiketEdit() {
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-orange-700">Admin Panel</p>
             <h1 className="text-2xl font-bold text-slate-900 mt-1">Edit Tiket</h1>
-            <p className="text-sm text-orange-800/80">Perbarui detail tiket dan simpan.</p>
+            <p className="text-sm text-orange-800/80">Perbarui Tiket</p>
           </div>
         </div>
 
@@ -320,7 +321,7 @@ export default function TiketEdit() {
                     type="number"
                     value={form.durasi}
                     disabled
-                    className={`${styleForm} bg-slate-50`}
+                    className={styleFormDisabled}
                   />
                 </div>
                 <div>

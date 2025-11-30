@@ -81,7 +81,7 @@ export default function RuteEdit() {
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-orange-700">Admin Panel</p>
             <h1 className="text-2xl font-bold text-slate-900 mt-1">Edit Rute</h1>
-            <p className="text-sm text-orange-800/80">Perbarui lokasi asal dan tujuan.</p>
+            <p className="text-sm text-orange-800/80">Perbarui Rute</p>
           </div>
         </div>
 

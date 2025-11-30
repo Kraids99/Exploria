@@ -21,6 +21,8 @@ import RuteEdit from "./pages/admin/rute/RuteEdit.jsx";
 import Tiket from "./pages/admin/tiket/Tiket.jsx";
 import TiketCreate from "./pages/admin/tiket/TiketCreate.jsx";
 import TiketEdit from "./pages/admin/tiket/TiketEdit.jsx";
+import PembayaranAdmin from "./pages/admin/pembayaran/Pembayaran.jsx";
+import Laporan from "./pages/admin/laporan/Laporan.jsx";
 import Pemesanan from "./pages/customer/Pemesanan.jsx";
 import ReviewPemesanan from "./pages/customer/ReviewPemesanan.jsx"; 
 
@@ -76,6 +78,8 @@ function App() {
           <Route path="/admin/tiket" element={<AdminRoute><Tiket /></AdminRoute>} />
           <Route path="/admin/tiket/create" element={<AdminRoute><TiketCreate /></AdminRoute>} />
           <Route path="/admin/tiket/:id/edit" element={<AdminRoute><TiketEdit /></AdminRoute>} />
+          <Route path="/admin/pembayaran" element={<AdminRoute><PembayaranAdmin /></AdminRoute>} />
+          <Route path="/admin/laporan" element={<AdminRoute><Laporan /></AdminRoute>} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

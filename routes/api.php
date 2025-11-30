@@ -60,8 +60,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Pembayaran
     Route::get('/pembayaran', [PembayaranController::class, 'index']);
     Route::get('/pembayaran/{id}', [PembayaranController::class, 'show']);
-    Route::post('/pembayaran/create', [PembayaranController::class, 'store']); 
-    Route::put('/pembayaran/update/{id}', [PembayaranController::class, 'update']); 
+    Route::post('/pembayaran/create', [PembayaranController::class, 'store']);
+    Route::put('/pembayaran/update/{id}', [PembayaranController::class, 'update']);
 });
 
 
@@ -124,4 +124,5 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
     // Route::put('/pembayaran/update/{id}', [PembayaranController::class, 'update']);
 
     // Review
+
 });
