@@ -24,7 +24,6 @@ function SelectBus() {
   const [toCity, setToCity] = useState(toCity1);
   const [date, setDate] = useState(date1);
 
-
   useEffect(() => {
     setFromCity(fromCity1);
     setToCity(toCity1);
@@ -39,7 +38,7 @@ function SelectBus() {
       try {
         setLoading(true);
         const data = await getLokasi();
-        const uniqueCities = [...new Set(data.map(item => item.kota))];
+        const uniqueCities = [...new Set(data.map((item) => item.kota))];
         setLocations(uniqueCities);
       } catch (error) {
         console.log("Error get lokasi:", error);
@@ -64,7 +63,7 @@ function SelectBus() {
     }
 
     return true;
-  }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -80,7 +79,7 @@ function SelectBus() {
       <div className="min-h-screen bg-[#F9FAFB] font-sans flex flex-col">
         <Navbar />
 
-        <main className="flex-1 mx-auto max-w-6xl px-4 pt-10 pb-16 flex items-center justify-center">
+        <main className="flex-1 mx-auto max-w-6xl px-4 pb-16 flex items-center justify-center pl-14 md:pl-0 pt-6 md:pt-24">
           <BusLoader message="Memuat daftar kota keberangkatan & tujuan..." />
         </main>
 
@@ -89,20 +88,21 @@ function SelectBus() {
     );
   }
 
-
   return (
-    <div className="min-h-screen bg-[#F9FAFB] font-sans">
+    <div className="min-h-screen bg-[#F9FAFB] font-sans flex flex-col">
       <Navbar />
 
-      <main className="mx-auto max-w-6xl px-4 pb-16 pt-10">
+      <main className="mx-auto max-w-6xl px-4 pb-16 pl-14 md:pl-0 pt-6 md:pt-24">
         <form onSubmit={handleSubmit}>
-          <section className="mt-16 mb-8 rounded-[15px] border border-slate-100 bg-white px-6 py-5 shadow-sm shadow-lg">
-            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-              <div className="grid grid-cols-6 gap-4 align-baseline">
+          <section className="mt-6 md:mt-16 mb-8 rounded-[15px] border border-slate-100 bg-white px-4 py-4 md:px-6 md:py-5 shadow-lg">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+              <div className="md:col-span-4">
                 <h1 className="text-xl font-bold text-slate-900 md:text-2xl">
                   Pilih Bus
                 </h1>
+              </div>
 
+              <div>
                 <FieldSelect
                   label="Kota asal"
                   placeholder="Pilih kota asal"
@@ -110,7 +110,9 @@ function SelectBus() {
                   onChange={(e) => setFromCity(e.target.value)}
                   options={locations}
                 />
+              </div>
 
+              <div>
                 <FieldSelect
                   label="Kota tujuan"
                   placeholder="Pilih kota tujuan"
@@ -118,27 +120,27 @@ function SelectBus() {
                   onChange={(e) => setToCity(e.target.value)}
                   options={locations}
                 />
+              </div>
 
-                <div className="col-span-2">
-                  <FieldDate
-                    label="Tanggal berangkat"
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                  />
-                </div>
+              <div>
+                <FieldDate
+                  label="Tanggal berangkat"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                />
+              </div>
 
-                <button
-                  type="submit"
-                  className="mt-2 md:mt-0
+              <button
+                type="submit"
+                className="mt-2 md:mt-0 w-full
                             flex h-12 items-center justify-center
                             bg-[#2b1302]
                             rounded-[999px] px-6 text-sm font-semibold text-white
                             shadow-md transition-all duration-200 ease-out
                             hover:bg-[#440d05] transition-colors"
-                >
-                  Ubah Pencarian
-                </button>
-              </div>
+              >
+                Ubah Pencarian
+              </button>
             </div>
           </section>
         </form>
@@ -146,7 +148,6 @@ function SelectBus() {
         <section className="space-y-4">
           <Tikets fromCity={fromCity} toCity={toCity} date={date} />
         </section>
-
       </main>
 
       <Footer />

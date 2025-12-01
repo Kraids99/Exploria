@@ -19,7 +19,6 @@ function Login() {
   const navigate = useNavigate();
 
   const validateLogin = () => {
-    // 1. cek kosong
     if (!email.trim() || !password.trim()) {
       const msg = "Email dan password wajib diisi";
       setErrorMsg(msg);
@@ -27,7 +26,6 @@ function Login() {
       return false;
     }
 
-    // 2. cek format email
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       const msg = "Format email tidak valid";
       setErrorMsg(msg);
@@ -35,7 +33,6 @@ function Login() {
       return false;
     }
 
-    // 3. cek panjang password
     if (password.length < 8) {
       const msg = "Password minimal 8 karakter";
       setErrorMsg(msg);
@@ -47,7 +44,6 @@ function Login() {
     return true;
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg("");
@@ -56,37 +52,26 @@ function Login() {
     if (!isValid) return;
 
     try {
-      const res = await SignIn({
-        email: email,
-        password: password,
-      });
+      const res = await SignIn({ email, password });
 
-      console.log("Login berhasil:", res);
-
-      // simpan token (bersihkan jika token terbungkus tanda kutip)
       const cleanedToken =
         typeof res.token === "string"
           ? res.token.replace(/^"+|"+$/g, "").trim()
           : res.token;
+
       localStorage.setItem("token", cleanedToken);
 
-      // update auth state dari server
       const authRes = await refreshAuth();
-      console.log("refreshAuth:", authRes);
 
-      // --- AMBIL DATA USER & SIMPAN KE LOCALSTORAGE ---
-      // opsi 1: kalau refreshAuth sudah mengembalikan user
       let userData = authRes?.user ?? authRes?.data ?? null;
 
-      // kalau masih null, pakai endpoint /user (getProfile)
       if (!userData) {
-        const profileRes = await getProfile();      // GET /user
-        userData = profileRes?.data ?? profileRes;  // sesuaikan sama bentuk respons backend
+        const profileRes = await getProfile();
+        userData = profileRes?.data ?? profileRes;
       }
 
       if (userData) {
         localStorage.setItem("user", JSON.stringify(userData));
-        console.log("user disimpan ke localStorage:", userData);
       }
 
       const isAdmin = authRes?.abilities?.includes("admin");
@@ -96,43 +81,52 @@ function Login() {
         navigate(isAdmin ? "/admin/company" : "/");
         alertSuccess("Selamat, Login Berhasil!");
       }, 1500);
-
     } catch (err) {
       console.log(err);
-      const apiMsg = "Login gagal";
       alertError("Username & Password salah");
-      setErrorMsg(apiMsg);
+      setErrorMsg("Login gagal");
     }
   };
 
-
   return (
     <div className="relative min-h-screen flex flex-col font-sans">
+      {/* NAVBAR FIXED */}
       <Navbar />
 
-
-      {/* FORM LOGIN */}
-      <main className=" relative flex-1 flex justify-center
-                        px-4 py-35        
-                        lg:items-center">
+      {/* MAIN: kasih padding top supaya nggak ketabrak navbar */}
+      <main
+        className="
+          relative flex-1 flex justify-center
+          px-4
+          pt-24 pb-10       /* jarak dari navbar di mobile */
+          sm:pt-28
+          md:pt-32 md:pb-16 /* lebih lega di layar besar */
+        "
+      >
+        {/* BACKGROUND */}
         <div className="absolute inset-0 -z-10">
           <img
             src={background}
             alt="Background Image Exploria"
             className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-linear-to-r from-slate-900/90 via-slate-900/50 to-slate-900/90" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/60 to-slate-900/90" />
         </div>
 
-        <div className="w-full max-w-md rounded-4xl bg-white p-8 shadow-2xl">
-
+        {/* CARD LOGIN */}
+        <div
+          className="
+            w-full max-w-md
+            rounded-3xl bg-white/95
+            p-6 sm:p-8
+            shadow-2xl
+          "
+        >
           <h1 className="text-center text-2xl font-bold text-slate-900">
             Masuk ke akunmu
           </h1>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-
-
             <div>
               <label className="block text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                 Email
@@ -141,7 +135,7 @@ function Login() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none"
+                className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none focus:border-[#f38f4a] focus:ring-2 focus:ring-[#f38f4a]/30"
                 placeholder="Masukkan email"
               />
             </div>
@@ -154,17 +148,21 @@ function Login() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none"
+                className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none focus:border-[#f38f4a] focus:ring-2 focus:ring-[#f38f4a]/30"
                 placeholder="Masukkan password"
               />
             </div>
-
+            
             <button
               type="submit"
-              className="mt-2 w-full rounded-full bg-[#f38f4a] px-4 py-2.5 
-              text-sm font-semibold text-white
-              shadow-md transition-all duration-200 ease-out
-              hover:bg-brand-600 hover:-translate-y-0.5"
+              className="
+                mt-2 w-full rounded-full
+                bg-[#f38f4a] px-4 py-2.5
+                text-sm font-semibold text-white
+                shadow-md transition-all duration-200
+                hover:bg-[#ea7b2a] hover:-translate-y-0.5
+                active:translate-y-0
+              "
             >
               Login
             </button>
@@ -172,20 +170,20 @@ function Login() {
 
           <p className="mt-4 text-center text-xs text-slate-500">
             Belum punya akun?
-            <Link to="/register" className="font-semibold text- ml-1">
+            <Link
+              to="/register"
+              className="ml-1 font-semibold text-[#f38f4a] hover:underline"
+            >
               Daftar di sini
             </Link>
           </p>
         </div>
       </main>
 
-      <div className="relative">
-        <Footer />
-      </div>
+      {/* FOOTER di bawah (ketarik karena flex-col + flex-1 di main) */}
+      <Footer />
     </div>
   );
 }
 
 export default Login;
-
-

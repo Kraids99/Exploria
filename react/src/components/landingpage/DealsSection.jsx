@@ -1,4 +1,3 @@
-// src/components/DealsSection.jsx
 const deals = [
   {
     title: "Diskon Hanya Untukmu",
@@ -40,7 +39,7 @@ function DealsSection() {
                 className="h-64 w-full object-cover opacity-90"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/40 to-transparent" />
-              <div className="absolute inset-0 flex flex-col justify-between p-5">
+              <div className="absolute inset-0 flex flex-col justify-between p-5 md:p-6">
                 <div className="flex justify-between text-[10px] font-medium">
                   <span className="rounded-full bg-black/50 px-3 py-1">
                     {deal.badge}
@@ -54,9 +53,13 @@ function DealsSection() {
                   <p className="mt-1 text-xs text-slate-100/80 md:text-sm">
                     {deal.description}
                   </p>
-                  <button className="
-                        mt-4 rounded-full bg-white px-4 py-1.5 text-xs font-semibold text-slate-900 
-                        hover:bg-black hover:text-brand-100 hover:transition-colors duration-200 ease-out">
+                  <button
+                    className="
+                      mt-4 rounded-full bg-white px-4 py-1.5 text-xs font-semibold text-slate-900 
+                      transition-colors duration-200 ease-out
+                      hover:bg-black hover:text-brand-100
+                    "
+                  >
                     Lihat selengkapnya
                   </button>
                 </div>

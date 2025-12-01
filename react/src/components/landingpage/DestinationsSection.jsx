@@ -2,27 +2,12 @@ import Bandung from "../../assets/destination/bandung.jpg";
 import Yogyakarta from "../../assets/destination/yogyakarta.jpg";
 import Surabaya from "../../assets/destination/surabaya.jpg";
 import Bali from "../../assets/destination/bali.jpg";
+
 const destinations = [
-  {
-    city: "Bandung",
-    caption: "150.000 akomodasi",
-    image: Bandung,
-  },
-  {
-    city: "Yogyakarta",
-    caption: "260.000 akomodasi",
-    image: Yogyakarta,
-  },
-  {
-    city: "Surabaya",
-    caption: "350.000 akomodasi",
-    image: Surabaya,
-  },
-  {
-    city: "Bali",
-    caption: "750.000 akomodasi",
-    image: Bali,
-  },
+  { city: "Bandung", caption: "150.000 akomodasi", image: Bandung },
+  { city: "Yogyakarta", caption: "260.000 akomodasi", image: Yogyakarta },
+  { city: "Surabaya", caption: "350.000 akomodasi", image: Surabaya },
+  { city: "Bali", caption: "750.000 akomodasi", image: Bali },
 ];
 
 function DestinationsSection() {
@@ -42,7 +27,7 @@ function DestinationsSection() {
           </p>
         </header>
 
-        <div className="grid gap-6 md:grid-cols-4">
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
           {destinations.map((item) => (
             <article
               key={item.city}

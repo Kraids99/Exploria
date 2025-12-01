@@ -71,11 +71,11 @@ export default function Company() {
     <div className="min-h-screen flex bg-orange-50">
       <NavbarAdmin />
 
-      <main className="flex-1 p-6 lg:p-10">
-        <div className="flex items-center justify-between">
+      <main className="flex-1 w-full overflow-x-hidden p-4 sm:p-6 lg:p-10">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-betwee">
           <div>
-            <h1 className="text-2xl font-semibold text-orange-900">Manajemen Company</h1>
-            <p className="text-sm text-orange-700 mt-1">
+            <h1 className="text-xl sm:text-2xl font-semibold text-orange-900">Manajemen Company</h1>
+            <p className="text-xs sm:text-sm text-orange-700 mt-1">
               Kelola Company
             </p>
           </div>
@@ -84,7 +84,7 @@ export default function Company() {
           <button
             type="button"
             onClick={() => navigate("/admin/company/create")}
-            className="inline-flex items-center gap-2 rounded-lg bg-orange-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-700"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg bg-orange-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-700"
           >
             <Plus className="w-4 h-4" />
             Tambah Company
@@ -93,21 +93,21 @@ export default function Company() {
 
         <div className="mt-6 rounded-2xl bg-white shadow-sm border border-orange-100">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-orange-100">
+            <table className="min-w-full divide-y divide-orange-100 text-xs sm:text-sm">
               <thead className="bg-orange-50">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-orange-700">Logo</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-orange-700">Nama Company</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-orange-700">Email</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-orange-700">No. Telp</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-orange-700">Alamat</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-orange-700 text-right">Aksi</th>
+                  <th className="px-4 py-3 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-orange-700">Logo</th>
+                  <th className="px-4 py-3 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-orange-700">Nama Company</th>
+                  <th className="px-4 py-3 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-orange-700">Email</th>
+                  <th className="px-4 py-3 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-orange-700">No. Telp</th>
+                  <th className="px-4 py-3 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-orange-700">Alamat</th>
+                  <th className="px-4 py-3 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-orange-700 text-right">Aksi</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-orange-100">
                 {loading && (
                   <tr>
-                    <td className="px-4 py-3 text-sm text-slate-700" colSpan={6}>
+                    <td className="px-4 sm:px-4 py-3 text-xs sm:text-sm text-slate-700" colSpan={6}>
                       Memuat company...
                     </td>
                   </tr>
@@ -122,8 +122,8 @@ export default function Company() {
                   const logoUrl = logoPath ? logoPath.startsWith("http") ? logoPath : `${BASE_URL}/storage/${logoPath}` : companyPlaceholder;
                   return (
                     <tr key={id} className="hover:bg-orange-50/70">
-                      <td className="px-4 py-3">
-                        <div className="w-12 h-12 overflow-hidden rounded-lg border border-orange-100 bg-orange-50 flex items-center justify-center">
+                      <td className="px-3 sm:px-4 py-3">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 overflow-hidden rounded-lg border border-orange-100 bg-orange-50 flex items-center justify-center">
                           <img
                             src={logoUrl}
                             alt={name}
@@ -141,11 +141,11 @@ export default function Company() {
                           />
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-sm font-semibold text-slate-900">{name}</td>
-                      <td className="px-4 py-3 text-sm text-slate-700">{email}</td>
-                      <td className="px-4 py-3 text-sm text-slate-700">{phone}</td>
-                      <td className="px-4 py-3 text-sm text-slate-700">{address}</td>
-                      <td className="px-4 py-3 text-sm text-right">
+                      <td className="px-3 sm:px-4 py-3 text-xs sm:text-sm font-semibold text-slate-900">{name}</td>
+                      <td className="px-3 sm:px-4 py-3 text-xs sm:text-sm text-slate-700">{email}</td>
+                      <td className="px-3 sm:px-4 py-3 text-xs sm:text-sm text-slate-700">{phone}</td>
+                      <td className="px-3 sm:px-4 py-3 text-xs sm:text-sm text-slate-700">{address}</td>
+                      <td className="px-3 sm:px-4 py-3 text-xs sm:text-sm text-right">
                         <div className="inline-flex items-center gap-3">
                           {/* Link ke halaman edit company */}
                           <Link

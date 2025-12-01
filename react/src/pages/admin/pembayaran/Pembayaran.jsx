@@ -141,40 +141,40 @@ export default function PembayaranAdmin() {
   };
 
   return (
-    <div className="min-h-screen flex bg-orange-50">
+    <div className="min-h-screen w-full flex bg-orange-50">
       <NavbarAdmin />
-      <main className="flex-1 p-6 lg:p-10">
+      <main className="flex-1 p-4 sm:p-6 lg:p-10">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div>
-            <h1 className="text-2xl font-semibold text-orange-900">Pembayaran</h1>
-            <p className="text-sm text-orange-700 mt-1">Kelola Pembayaran</p>
+            <h1 className="text-xl sm:text-2xl font-semibold text-orange-900">Pembayaran</h1>
+            <p className="text-xs sm:text-sm text-orange-700 mt-1">Kelola Pembayaran</p>
           </div>
         </div>
 
-        <div className="mt-6 rounded-2xl bg-white shadow-sm border border-orange-100">
+        <div className="mt-4 sm:mt-6 rounded-2xl bg-white shadow-sm border border-orange-100">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-orange-100">
               <thead className="bg-orange-50">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-orange-700">Kode Tiket</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-orange-700">User</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-orange-700">Metode</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-orange-700">Total</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-orange-700">Status</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-orange-700 text-right">Aksi</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-orange-700">Kode Tiket</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-orange-700">User</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-orange-700">Metode</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-orange-700">Total</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-orange-700">Status</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-orange-700 text-right">Aksi</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-orange-100">
                 {loading && (
                   <tr>
-                    <td className="px-4 py-4 text-sm text-slate-700" colSpan={6}>
+                    <td className="px-4 py-4 text-xs sm:text-sm text-slate-700" colSpan={6}>
                       Memuat pembayaran...
                     </td>
                   </tr>
                 )}
                 {error && !loading && (
                   <tr>
-                    <td className="px-4 py-4 text-sm text-red-600" colSpan={6}>
+                    <td className="px-4 py-4 text-xs sm:text-sm text-red-600" colSpan={6}>
                       {error}
                     </td>
                   </tr>
@@ -196,18 +196,18 @@ export default function PembayaranAdmin() {
                   return (
                     <React.Fragment key={rowKey}>
                       <tr className="hover:bg-orange-50/70">
-                        <td className="px-4 py-3 text-sm font-semibold text-slate-900">{pemesanan.kode_tiket ?? "-"}</td>
-                        <td className="px-4 py-3 text-sm text-slate-700">
+                        <td className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-semibold text-slate-900">{pemesanan.kode_tiket ?? "-"}</td>
+                        <td className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-slate-700">
                           <div className="flex flex-col">
                             <span className="font-medium text-slate-900">{user.nama ?? "-"}</span>
-                            <span className="text-xs text-slate-600">{user.email ?? "-"}</span>
+                            <span className="text-[11px] text-slate-600">{user.email ?? "-"}</span>
                           </div>
                         </td>
-                        <td className="px-4 py-3 text-sm text-slate-700">{pembayaran.metode_pembayaran ?? "-"}</td>
-                        <td className="px-4 py-3 text-sm text-slate-700">{formatRupiah(pemesanan.total_biaya_pemesanan)}</td>
-                        <td className="px-4 py-3 text-sm">
+                        <td className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-slate-700">{pembayaran.metode_pembayaran ?? "-"}</td>
+                        <td className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-slate-700">{formatRupiah(pemesanan.total_biaya_pemesanan)}</td>
+                        <td className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm">
                           <span
-                            className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold ${
+                            className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] sm:text-xs font-semibold ${
                               isPaid ? "bg-green-100 text-green-800" : "bg-amber-100 text-amber-800"
                             }`}
                           >
@@ -215,13 +215,13 @@ export default function PembayaranAdmin() {
                             {getStatusText(pembayaran.status_pembayaran)}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-sm text-right">
-                          <div className="inline-flex items-center gap-2">
+                        <td className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-right">
+                          <div className="inline-flex flex-wrap items-center gap-2 justify-end">
                             {!isPaid && (
                               <button
                                 type="button"
                                 onClick={() => handleBayar(pembayaran.id_pembayaran)}
-                                className="inline-flex items-center gap-1 rounded-lg bg-green-600 px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-green-700 disabled:opacity-50"
+                                className="inline-flex items-center gap-1 rounded-lg bg-green-600 px-3 py-2 text-[11px] sm:text-xs font-semibold text-white shadow-sm hover:bg-green-700 disabled:opacity-50"
                                 disabled={updatingId === pembayaran.id_pembayaran}
                               >
                                 <CheckCircle2 className="w-4 h-4" />

@@ -138,7 +138,7 @@ export default function CompanyCreate() {
 return (
   <div className="min-h-screen flex bg-gradient-to-br from-orange-50 to-orange-100/40">
     <NavbarAdmin />
-    <main className="flex-1 p-6 lg:p-10">
+    <main className="flex-1 w-full overflow-x-hidden p-4 sm:p-6 lg:p-10">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-orange-700">
@@ -242,25 +242,25 @@ return (
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3">
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="inline-flex items-center justify-center rounded-xl bg-orange-600 px-5 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-orange-700 disabled:opacity-60 disabled:cursor-not-allowed"
+                className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl bg-orange-600 px-5 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-orange-700 disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? "Menyimpan..." : "Simpan Company"}
               </button>
               <button
                 type="button"
                 onClick={handleReset}
-                className="inline-flex items-center justify-center rounded-xl border border-orange-200 px-4 py-3 text-sm font-semibold text-orange-800 transition hover:bg-orange-50"
+                className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl border border-orange-200 px-4 py-3 text-sm font-semibold text-orange-800 transition hover:bg-orange-50"
               >
                 Reset
               </button>
               <button
                 type="button"
                 onClick={() => navigate("/admin/company")}
-                className="inline-flex items-center justify-center rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
               >
                 Kembali
               </button>

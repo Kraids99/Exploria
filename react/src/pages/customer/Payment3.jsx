@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 
-import Navbar from "../../components/default/Navbar";
 import Footer from "../../components/default/Footer";
 import header from "../../assets/busHeader.jpeg";
 import BusLoader from "../../components/default/BusLoader.jsx";
@@ -10,8 +9,6 @@ import BusLoader from "../../components/default/BusLoader.jsx";
 import { getTiketById } from "../../api/apiTiket.jsx";
 import { createReview } from "../../api/apiReview.jsx";
 import { toast } from "react-toastify";
-
-import QRCode from "react-qr-code";
 
 function Payment3() {
   const navigate = useNavigate();
@@ -28,6 +25,43 @@ function Payment3() {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [submittingReview, setSubmittingReview] = useState(false);
+
+  // 🔒 Kunci tombol back browser & backspace (seperti Payment & Payment2)
+  useEffect(() => {
+    // dorong state dummy biar pointer history ada di sini
+    window.history.pushState({ lockedPayment3: true }, "", window.location.href);
+
+    const handlePopState = () => {
+      toast.error(
+        "Tidak bisa kembali ke halaman sebelumnya setelah E-Ticket diterbitkan."
+      );
+      window.history.pushState(
+        { lockedPayment3: true },
+        "",
+        window.location.href
+      );
+    };
+
+    const handleKeyDown = (e) => {
+      if (
+        e.key === "Backspace" &&
+        (e.target === document.body || e.target === document.documentElement)
+      ) {
+        e.preventDefault();
+        toast.error(
+          "Tidak bisa kembali ke halaman sebelumnya setelah E-Ticket diterbitkan."
+        );
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   // Ambil detail tiket berdasarkan id_tiket
   useEffect(() => {
@@ -61,11 +95,10 @@ function Payment3() {
     }
   }, [id]);
 
-  // ---- state loading / error ----
+  // ---- state loading / error (tanpa Navbar) ----
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#F5F5F7]">
-        <Navbar />
+      <div className="min-h-screen flex flex-col bg-[#F5F5F7] font-sans">
         <main className="flex-1 flex items-center justify-center">
           <BusLoader message="Memuat detail pembayaran..." />
         </main>
@@ -76,8 +109,7 @@ function Payment3() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#F5F5F7]">
-        <Navbar />
+      <div className="min-h-screen flex flex-col bg-[#F5F5F7] font-sans">
         <main className="flex-1 flex items-center justify-center">
           <p className="text-sm text-red-500">{error}</p>
         </main>
@@ -88,8 +120,7 @@ function Payment3() {
 
   if (!tiket) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#F5F5F7]">
-        <Navbar />
+      <div className="min-h-screen flex flex-col bg-[#F5F5F7] font-sans">
         <main className="flex-1 flex items-center justify-center">
           <p className="text-sm text-slate-600">Tiket tidak ditemukan.</p>
         </main>
@@ -115,7 +146,7 @@ function Payment3() {
   const arrivalCity = tiket.rute?.tujuan?.kota || "-";
   const arrivalTerminal = tiket.rute?.tujuan?.terminal || "-";
 
-  // kode E-Ticket — pakai yang dari DB (kode_tiket), fallback kalau tidak ada
+  // kode E-Ticket
   const storedUser = localStorage.getItem("user");
   const user = storedUser ? JSON.parse(storedUser) : null;
   const userCode = user ? (user.id_user || user.id) : "guest";
@@ -144,7 +175,7 @@ function Payment3() {
 
       await createReview({
         id_pembayaran: id_pembayaran,
-        id_tiket: tiket.id_tiket || Number(id),   
+        id_tiket: tiket.id_tiket || Number(id),
         rating,
         komentar: comment,
       });
@@ -153,7 +184,6 @@ function Payment3() {
       navigate("/"); // kembali ke beranda
     } catch (err) {
       console.error(err);
-      // coba ambil pesan dari backend kalau ada
       const backendMsg =
         err?.errors?.id_tiket?.[0] ||
         err?.message ||
@@ -164,12 +194,10 @@ function Payment3() {
     }
   };
 
-
   return (
-    <div className="min-h-screen bg-slate-50 font-sans">
-      <Navbar />
-
-      <section className="max-w-5xl mx-auto px-4 pt-6">
+    <div className="min-h-screen bg-slate-50 font-sans flex flex-col">
+      {/* HEADER IMAGE */}
+      <section className="max-w-5xl mx-auto px-4 pt-6 w-full">
         <div className="rounded-3xl overflow-hidden shadow-md">
           <img
             src={header}
@@ -179,93 +207,97 @@ function Payment3() {
         </div>
       </section>
 
+      {/* STEP INDICATOR */}
+      <section className="max-w-4xl mx-auto w-full px-4 mt-8">
+        <div className="bg-white rounded-2xl shadow-md px-4 py-6 md:px-8 md:py-8">
+          <h1 className="text-xl md:text-2xl font-semibold text-slate-900 mb-4">
+            {companyName}
+          </h1>
 
-      <div className="bg-white rounded-2xl shadow-md p-6 md:p-8 max-w-4xl mx-auto px-4 py-10 mt-10">
-        <h1 className="text-2xl font-semibold text-slate-900 mb-4">
-          {companyName}
-        </h1>
-
-        <div className="flex flex-wrap items-center gap-6 justify-start md:justify-center mb-6">
-          {["Pesan", "Review", "Bayar", "E-Ticket"].map((label, idx) => (
-            <div
-              key={label}
-              className="flex items-center gap-2 text-sm font-medium"
-            >
+          <div className="flex flex-wrap items-center gap-4 justify-start md:justify-center mb-2">
+            {["Pesan", "Review", "Bayar", "E-Ticket"].map((label, idx) => (
               <div
-                className={`w-8 h-8 flex items-center justify-center rounded-full border-2 ${idx === 3
-                  ? "bg-orange-500 border-orange-500 text-white"
-                  : "border-slate-300 text-slate-500"
+                key={label}
+                className="flex items-center gap-2 text-xs md:text-sm font-medium"
+              >
+                <div
+                  className={`w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-full border-2 ${
+                    idx === 3
+                      ? "bg-orange-500 border-orange-500 text-white"
+                      : "border-slate-300 text-slate-500"
                   }`}
-              >
-                {idx + 1}
+                >
+                  {idx + 1}
+                </div>
+                <span
+                  className={
+                    idx === 3 ? "text-slate-900" : "text-slate-500"
+                  }
+                >
+                  {label}
+                </span>
+                {idx < 3 && (
+                  <div className="hidden md:block w-12 md:w-16 h-px bg-slate-200 mx-1" />
+                )}
               </div>
-              <span
-                className={
-                  idx === 2 ? "text-slate-900" : "text-slate-500"
-                }
-              >
-                {label}
-              </span>
-              {idx < 3 && (
-                <div className="hidden md:block w-16 h-px bg-slate-200 mx-1" />
-              )}
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      </section>
 
       {/* KONTEN */}
-      <div className="w-[90%] md:w-[80%] mx-auto bg-white p-6 rounded-xl shadow mt-6">
+      <section className="w-[92%] md:w-[80%] max-w-4xl mx-auto bg-white p-5 md:p-8 rounded-xl shadow mt-6 mb-10">
         {/* Ringkasan perjalanan */}
-        <div className="mt-2 bg-gray-50 rounded-2xl shadow-md p-6 md:p-8">
-          <p className="text-lg font-bold mb-4">Pembayaran Berhasil!</p>
+        <div className="mt-2 bg-gray-50 rounded-2xl shadow-md p-5 md:p-7">
+          <p className="text-base md:text-lg font-bold mb-4">
+            Pembayaran Berhasil!
+          </p>
 
-          <div className="flex justify-between items-center w-full">
+          <div className="flex flex-col md:flex-row justify-between items-center w-full gap-4">
             <div className="text-left">
               <p className="text-sm font-bold">
                 {departureDate} - {departureTime}
               </p>
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-600 text-xs md:text-sm">
                 {departureCity} - {departureTerminal}
               </p>
             </div>
 
             <div className="text-center mx-4 shrink-0">
-              <p className="text-blue-950 font-extrabold text-sm">
+              <p className="text-blue-950 font-extrabold text-xs md:text-sm">
                 {companyName}
               </p>
-              <p className="text-4xl text-orange-600 font-extrabold">→</p>
+              <p className="text-3xl md:text-4xl text-orange-600 font-extrabold">
+                →
+              </p>
             </div>
 
             <div className="text-right">
               <p className="text-sm font-bold">
                 {arrivalDate} - {arrivalTime}
               </p>
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-600 text-xs md:text-sm">
                 {arrivalCity} - {arrivalTerminal}
               </p>
             </div>
           </div>
         </div>
 
-        {/* QR / Barcode E-Ticket */}
-        <div className="mt-6 flex flex-col items-center gap-2">
+        {/* Kode E-Ticket (tanpa barcode) */}
+        <div className="mt-6 bg-gray-50 rounded-2xl p-4 md:p-5 text-center shadow-sm">
           <p className="text-sm text-slate-600">
-            E-Ticket (tunjukkan saat naik bus)
+            E-Ticket akan segera dikirimkan ke Email Anda
           </p>
-          <div className="bg-white p-4 rounded-2xl shadow">
-            <QRCode value={eticketCode} size={128} />
-          </div>
-          <p className="text-[10px] text-slate-400 break-all mt-1">
-            {eticketCode}
+          <p className="mt-1 text-[11px] md:text-xs text-slate-400">
+            Simpan E-ticket dan jangan dibagikan ke orang lain.
           </p>
         </div>
 
         {/* Bagian review */}
-        <p className="text-center text-black text-3xl mt-12 mb-2">
+        <p className="text-center text-black text-2xl md:text-3xl mt-10 mb-2">
           Bagaimana Pengalaman Anda?
         </p>
-        <p className="text-center text-gray-500 text-xs mb-4">
+        <p className="text-center text-gray-500 text-xs md:text-sm mb-4">
           Berikan rating dan ulasan terkait dengan layanan kami
         </p>
 
@@ -307,7 +339,7 @@ function Payment3() {
             type="submit"
             disabled={submittingReview}
             className="w-full bg-orange-500 text-white py-2 rounded-xl 
-                       font-semibold text-sm hover:bg-[#cf4230] transition-colors
+                       font-semibold text-sm md:text-base hover:bg-[#cf4230] transition-colors
                        disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {submittingReview
@@ -318,12 +350,12 @@ function Payment3() {
 
         <button
           type="button"
-          className="mt-2 w-full text-xs text-gray-500 underline"
+          className="mt-2 w-full text-[11px] md:text-xs text-gray-500 underline"
           onClick={() => navigate("/")}
         >
           Lewati, langsung kembali ke beranda
         </button>
-      </div>
+      </section>
 
       <Footer />
     </div>

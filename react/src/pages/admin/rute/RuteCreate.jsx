@@ -38,10 +38,34 @@ export default function RuteCreate() {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
   };
 
+  const validateData = () => {
+    if(!form.id_lokasi_asal || !form.id_lokasi_tujuan){
+      setErrorMessage("Lokasi tidak boleh kosong!")
+      toast.error("Lokasi tidak boleh kosong!");
+      return false; 
+    }
+    
+    if(form.id_lokasi_asal === form.id_lokasi_tujuan){
+      setErrorMessage("Lokasi Tujuan dan Asal tidak boleh sama!")
+      toast.error("Lokasi Tujuan dan Asal tidak boleh sama!");
+      return false; 
+    }
+
+    setErrorMessage("");
+    return true; 
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setErrorMessage("");
+
+    const isValid = validateData(); 
+    if(!isValid){
+      setIsSubmitting(false); 
+      return; 
+    }
+
     try {
       await createRute(form);
       navigate("/admin/rute");
@@ -69,7 +93,7 @@ export default function RuteCreate() {
 
         <div className="mt-6 rounded-2xl bg-white shadow-lg border border-orange-100/80">
           <div className="p-6 lg:p-8">
-            <form className="space-y-6" onSubmit={handleSubmit}>
+            <form className="space-y-6" onSubmit={handleSubmit} noValidate>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
                   <label className="block text-sm font-medium text-slate-800 mb-1">Lokasi Asal *</label>

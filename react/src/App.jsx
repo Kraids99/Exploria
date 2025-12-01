@@ -29,8 +29,16 @@ import History from "./pages/customer/History.jsx";
 
 // routernya Admin
 function AdminRoute({ children }) {
-  const { isAuthenticated, isAdmin } = useAuth();
+  const { isAuthenticated, isAdmin, initializing} = useAuth();
 
+  if(initializing){
+    return(
+      <div className="min-h-screen flex items-center justify-center bg-orange-50">
+        <p className="text-sm text-slate-600">Memuat....</p>
+      </div>
+    )
+  }
+  
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }

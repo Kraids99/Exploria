@@ -6,8 +6,13 @@
   box-sizing: border-box;
 }
 
+html, body, #root{
+  height : 100%; 
+}
+
 body {
-  @apply bg-slate-50 text-slate-900 antialiased;
+  margin: 0; 
+  @apply bg-orange-50;
 }
 
 /* ==== Bus Loader Animation ==== */
@@ -21,6 +26,7 @@ body {
   background: linear-gradient(135deg, #ff7a45, #ff5a1f);
   box-shadow: 0 6px 14px rgba(15, 23, 42, 0.25);
   animation: bus-move 1.6s linear infinite;
+  transform-origin: center bottom; 
 }
 
 /* supaya kelihatan kayak goyang dikit */

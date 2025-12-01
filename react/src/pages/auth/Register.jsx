@@ -116,7 +116,7 @@ function Register() {
       const data = res.data ?? res;
 
       // ganti alertSuccess dengan toast.success biasa
-      
+
       navigate("/login");
       alertSuccess("Registrasi berhasil! Silahkan login terlebih dahulu!");
     } catch (err) {
@@ -164,13 +164,18 @@ function Register() {
           <h1 className="mb-6 text-centertext-center text-2xl font-bold text-slate-900 text-xl font-bold text-center">Daftar Akun Customer</h1>
 
           <form className="space-y-4 rounded-[15px]" onSubmit={handleRegister}>
-            <input name="nama" onChange={handleChange} placeholder="Nama" className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none" />
-            <input name="no_telp" onChange={handleChange} placeholder="No Telepon" className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none" />
-            <input name="email" onChange={handleChange} placeholder="Email" className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none" />
-            <input type="date" name="tanggal_lahir" onChange={handleChange} className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none" />
+            <input name="nama" onChange={handleChange} placeholder="Nama" className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none focus:border-[#f38f4a] focus:ring-2 focus:ring-[#f38f4a]/30" />
+            <input name="no_telp" onChange={handleChange} placeholder="No Telepon" className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none focus:border-[#f38f4a] focus:ring-2 focus:ring-[#f38f4a]/30" />
+            <input name="email" onChange={handleChange} placeholder="Email" className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none focus:border-[#f38f4a] focus:ring-2 focus:ring-[#f38f4a]/30" />
+            <label className="block text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+              Tanggal Lahir
+            </label>
+            <input type="date" name="tanggal_lahir" onChange={handleChange} className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none focus:border-[#f38f4a] focus:ring-2 focus:ring-[#f38f4a]/30" />
 
             <div className="space-y-2">
-              <p className="text-sm font-semibold text-slate-700">Jenis Kelamin</p>
+               <label className="block text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                Jenis Kelamin
+              </label>
               <div className="flex gap-4">
                 <label className="inline-flex items-center gap-2 text-sm text-slate-700">
                   <input
@@ -197,8 +202,8 @@ function Register() {
               </div>
             </div>
 
-            <input name="password" type="password" onChange={handleChange} placeholder="Password" className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none" />
-            <input name="password_confirmation" type="password" onChange={handleChange} placeholder="Konfirmasi Password" className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none" />
+            <input name="password" type="password" onChange={handleChange} placeholder="Password" className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none focus:border-[#f38f4a] focus:ring-2 focus:ring-[#f38f4a]/30" />
+            <input name="password_confirmation" type="password" onChange={handleChange} placeholder="Konfirmasi Password" className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-sm text-slate-900 outline-none focus:border-[#f38f4a] focus:ring-2 focus:ring-[#f38f4a]/30" />
 
             <button
               type="submit"

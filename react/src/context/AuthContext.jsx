@@ -6,7 +6,7 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
-  const [initializing, setInitializing] = useState(false);
+  const [initializing, setInitializing] = useState(true);
 
   // showLoading true hanya untuk init pertama supaya tidak unmount children saat refreshAuth dipanggil
   const fetchAuth = async (showLoading = false) => {
@@ -53,6 +53,7 @@ export function AuthProvider({ children }) {
     isCustomer: role === "customer",
     refreshAuth: () => fetchAuth(false),
     logout,
+    initializing,
   };
 
   return (

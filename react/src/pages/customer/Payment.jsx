@@ -21,6 +21,7 @@ import walletGopay from "../../assets/wallets/wallet-gopay.png";
 import { getPemesananById } from "../../api/apiPemesanan.jsx";
 import { createPembayaran } from "../../api/apiPembayaran.jsx";
 import { toast } from "react-toastify";
+import { alertError } from "../../lib/Alert.jsx";
 
 function Payment() {
   // sekarang id yang dipakai = id_pemesanan
@@ -32,6 +33,39 @@ function Payment() {
   const [loading, setLoading] = useState(false);
   const [payLoading, setPayLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    // dorong state dummy, supaya history pointer ada di sini
+    window.history.pushState({ paymentLock: true }, "", window.location.href);
+
+    const handlePopState = () => {
+      // ini kepanggil ketika user klik tombol back browser
+      toast.error("Tidak bisa kembali ke halaman sebelumnya saat proses pembayaran.");
+
+      // dorong lagi state yg sama supaya user tetap di halaman ini
+      window.history.pushState({ paymentLock: true }, "", window.location.href);
+    };
+
+    const handleKeyDown = (e) => {
+      // kalau user pencet Backspace saat fokus di body (bukan di input/textarea)
+      if (
+        e.key === "Backspace" &&
+        (e.target === document.body || e.target === document.documentElement)
+      ) {
+        e.preventDefault();
+        toast.error("Tidak bisa kembali ke halaman sebelumnya saat proses pembayaran.");
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
 
   useEffect(() => {
     const fetchDetail = async () => {
@@ -46,7 +80,10 @@ function Payment() {
 
         // ambil tiket dari rincian_pemesanans (relasi)
         const rincianList =
-          pem.rincianPemesanan || pem.rincian_pemesanans || pem.rincian_pemesanan || [];
+          pem.rincianPemesanan ||
+          pem.rincian_pemesanans ||
+          pem.rincian_pemesanan ||
+          [];
         const firstRincian = rincianList[0];
 
         // kalau eager-loaded tiket di backend, pakai langsung
@@ -73,12 +110,12 @@ function Payment() {
     }
   }, [id_pemesanan]);
 
-  // state loading / error
+  // state loading / error (TANPA NAVBAR DI PAYMENT)
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 font-sans flex flex-col">
-        <Navbar />
-        <main className="flex-1 flex items-center justify-center">
+        {/* Navbar sengaja tidak ditampilkan di tahap pembayaran */}
+        <main className="flex-1 flex items-center justify-center pt-6 md:pt-24 px-4">
           <BusLoader message="Memuat detail pembayaran..." />
         </main>
         <Footer />
@@ -89,9 +126,8 @@ function Payment() {
   if (error) {
     return (
       <div className="min-h-screen bg-slate-50 font-sans flex flex-col">
-        <Navbar />
-        <main className="flex-1 flex items-center justify-center">
-          <p className="text-sm text-red-500">{error}</p>
+        <main className="flex-1 flex items-center justify-center pt-6 md:pt-24 px-4">
+          <p className="text-sm text-red-500 text-center">{error}</p>
         </main>
         <Footer />
       </div>
@@ -101,9 +137,10 @@ function Payment() {
   if (!pemesanan || !tiket) {
     return (
       <div className="min-h-screen bg-slate-50 font-sans flex flex-col">
-        <Navbar />
-        <main className="flex-1 flex items-center justify-center">
-          <p className="text-sm text-slate-600">Data pemesanan tidak lengkap.</p>
+        <main className="flex-1 flex items-center justify-center pt-6 md:pt-24 px-4">
+          <p className="text-sm text-slate-600 text-center">
+            Data pemesanan tidak lengkap.
+          </p>
         </main>
         <Footer />
       </div>
@@ -126,7 +163,10 @@ function Payment() {
 
   const harga = tiket.harga ? Number(tiket.harga) : 0;
   const rincianList =
-    pemesanan.rincianPemesanan || pemesanan.rincian_pemesanans || pemesanan.rincian_pemesanan || [];
+    pemesanan.rincianPemesanan ||
+    pemesanan.rincian_pemesanans ||
+    pemesanan.rincian_pemesanan ||
+    [];
   const rincian = rincianList[0] || {};
   const jumlahKursi = rincian.jumlah_tiket || 0;
 
@@ -157,23 +197,20 @@ function Payment() {
 
       const payload = {
         id_pemesanan: pemesanan.id_pemesanan,
-        metode_pembayaran: channelId,  // silakan sesuaikan nama field di backend
+        metode_pembayaran: channelId, // sesuaikan dengan backend
         jenis_channel: channelType,
       };
-
 
       const res = await createPembayaran(payload);
       const pembayaran = res?.data ?? res;
 
-      toast.success("Pembayaran berhasil dibuat, lanjut ke instruksi pembayaran");
+      toast.success(
+        "Pembayaran berhasil dibuat, lanjut ke instruksi pembayaran"
+      );
 
-      // setelah create pembayaran, arahkan ke halaman instruksi / detail pembayaran
-      // sesuaikan path kalau kamu pakai route lain
-      // setelah createPembayaran(...)
       navigate(
         `/payment/${pembayaran.id_pembayaran}?channel=${channelId}&type=${channelType}`
       );
-
     } catch (err) {
       console.error(err);
       const msg =
@@ -187,151 +224,176 @@ function Payment() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans">
-      <Navbar />
+    <div className="min-h-screen bg-slate-50 font-sans flex flex-col">
+      {/* Navbar DITIDAKKAN di tahap pembayaran */}
 
-      {/* Header bus */}
-      <section className="max-w-5xl mx-auto px-4 pt-6">
-        <div className="rounded-3xl overflow-hidden shadow-md">
-          <img
-            src={header}
-            alt={companyName}
-            className="w-full h-36 md:h-44 lg:h-52 object-cover opacity-70"
-          />
-        </div>
-      </section>
+      <main className="flex-1 pt-6 md:pt-10 pb-16 px-4">
+        {/* Header bus */}
+        <section className="max-w-5xl mx-auto">
+          <div className="rounded-3xl overflow-hidden shadow-md">
+            <img
+              src={header}
+              alt={companyName}
+              className="w-full h-36 md:h-44 lg:h-52 object-cover opacity-70"
+            />
+          </div>
+        </section>
 
-      <div className="bg-white rounded-2xl shadow-md p-6 md:p-8 max-w-4xl mx-auto px-4 py-10 mt-10">
+        {/* STEP + INFO PERUSAHAAN */}
+        <section className="max-w-4xl mx-auto mt-6">
+          <div className="bg-white rounded-2xl shadow-md px-4 py-5 md:px-6 md:py-6">
+            <h1 className="text-xl md:text-2xl font-semibold text-slate-900 mb-4 text-center md:text-left">
+              {companyName}
+            </h1>
 
-        <h1 className="text-2xl font-semibold text-slate-900 mb-4">
-          {companyName}
-        </h1>
+            <div className="flex flex-wrap items-center gap-4 md:gap-6 justify-center mb-2 md:mb-0">
+              {["Pesan", "Review", "Bayar", "E-Ticket"].map((label, idx) => (
+                <div
+                  key={label}
+                  className="flex items-center gap-2 text-xs md:text-sm font-medium"
+                >
+                  <div
+                    className={`w-8 h-8 flex items-center justify-center rounded-full border-2 ${idx === 2
+                      ? "bg-orange-500 border-orange-500 text-white"
+                      : "border-slate-300 text-slate-500"
+                      }`}
+                  >
+                    {idx + 1}
+                  </div>
+                  <span
+                    className={
+                      idx === 2 ? "text-slate-900" : "text-slate-500"
+                    }
+                  >
+                    {label}
+                  </span>
+                  {idx < 3 && (
+                    <div className="hidden md:block w-16 h-px bg-slate-200 mx-1" />
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
-        <div className="flex flex-wrap items-center gap-6 justify-start md:justify-center mb-6">
-          {["Pesan", "Review", "Bayar", "E-Ticket"].map((label, idx) => (
-            <div
-              key={label}
-              className="flex items-center gap-2 text-sm font-medium"
-            >
-              <div
-                className={`w-8 h-8 flex items-center justify-center rounded-full border-2 ${idx === 2
-                  ? "bg-orange-500 border-orange-500 text-white"
-                  : "border-slate-300 text-slate-500"
-                  }`}
-              >
-                {idx + 1}
+        {/* KONTEN PAYMENT */}
+        <section className="max-w-5xl mx-auto mt-8">
+          <div className="bg-white rounded-2xl shadow-md px-4 py-5 md:px-8 md:py-8">
+            <h2 className="text-base md:text-lg font-bold mb-4">BAYAR</h2>
+
+            {/* ringkasan perjalanan */}
+            <div className="flex flex-col md:flex-row justify-between items-center mb-6 border-b border-slate-200 pb-6 gap-4">
+              <div className="text-left text-sm">
+                <p className="font-semibold">{departureCity}</p>
+                <p className="font-semibold">{departureTerminal}</p>
+                <p className="text-gray-600 text-xs md:text-sm">
+                  {departureTime}
+                </p>
               </div>
-              <span
-                className={
-                  idx === 1 ? "text-slate-900" : "text-slate-500"
-                }
+
+              <div className="text-center text-blue-950 font-extrabold">
+                <p className="text-xs md:text-sm">{companyName}</p>
+                <p className="text-3xl md:text-4xl text-orange-600">→</p>
+              </div>
+
+              <div className="text-right text-sm">
+                <p className="font-semibold">{arrivalCity}</p>
+                <p className="font-semibold">{arrivalTerminal}</p>
+                <p className="text-gray-600 text-xs md:text-sm">
+                  {arrivalTime}
+                </p>
+              </div>
+            </div>
+
+
+            {/* Total pembayaran */}
+            <div className="mt-4 mb-6 w-full">
+              <div
+                className="
+                flex flex-col sm:flex-row
+                sm:items-center sm:justify-between
+                rounded-2xl border border-amber-200 bg-amber-50/60
+                px-4 py-3
+              "
               >
-                {label}
-              </span>
-              {idx < 3 && (
-                <div className="hidden md:block w-16 h-px bg-slate-200 mx-1" />
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-
-
-      {/* KONTEN PAYMENT */}
-      <div className="max-w-5xl mx-auto px-4 py-10 mb-10">
-
-        <div className="bg-white rounded-2xl shadow-md p-6 md:p-8 mb-70">
-          <h2 className="text-lg font-bold mb-4">BAYAR</h2>
-
-          {/* ringkasan perjalanan */}
-          <div className="flex flex-col md:flex-row justify-between items-center mb-6 border-b pb-6">
-            <div>
-              <p className="text-sm font-semibold">{departureCity}</p>
-              <p className="text-sm font-semibold">{departureTerminal}</p>
-              <p className="text-gray-600 text-sm">{departureTime}</p>
-            </div>
-
-            <div className="text-center text-blue-950 font-extrabold">
-              <p>{companyName}</p>
-              <p className="text-4xl text-orange-600">→</p>
-
-              <div className="rounded-full border border-4 border-amber-200 py-2 px-4 mt-1">
-                <p className="text-xs text-orange-600">
+                <p className="text-sm sm:text-base text-slate-800 sm:whitespace-nowrap">
+                  Total yang harus dibayar
+                </p>
+                <p className="mt-1 sm:mt-0 text-base sm:text-lg font-extrabold text-orange-600 sm:text-right">
                   Rp {totalBayar.toLocaleString("id-ID")}
                 </p>
               </div>
             </div>
 
-            <div className="text-right">
-              <p className="text-sm font-semibold">{arrivalCity}</p>
-              <p className="text-sm font-semibold">{arrivalTerminal}</p>
-              <p className="text-gray-600 text-sm">{arrivalTime}</p>
+
+            {/* jumlah kursi */}
+            <div className="mb-6">
+              <button className="border inline-flex items-center gap-2 border-gray-400 rounded-lg px-3 py-1 text-xs md:text-sm font-medium">
+                <img
+                  src={kursiIcon}
+                  alt="kursi"
+                  className="h-5 w-5 object-contain"
+                />
+                {jumlahKursi} Kursi
+              </button>
+            </div>
+
+            {/* info VA */}
+            <p className="text-sm font-bold mb-2">
+              Virtual Account Transfer
+            </p>
+            <p className="text-xs text-gray-500 mb-3">
+              Anda bisa membayar dengan transfer melalui ATM, internet banking &
+              mobile banking.
+            </p>
+
+            {/* Bank list */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8">
+              {bankOptions.map((bank) => (
+                <button
+                  key={bank.id}
+                  type="button"
+                  disabled={payLoading}
+                  onClick={() => handleSelectChannel(bank.id, "bank")}
+                  className="border rounded-lg px-3 py-2 flex items-center gap-2 md:gap-3 shadow-sm hover:shadow-md transition bg-white disabled:opacity-60"
+                >
+                  <img
+                    src={bank.logo}
+                    alt={bank.name}
+                    className="h-7 w-7 md:h-8 md:w-8 object-contain"
+                  />
+                  <p className="text-xs md:text-sm font-semibold">
+                    {bank.name}
+                  </p>
+                </button>
+              ))}
+            </div>
+
+            {/* Wallets */}
+            <p className="text-sm font-semibold mb-4">Wallets</p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-2">
+              {walletOptions.map((wallet) => (
+                <button
+                  key={wallet.id}
+                  type="button"
+                  disabled={payLoading}
+                  onClick={() => handleSelectChannel(wallet.id, "wallet")}
+                  className="border rounded-lg px-3 py-2 flex items-center gap-2 md:gap-3 shadow-sm hover:shadow-md transition bg-white disabled:opacity-60"
+                >
+                  <img
+                    src={wallet.logo}
+                    alt={wallet.name}
+                    className="h-7 w-7 md:h-8 md:w-8 object-contain"
+                  />
+                  <p className="text-xs md:text-sm font-semibold">
+                    {wallet.name}
+                  </p>
+                </button>
+              ))}
             </div>
           </div>
-
-          {/* jumlah kursi */}
-          <div className="mb-6">
-            <button className="border inline-flex items-center gap-2 border-gray-400 rounded-lg px-3 py-1 text-sm font-medium">
-              <img
-                src={kursiIcon}
-                alt="kursi"
-                className="h-5 w-5 object-contain"
-              />
-              {jumlahKursi} Kursi
-            </button>
-          </div>
-
-          {/* info VA */}
-          <p className="text-sm font-bold mb-2">Virtual Account Transfer</p>
-          <p className="text-xs text-gray-500 mb-3">
-            Anda bisa membayar dengan transfer melalui ATM, internet banking &
-            mobile banking.
-          </p>
-
-          {/* Bank list */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            {bankOptions.map((bank) => (
-              <button
-                key={bank.id}
-                type="button"
-                disabled={payLoading}
-                onClick={() => handleSelectChannel(bank.id, "bank")}
-                className="border rounded-lg px-4 py-2 flex items-center gap-3 shadow-sm hover:shadow-md transition bg-white disabled:opacity-60"
-              >
-                <img
-                  src={bank.logo}
-                  alt={bank.name}
-                  className="h-8 w-8 object-contain"
-                />
-                <p className="text-sm font-semibold">{bank.name}</p>
-              </button>
-            ))}
-          </div>
-
-          {/* Wallets */}
-          <p className="text-sm font-semibold mb-4">Wallets</p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-2">
-            {walletOptions.map((wallet) => (
-              <button
-                key={wallet.id}
-                type="button"
-                disabled={payLoading}
-                // FIX: pakai wallet.id & type "wallet"
-                onClick={() => handleSelectChannel(wallet.id, "wallet")}
-                className="border rounded-lg px-4 py-2 flex items-center gap-3 shadow-sm hover:shadow-md transition bg-white disabled:opacity-60"
-              >
-                <img
-                  src={wallet.logo}
-                  alt={wallet.name}
-                  className="h-8 w-8 object-contain"
-                />
-                <p className="text-sm font-semibold">{wallet.name}</p>
-              </button>
-            ))}
-          </div>
-
-        </div>
-      </div>
+        </section>
+      </main>
 
       <Footer />
     </div>
