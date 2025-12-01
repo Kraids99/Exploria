@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import { alertSuccess } from "../../../lib/Alert.jsx";
 
 const styleForm = "block w-full rounded-xl border border-orange-100 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200 transition";
-const styleFormDisabled = `${styleForm} bg-slate-100 text-slate-500 cursor-not-allowed focus:ring-0 focus:border-orange-100`;
+const styleFormDisabled = "block w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-500 shadow-sm cursor-not-allowed";
 
 // Format ISO/string ke value yang cocok untuk <input type="datetime-local"> (lokal, tanpa Z)
 const toDateTimeLocal = (value) => {
@@ -21,8 +21,7 @@ const toDateTimeLocal = (value) => {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 };
 
-// Ubah dari input datetime-local (YYYY-MM-DDTHH:mm) ke format backend (m/d/Y H:i:s)
-const toBackendDateTime = (value) => {
+const dateTime = (value) => {
   if (!value) return "";
   if (value.includes("T")) {
     const [date, time] = value.split("T");
@@ -189,8 +188,8 @@ export default function TiketEdit() {
     try {
       await updateTiket(id, {
         ...form,
-        waktu_keberangkatan: toBackendDateTime(form.waktu_keberangkatan),
-        waktu_tiba: toBackendDateTime(form.waktu_tiba),
+        waktu_keberangkatan: dateTime(form.waktu_keberangkatan),
+        waktu_tiba: dateTime(form.waktu_tiba),
       });
       navigate("/admin/tiket");
       alertSuccess("Berhasil menambahkan tiket!");

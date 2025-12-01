@@ -9,7 +9,8 @@ import { toast } from "react-toastify";
 import { alertSuccess } from "../../../lib/Alert.jsx";
 
 const styleForm = "block w-full rounded-xl border border-orange-100 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200 transition";
-const styleFormDisabled = `${styleForm} bg-slate-100 text-slate-500 cursor-not-allowed focus:ring-0 focus:border-orange-100`;
+// warna berbeda supaya terlihat auto generate, bukan inputan
+const styleFormDisabled = "block w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-500 shadow-sm cursor-not-allowed";
 
 // Format input datetime-local ke format backend (m/d/Y H:i:s)
 const dateTime = (value) => {
@@ -22,11 +23,11 @@ const dateTime = (value) => {
   return value;
 };
 
-// Hitung durasi dalam menut
+// Hitung durasi dalam menit; jika tanggal tidak valid, kembalikan string kosong
 const countDuration = (start, end) => {
   const d1 = new Date(start);
   const d2 = new Date(end);
-  if (Number(d1.getTime()) || Number(d2.getTime())) return "";
+  if (Number.isNaN(d1.getTime()) || Number.isNaN(d2.getTime())) return "";
   const count = d2.getTime() - d1.getTime();
   return count > 0 ? Math.round(count / 60000) : "";
 };

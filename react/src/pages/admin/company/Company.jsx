@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PencilLine, Plus, Trash2 } from "lucide-react";
 import NavbarAdmin from "../../../components/default/NavbarAdmin";
+import AdminPagination from "../../../components/admin/AdminPagination.jsx";
 import { BASE_URL } from "../../../api/index.jsx";
 import { fetchCompanies, deleteCompany } from "../../../api/apiAdminCompany.jsx";
 import companyPlaceholder from "../../../assets/building.png";
@@ -11,6 +12,8 @@ import { alertSuccess, alertConfirm} from "../../../lib/Alert.jsx";
 export default function Company() {
   const navigate = useNavigate();
   const [companies, setCompanies] = useState([]);
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
   const [loading, setLoading] = useState(true);
 
   // main () otomatis
@@ -28,6 +31,13 @@ export default function Company() {
     };
     Companies();
   }, []);
+
+  useEffect(() => {
+    const totalPages = Math.max(1, Math.ceil(companies.length / pageSize));
+    if (page > totalPages) {
+      setPage(totalPages);
+    }
+  }, [companies, page, pageSize]);
 
   // delete data company
   const handleDelete = async (id) => {
@@ -53,6 +63,9 @@ export default function Company() {
       toast.error("Gagal menghapus company ini, silahkan coba lagi"); 
     }
   };
+
+  const startIndex = (page - 1) * pageSize;
+  const paginatedCompanies = companies.slice(startIndex, startIndex + pageSize);
 
   return (
     <div className="min-h-screen flex bg-orange-50">
@@ -99,7 +112,7 @@ export default function Company() {
                     </td>
                   </tr>
                 )}
-                {companies.map((company) => {
+                {paginatedCompanies.map((company) => {
                   const id = company.id ?? company.id_company ?? company.idCompany ?? "-";
                   const name = company.name ?? company.nama_company ?? "Tidak ada nama";
                   const email = company.email_company ?? company.email ?? "-";
@@ -158,6 +171,12 @@ export default function Company() {
               </tbody>
             </table>
           </div>
+          <AdminPagination
+            page={page}
+            totalItems={companies.length}
+            pageSize={pageSize}
+            onChange={setPage}
+          />
         </div>
       </main>
     </div>

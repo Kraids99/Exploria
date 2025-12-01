@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PencilLine, Plus, Trash2 } from "lucide-react";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
+import AdminPagination from "../../../components/admin/AdminPagination.jsx";
 import { fetchTiket, deleteTiket } from "../../../api/apiAdminTiket.jsx";
 import { fetchCompanies } from "../../../api/apiAdminCompany.jsx";
 
@@ -21,6 +22,8 @@ export default function TiketList() {
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [companyMap, setCompanyMap] = useState({});
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -48,6 +51,13 @@ export default function TiketList() {
     load();
   }, []);
 
+  useEffect(() => {
+    const totalPages = Math.max(1, Math.ceil(items.length / pageSize));
+    if (page > totalPages) {
+      setPage(totalPages);
+    }
+  }, [items, page, pageSize]);
+
   const handleDelete = async (id) => {
     if (!id) return;
 
@@ -68,6 +78,9 @@ export default function TiketList() {
       toast.error("Gagal menghapus rute"); 
     }
   };
+
+  const startIndex = (page - 1) * pageSize;
+  const paginatedItems = items.slice(startIndex, startIndex + pageSize);
 
   return (
     <div className="min-h-screen flex bg-orange-50">
@@ -118,7 +131,7 @@ export default function TiketList() {
                     <td colSpan={8} className="px-4 py-3 text-sm text-slate-700">Belum ada data tiket.</td>
                   </tr>
                 )}
-                {items.map((tiket) => {
+                {paginatedItems.map((tiket) => {
                   const id = tiket.id_tiket || tiket.id;
                   const companyId = tiket.id_company || tiket.company_id || tiket.company?.id_company;
                   const companyName =
@@ -160,6 +173,12 @@ export default function TiketList() {
               </tbody>
             </table>
           </div>
+          <AdminPagination
+            page={page}
+            totalItems={items.length}
+            pageSize={pageSize}
+            onChange={setPage}
+          />
         </div>
       </main>
     </div>

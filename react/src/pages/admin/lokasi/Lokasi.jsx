@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PencilLine, Plus, Trash2 } from "lucide-react";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
+import AdminPagination from "../../../components/admin/AdminPagination.jsx";
 // API admin lokasi (list/detail/delete)
 
 import { toast } from "react-toastify";
@@ -14,6 +15,8 @@ import {
 export default function LokasiList() {
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -31,6 +34,14 @@ export default function LokasiList() {
     };
     load();
   }, []);
+
+  // Pastikan halaman tetap valid saat data berubah
+  useEffect(() => {
+    const totalPages = Math.max(1, Math.ceil(items.length / pageSize));
+    if (page > totalPages) {
+      setPage(totalPages);
+    }
+  }, [items, page, pageSize]);
 
   // Hapus data
   const handleDelete = async (id) => {
@@ -55,6 +66,9 @@ export default function LokasiList() {
       toast.error("Gagal menghapus company ini, silahkan coba lagi"); 
     }
   };
+
+  const startIndex = (page - 1) * pageSize;
+  const paginatedItems = items.slice(startIndex, startIndex + pageSize);
 
   return (
     <div className="min-h-screen flex bg-orange-50">
@@ -100,7 +114,7 @@ export default function LokasiList() {
                     <td colSpan={3} className="px-4 py-3 text-sm text-slate-700">Belum ada data lokasi.</td>
                   </tr>
                 )}
-                {items.map((lokasi) => {
+                {paginatedItems.map((lokasi) => {
                   const id = lokasi.id_lokasi || lokasi.id;
                   return (
                     <tr key={id} className="hover:bg-orange-50/70">
@@ -131,6 +145,12 @@ export default function LokasiList() {
               </tbody>
             </table>
           </div>
+          <AdminPagination
+            page={page}
+            totalItems={items.length}
+            pageSize={pageSize}
+            onChange={setPage}
+          />
         </div>
       </main>
     </div>

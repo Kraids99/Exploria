@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PencilLine, Plus, Trash2 } from "lucide-react";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
+import AdminPagination from "../../../components/admin/AdminPagination.jsx";
 import { fetchRute, deleteRute } from "../../../api/apiAdminRute.jsx";
 
 import { alertConfirm, alertSuccess } from "../../../lib/Alert.jsx";
@@ -9,6 +10,8 @@ import { toast } from "react-toastify";
 export default function RuteList() {
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -26,6 +29,13 @@ export default function RuteList() {
     };
     load();
   }, []);
+
+  useEffect(() => {
+    const totalPages = Math.max(1, Math.ceil(items.length / pageSize));
+    if (page > totalPages) {
+      setPage(totalPages);
+    }
+  }, [items, page, pageSize]);
 
   const handleDelete = async (id) => {
     if (!id) return;
@@ -47,6 +57,9 @@ export default function RuteList() {
       toast.error("Gagal menghapus rute"); 
     }
   };
+
+  const startIndex = (page - 1) * pageSize;
+  const paginatedItems = items.slice(startIndex, startIndex + pageSize);
 
   return (
     <div className="min-h-screen flex bg-orange-50">
@@ -92,7 +105,7 @@ export default function RuteList() {
                     <td colSpan={3} className="px-4 py-3 text-sm text-slate-700">Belum ada data rute.</td>
                   </tr>
                 )}
-                {items.map((rute) => {
+                {paginatedItems.map((rute) => {
                   const id = rute.id_rute || rute.id;
                   const asal = rute.asal?.kota || rute.asal?.terminal || rute.id_lokasi_asal;
                   const tujuan = rute.tujuan?.kota || rute.tujuan?.terminal || rute.id_lokasi_tujuan;
@@ -125,6 +138,12 @@ export default function RuteList() {
               </tbody>
             </table>
           </div>
+          <AdminPagination
+            page={page}
+            totalItems={items.length}
+            pageSize={pageSize}
+            onChange={setPage}
+          />
         </div>
       </main>
     </div>

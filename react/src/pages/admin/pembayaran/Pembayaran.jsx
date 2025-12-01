@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { CheckCircle2, XCircle, Mail } from "lucide-react";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
+import AdminPagination from "../../../components/admin/AdminPagination.jsx";
 import { fetchPembayaran, updatePembayaranStatus, sendEticket } from "../../../api/apiPembayaran.jsx";
 import { toast } from "react-toastify";
 
@@ -20,6 +21,8 @@ const formatDateTime = (value) => {
 
 export default function PembayaranAdmin() {
   const [items, setItems] = useState([]);
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [sendingId, setSendingId] = useState(null);
@@ -41,6 +44,13 @@ export default function PembayaranAdmin() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const totalPages = Math.max(1, Math.ceil(items.length / pageSize));
+    if (page > totalPages) {
+      setPage(totalPages);
+    }
+  }, [items, page, pageSize]);
 
   const getStatusText = (status) => (Number(status) === 1 ? "Sudah Dibayar" : "Belum Dibayar");
 
@@ -71,6 +81,9 @@ export default function PembayaranAdmin() {
       setSendingId(null);
     }
   };
+
+  const startIndex = (page - 1) * pageSize;
+  const paginatedItems = items.slice(startIndex, startIndex + pageSize);
 
   const renderDetail = (p) => {
     if (!p) return null;
@@ -173,14 +186,15 @@ export default function PembayaranAdmin() {
                     </td>
                   </tr>
                 )}
-                {items.map((pembayaran) => {
+                {paginatedItems.map((pembayaran) => {
                   const pemesanan = pembayaran.pemesanan || {};
                   const user = pemesanan.user || {};
                   const isPaid = Number(pembayaran.status_pembayaran) === 1;
                   const alreadySent = Boolean(pembayaran.mail_tiket);
+                  const rowKey = pembayaran.id_pembayaran || pemesanan.id_pemesanan || pemesanan.id;
 
                   return (
-                    <React.Fragment key={pembayaran.id_pembayaran}>
+                    <React.Fragment key={rowKey}>
                       <tr className="hover:bg-orange-50/70">
                         <td className="px-4 py-3 text-sm font-semibold text-slate-900">{pemesanan.kode_tiket ?? "-"}</td>
                         <td className="px-4 py-3 text-sm text-slate-700">
@@ -238,6 +252,12 @@ export default function PembayaranAdmin() {
               </tbody>
             </table>
           </div>
+          <AdminPagination
+            page={page}
+            totalItems={items.length}
+            pageSize={pageSize}
+            onChange={setPage}
+          />
         </div>
       </main>
     </div>
