@@ -110,6 +110,23 @@ function Payment() {
     );
   }
 
+  const formatTanggalJam = (datetime) => {
+        if (!datetime) return { tanggal: "-", jam: "--:--" };
+        const d = new Date(datetime);
+        if (Number.isNaN(d.getTime())) return { tanggal: "-", jam: "--:--" };
+
+        const tanggal = d.toLocaleDateString("id-ID", {
+            weekday: "short",
+            day: "2-digit",
+            month: "short",
+        }); // "Min, 24 Feb"
+        const jam = d.toLocaleTimeString("id-ID", {
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+        return { tanggal, jam };
+    };
+  
   // ----- mapping data -----
   const companyName = tiket.company?.nama_company || "Nama Perusahaan";
   const busName = tiket.nama_tiket || "Nama Bus";
@@ -124,6 +141,13 @@ function Payment() {
   const arrivalCity = tiket.rute?.tujuan?.kota || "-";
   const arrivalTerminal = tiket.rute?.tujuan?.terminal || "-";
 
+  const { tanggal: tglBerangkat, jam: jamBerangkat } = formatTanggalJam(
+      tiket?.waktu_keberangkatan
+  );
+  const { tanggal: tglTiba, jam: jamTiba } = formatTanggalJam(
+      tiket?.waktu_tiba
+  );
+  
   const harga = tiket.harga ? Number(tiket.harga) : 0;
   const rincianList =
     pemesanan.rincianPemesanan || pemesanan.rincian_pemesanans || pemesanan.rincian_pemesanan || [];
@@ -241,19 +265,20 @@ function Payment() {
       <div className="max-w-5xl mx-auto px-4 py-10 mb-10">
 
         <div className="bg-white rounded-2xl shadow-md p-6 md:p-8 mb-70">
-          <h2 className="text-lg font-bold mb-4">BAYAR</h2>
+          <h2 className="text-xl font-semibold mb-4">PEMBAYARAN</h2>
 
           {/* ringkasan perjalanan */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-6 border-b pb-6">
             <div>
+              <p className="text-xs uppercase text-slate-500">Berangkat</p>
               <p className="text-sm font-semibold">{departureCity}</p>
               <p className="text-sm font-semibold">{departureTerminal}</p>
-              <p className="text-gray-600 text-sm">{departureTime}</p>
+              <p className="text-gray-600 text-sm">{tglBerangkat} • {departureTime}</p>
             </div>
 
-            <div className="text-center text-blue-950 font-extrabold">
+            <div className="text-center text-blue-950 font-bold">
               <p>{companyName}</p>
-              <p className="text-4xl text-orange-600">→</p>
+              <p className="text-3xl text-orange-600">→</p>
 
               <div className="rounded-full border border-4 border-amber-200 py-2 px-4 mt-1">
                 <p className="text-xs text-orange-600">
@@ -263,9 +288,10 @@ function Payment() {
             </div>
 
             <div className="text-right">
+              <p className="text-xs uppercase text-slate-500">Tiba</p>
               <p className="text-sm font-semibold">{arrivalCity}</p>
               <p className="text-sm font-semibold">{arrivalTerminal}</p>
-              <p className="text-gray-600 text-sm">{arrivalTime}</p>
+              <p className="text-gray-600 text-sm">{tglTiba} • {arrivalTime}</p>
             </div>
           </div>
 

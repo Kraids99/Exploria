@@ -187,7 +187,7 @@ export default function SelectPayment() {
                             <div>
                                 <p className="text-xs uppercase text-slate-500">Berangkat</p>
                                 <p className="mt-1 text-sm font-semibold text-slate-900">
-                                    {tglBerangkat}, {jamBerangkat}
+                                    {tglBerangkat} • {jamBerangkat}
                                 </p>
                                 <p className="text-sm text-slate-700">{asalTerminal}</p>
                             </div>
@@ -202,7 +202,7 @@ export default function SelectPayment() {
                             <div className="text-right">
                                 <p className="text-xs uppercase text-slate-500">Tiba</p>
                                 <p className="mt-1 text-sm font-semibold text-slate-900">
-                                    {tglTiba}, {jamTiba}
+                                    {tglTiba} • {jamTiba}
                                 </p>
                                 <p className="text-sm text-slate-700">{tujuanTerminal}</p>
                             </div>

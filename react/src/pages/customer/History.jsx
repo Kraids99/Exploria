@@ -1,43 +1,59 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getAllPembayaran } from "../../api/apiPembayaran";
+
 import Footer from "../../components/default/Footer";
 import Navbar from "../../components/default/Navbar";
+import BusLoader from "../../components/default/BusLoader.jsx";
 
 function History(){
-    const historyOrders = [
-        {
-            id: "PB.307",
-            kode: "4BZTNM",
-            status: "Selesai",
-            tanggal: "20 Dec 2025",
-            waktu: "11:30",
-            asal: "Palembang Soekarno",
-            tujuan: "Magelang Muntilan",
-            totalBayar: 647700,
-            bus: "Sinar Jaya",
-        },
-        {
-            id: "PB.406",
-            kode: "BGH725",
-            status: "Dibatalkan",
-            tanggal: "12 Nov 2025",
-            waktu: "08:00",
-            asal: "Bandung Cicaheum",
-            tujuan: "Jakarta Kampung Rambutan",
-            totalBayar: 420000,
-            bus : "Rosalia Indah",
-        },
-        {
-            id: "PB.410",
-            kode: "JKL221",
-            status: "Check-In Berhasil",
-            tanggal: "01 Nov 2025",
-            waktu: "07:30",
-            asal: "Surabaya Purabaya",
-            tujuan: "Yogyakarta Giwangan",
-            totalBayar: 550000,
-            bus: "Putra Remaja",
-        },
-    ];
+    const [historyOrders, setHistoryOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    const formatTanggalJam = (datetime) => {
+        if(!datetime) return { tanggal: "-", jam: "--:--"};
+        const d = new Date(datetime);
+        if(Number.isNaN(d.getTime())) return { tanggal: "-", jam: "--:--"};
+
+        const tanggal = d.toLocaleDateString("id-ID", {
+            weekday: "short",
+            day: "2-digit",
+            month: "short",
+        });
+        const jam = d.toLocaleDateString("id-ID", {
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+        return { tanggal, jam};
+    };
+
+    useEffect(() => {
+        const fetchHistory = async () => {
+            try {
+                const data = await getAllPembayaran();
+                console.log("DATA HISTORY ASLI:", data);
+                console.log("CEK STRUKTUR ITEM:", JSON.stringify(data[0], null, 2));
+                setHistoryOrders(data);
+            } catch (error) {
+                console.error("Error fetching history:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchHistory();
+    }, []);
+
+    if (loading) {
+        return (
+        <div className="min-h-screen bg-slate-50 font-sans flex flex-col">
+            <Navbar />
+            <main className="flex-1 flex items-center justify-center">
+            <BusLoader message="Memuat Riwayat Pemesanan Anda..." />
+            </main>
+            <Footer />
+        </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-slate-50 fint-sans">
@@ -50,63 +66,108 @@ function History(){
                     <p className="text-gray-600 text-sm">Belum ada riwayat pemesanan.</p>
                 ) : (
                     <div className="space-y-6">
-                        {historyOrders.map((order) => (
-                            <div
-                                key={order.id}
-                                className="bg-white shadow-sm rounded-2xl p-6 md:p-8"
-                            >
-                                <div className="flex justify-between items-start mb-3">
-                                    <div>
-                                        <p className="text-lg font-bold">{order.bus}</p>
-                                        <p className="text-sm font-semibold text-gray-600">{order.kode}</p> 
-                                    </div>
-                                    <button className="text-sm text-blue-600 hover:underline">Lihat Detail</button>
-                                </div>
+                        {historyOrders.map((item) => {
+                            const pemesanan = item.pemesanan || {};
+                            const tiket = pemesanan?.rincianPemesanan?.[0]?.tiket || {};
+                            const rute = tiket.rute || {};
 
-                                <div className="flex flex-col md:flex-row justify-between items-center border-b pb-4">
+                            const departureTime = tiket.waktu_keberangkatan?.substring(11, 16) || "--:--";
+                            const arrivalTime = tiket.waktu_tiba?.substring(11, 16) || "--:--";
+
+                            const { tanggal: tglBerangkat } = formatTanggalJam(tiket.waktu_keberangkatan);
+                            const { tanggal: tglTiba } = formatTanggalJam(tiket.waktu_tiba);
+
+                            return (
+                                <div
+                                    key={item.id_pembayaran}
+                                    className="bg-white rounded-2xl shadow p-6"
+                                >
+                                {/* Jadwal */}
+                                <div className="grid grid-cols-3 gap-6 items-start">
                                     <div>
-                                        <p className="text-sm font-semibold">{order.tanggal} • {order.waktu} </p>
-                                        <p className="text-sm">{order.asal}</p>
+                                        <p className="text-xs uppercase text-slate-500">
+                                            Berangkat
+                                        </p>
+                                        <p className="font-bold">{rute.asal?.kota || "-"}</p>
+                                        <p className="text-sm text-slate-600">
+                                            {rute.asal?.terminal || "-"}
+                                        </p>
+                                        <p className="mt-1 text-sm font-semibold text-slate-900">
+                                            {tglBerangkat} • {departureTime}
+                                        </p>
+                                        
                                     </div>
 
-                                    <div className="text-center py-2 font-bold text-orange-600 text-4xl">→</div>
+                                    <div className="flex flex-col items-center justify-center text-xs text-slate-500">
+                                        <span className="mb-2">{tiket.company?.nama_company || "Nama Perusahaan"}</span>
+                                        <span className="text-3xl text-orange-500">
+                                            →
+                                        </span>
+                                    </div>
 
                                     <div className="text-right">
-                                        <p className="text-sm">{order.tujuan}</p>
-                                    </div>
-                                </div>
-
-                                <div className="flex justify-between items-center">
-                                    <span
-                                        className={`text-xs font-semibold px-3 py-1 rounded-full ${
-                                            order.status === "Selesai"
-                                            ? "bg-green-100 text-green-700"
-                                            : order.status === "Dibatalkan"
-                                            ?  "bg-red-100 text-red-600" 
-                                            : "bg-blue-100 text-blue-600"
-                                        }`}
-                                    >
-                                        {order.status}
-                                    </span>
-
-                                    <div className="text-right">
-                                        <p className="text-xs text-gray-500">Total Bayar</p>
-                                        <p className="text-md font-bold">
-                                            RP {order.totalBayar.toLocaleString("id-ID")}
+                                        <p className="text-xs uppercase text-slate-500">
+                                            Tiba
+                                        </p>
+                                        <p className="font-bold">{rute.tujuan?.kota || "-"}</p>
+                                        <p className="text-sm text-slate-600">
+                                            {rute.tujuan?.terminal || "-"}
+                                        </p>
+                                        <p className="mt-1 text-sm font-semibold text-slate-900">
+                                            {tglTiba} • {arrivalTime}
                                         </p>
                                     </div>
                                 </div>
 
+                                <hr className="my-4 border-dashed border-slate-200" />
+
+                                {/* Detail lainnya */}
+                                <div className="flex flex-col md:flex-row justify-between text-sm">
+                                    <p>
+                                        Total Pembayaran:{" "}
+                                        <span className="font-semibold text-orange-600">
+                                            Rp {" "}
+                                            {pemesanan?.total_biaya_pemesanan
+                                                ? Number(pemesanan.total_biaya_pemesanan).toLocaleString("id-ID")
+                                                : "0"}
+                                        </span>
+                                    </p>
+                                    <p>
+                                        <span className="font-medium">Metode Pembayaran:</span>{" "}
+                                            {item.metode_pembayaran}
+                                    </p>
+                                    <p>
+                                        <span
+                                            className={`px-3 py-1 rounded-xl text-sm font-semibold
+                                            ${
+                                                item.status_pembayaran == "1"
+                                                ? "bg-green-100 text-green-700 border border-green-400"
+                                                : "bg-yellow-100 text-yellow-700 border border-yellow-400"
+                                            }`}
+                                        >
+                                            {item.status_pembayaran == "1" ? "Lunas" : "Menunggu Pembayaran"}
+                                        </span>
+                                    </p>
+                                </div>
+
                                 <div className="mt-4 flex gap-3">
-                                    <button className="border border-gray-300 rounded-lg px-4 py-2 text-sm hover:bg-gray-50">
+                                    <button
+                                        onClick={() =>
+                                            navigate(
+                                                `/eticket/${item.id_pemesanan}`
+                                            )
+                                        }
+                                        className="border rounded-lg px-4 py-2 text-sm hover:bg-gray-50"
+                                    >
                                         E-Ticket
                                     </button>
-                                    <button className="border border-gray-300 rounded-lg px-4 py-2 text-sm hover:bg-gray-50">
+                                    <button className="border rounded-lg px-4 py-2 text-sm hover:bg-gray-50">
                                         Invoice
                                     </button>
                                 </div>
                             </div>
-                        ))}
+                        );
+                    })}
                     </div>
                 )}
             </section>

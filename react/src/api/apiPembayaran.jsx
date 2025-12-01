@@ -40,4 +40,14 @@ const updatePembayaranStatus = async (id, status) => {
   }
 };
 
-export { createPembayaran, getPembayaranById, updatePembayaranStatus };
+const getAllPembayaran = async () => {
+  try {
+    const response = await useAxios.get("/pembayaran");
+    return response.data;
+  } catch (error) {
+    console.error("getAllPembayaran error:", error.response?.data || error);
+    throw error.response?.data || error;
+  }
+};
+
+export { createPembayaran, getPembayaranById, updatePembayaranStatus, getAllPembayaran};

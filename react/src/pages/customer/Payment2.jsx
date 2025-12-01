@@ -140,6 +140,23 @@ function Payment2() {
     );
   }
 
+  const formatTanggalJam = (datetime) => {
+        if (!datetime) return { tanggal: "-", jam: "--:--" };
+        const d = new Date(datetime);
+        if (Number.isNaN(d.getTime())) return { tanggal: "-", jam: "--:--" };
+
+        const tanggal = d.toLocaleDateString("id-ID", {
+            weekday: "short",
+            day: "2-digit",
+            month: "short",
+        }); // "Min, 24 Feb"
+        const jam = d.toLocaleTimeString("id-ID", {
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+        return { tanggal, jam };
+    };
+  
   // ---------- mapping data ----------
   const companyName = tiket.company?.nama_company || "Nama Perusahaan";
 
@@ -152,6 +169,13 @@ function Payment2() {
 
   const arrivalCity = tiket.rute?.tujuan?.kota || "-";
   const arrivalTerminal = tiket.rute?.tujuan?.terminal || "-";
+
+  const { tanggal: tglBerangkat, jam: jamBerangkat } = formatTanggalJam(
+      tiket?.waktu_keberangkatan
+  );
+  const { tanggal: tglTiba, jam: jamTiba } = formatTanggalJam(
+      tiket?.waktu_tiba
+  );
 
   const rincianList =
     pemesanan.rincianPemesanan ||
@@ -251,28 +275,32 @@ function Payment2() {
       </div>
 
       <div className="w-[90%] md:w-[80%] mx-auto bg-white p-6 rounded-xl shadow mt-6">
+        <h2 className="text-xl font-semibold mb-4">PEMBAYARAN</h2>
+        
         {/* Info tiket / rute */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-6 border-b pb-6">
           <div>
+            <p className="text-xs uppercase text-slate-500">Berangkat</p>
             <p className="text-sm font-semibold">{departureCity}</p>
             <p className="text-sm font-semibold">{departureTerminal}</p>
-            <p className="text-gray-600 text-sm">{departureTime}</p>
+            <p className="text-gray-600 text-sm">{tglBerangkat} • {departureTime}</p>
           </div>
 
-          <div className="text-center text-blue-950 font-extrabold">
+          <div className="text-center text-blue-950 font-bold">
             <p>{companyName}</p>
             <p className="text-4xl text-orange-600">→</p>
           </div>
 
           <div className="text-right">
+            <p className="text-xs uppercase text-slate-500">Tiba</p>
             <p className="text-sm font-semibold">{arrivalCity}</p>
             <p className="text-sm font-semibold">{arrivalTerminal}</p>
-            <p className="text-gray-600 text-sm">{arrivalTime}</p>
+            <p className="text-gray-600 text-sm">{tglTiba} • {arrivalTime}</p>
           </div>
         </div>
 
         {/* Seat */}
-        <button className="grid grid-cols-2 border border-gray-400 rounded-lg px-3 py-1 text-sm font-medium mb-6">
+        <button className="border inline-flex items-center gap-2 border-gray-400 rounded-lg px-3 py-1 text-sm font-medium">
           <img src={kursiIcon} alt="kursi" className="w-5 h-5" />
           {jumlahKursi} Kursi
         </button>
