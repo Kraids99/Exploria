@@ -15,8 +15,7 @@ function Home(){
             <main
               className="
                 overflow-hidden
-                pl-14 md:pl-0   /* ruang untuk sidebar kiri di mobile */
-                pt-0            /* <-- HAPUS padding top di sini */
+                pt-0  
               "
             >
                 <DashboardLP />

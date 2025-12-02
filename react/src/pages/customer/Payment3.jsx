@@ -292,17 +292,15 @@ function Payment3() {
             Simpan E-ticket dan jangan dibagikan ke orang lain.
           </p>
         </div>
-
-        {/* Bagian review */}
+{/* 
         <p className="text-center text-black text-2xl md:text-3xl mt-10 mb-2">
           Bagaimana Pengalaman Anda?
         </p>
         <p className="text-center text-gray-500 text-xs md:text-sm mb-4">
           Berikan rating dan ulasan terkait dengan layanan kami
-        </p>
-
+        </p> */}
+{/* 
         <form onSubmit={handleSubmitReview} className="mt-2 space-y-4">
-          {/* Rating bintang */}
           <div className="flex justify-center gap-2">
             {[1, 2, 3, 4, 5].map((star) => (
               <button
@@ -320,9 +318,8 @@ function Payment3() {
                 </span>
               </button>
             ))}
-          </div>
-
-          {/* Textarea komentar */}
+          </div> */}
+{/* 
           <div>
             <textarea
               className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm
@@ -332,29 +329,27 @@ function Payment3() {
               value={comment}
               onChange={(e) => setComment(e.target.value)}
             />
-          </div>
+          </div> */}
 
           {/* Tombol kirim review */}
           <button
             type="submit"
-            disabled={submittingReview}
             className="w-full bg-orange-500 text-white py-2 rounded-xl 
                        font-semibold text-sm md:text-base hover:bg-[#cf4230] transition-colors
                        disabled:opacity-60 disabled:cursor-not-allowed"
+            onClick={() => navigate("/")}
           >
-            {submittingReview
-              ? "Mengirim ulasan..."
-              : "Kirim Review & Kembali ke Beranda"}
+            Kembali ke Beranda
           </button>
-        </form>
-
+        {/* </form> */}
+{/* 
         <button
           type="button"
           className="mt-2 w-full text-[11px] md:text-xs text-gray-500 underline"
           onClick={() => navigate("/")}
         >
           Lewati, langsung kembali ke beranda
-        </button>
+        </button> */}
       </section>
 
       <Footer />
