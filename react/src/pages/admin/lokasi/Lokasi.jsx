@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PencilLine, Plus, Trash2 } from "lucide-react";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
-import AdminPagination from "../../../components/admin/AdminPagination.jsx";
+import Pagination from "../../../components/Pagination.jsx";
 // API admin lokasi (list/detail/delete)
 
 import { toast } from "react-toastify";
@@ -145,7 +145,7 @@ export default function LokasiList() {
               </tbody>
             </table>
           </div>
-          <AdminPagination
+          <Pagination
             page={page}
             totalItems={items.length}
             pageSize={pageSize}

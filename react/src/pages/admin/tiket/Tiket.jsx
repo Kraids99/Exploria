@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PencilLine, Plus, Trash2 } from "lucide-react";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
-import AdminPagination from "../../../components/admin/AdminPagination.jsx";
+import Pagination from "../../../components/Pagination.jsx";
 import { fetchTiket, deleteTiket } from "../../../api/apiAdminTiket.jsx";
 import { fetchCompanies } from "../../../api/apiAdminCompany.jsx";
 
@@ -27,7 +27,7 @@ export default function TiketList() {
   const [error, setError] = useState("");
 
   const [page, setPage] = useState(1);
-  const pageSize = 5;
+  const pageSize = 10;
 
   useEffect(() => {
     const load = async () => {
@@ -181,7 +181,7 @@ export default function TiketList() {
               </tbody>
             </table>
           </div>
-          <AdminPagination
+          <Pagination
             page={page}
             totalItems={items.length}
             pageSize={pageSize}

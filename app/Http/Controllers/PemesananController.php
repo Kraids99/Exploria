@@ -6,10 +6,12 @@ use App\Models\Pemesanan;
 use App\Models\RincianPemesanan;
 use App\Models\Tiket;
 use App\Models\Kursi;
+use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 
 class PemesananController extends Controller
 {
@@ -22,11 +24,40 @@ class PemesananController extends Controller
             return response()->json(['message' => 'Belum login'], 401);
         }
 
+        $now = Carbon::now();
         if ($user->tokenCan('admin')) {
-            $data = Pemesanan::with(['user', 'rincianPemesanan.tiket'])->get();
+            $data = Pemesanan::with(['user', 'rincianPemesanan.tiket', 'pembayaran'])->get();
         } else {
-            $data = Pemesanan::with(['rincianPemesanan.tiket'])->where('id_user', $user->id_user)->get();
+            $data = Pemesanan::with(['rincianPemesanan.tiket', 'pembayaran'])
+                ->where('id_user', $user->id_user)
+                ->get();
         }
+
+        // Tambahkan info review per rincian (reviewed/can_review/deadline)
+        $data->each(function ($pemesanan) use ($now) {
+            $pembayaran = $pemesanan->pembayaran;
+            $paid = $pembayaran && intval($pembayaran->status_pembayaran) === 1;
+            $pemesanan->rincianPemesanan->each(function ($rincian) use ($pemesanan, $pembayaran, $paid, $now) {
+                $tiket = $rincian->tiket;
+                $tiketId = $tiket?->id_tiket;
+                $reviewed = false;
+                if ($pembayaran && $tiketId) {
+                    $reviewed = Review::where('id_user', $pemesanan->id_user)
+                        ->where('id_pembayaran', $pembayaran->id_pembayaran)
+                        ->where('id_tiket', $tiketId)
+                        ->exists();
+                }
+
+                $tiba = $tiket?->waktu_tiba ? Carbon::parse($tiket->waktu_tiba) : null;
+                $within30 = $tiba && $tiba->isPast() && $tiba->greaterThan($now->copy()->subDays(30));
+                $canReview = $paid && !$reviewed && $within30;
+
+                $rincian->setAttribute('review_submitted', $reviewed);
+                $rincian->setAttribute('can_review', $canReview);
+                $rincian->setAttribute('review_deadline', $tiba ? $tiba->copy()->addDays(30)->toDateTimeString() : null);
+                $rincian->setAttribute('id_pembayaran', $pembayaran?->id_pembayaran);
+            });
+        });
 
         return response()->json($data);
     }
@@ -46,6 +77,30 @@ class PemesananController extends Controller
             return response()->json(['message' => 'Pemesanan tidak ditemukan'], 404);
         }
 
+        $pembayaran = $pemesanan->pembayaran;
+        $paid = $pembayaran && intval($pembayaran->status_pembayaran) === 1;
+        $now = Carbon::now();
+        $pemesanan->rincianPemesanan->each(function ($rincian) use ($pemesanan, $pembayaran, $paid, $now) {
+            $tiket = $rincian->tiket;
+            $tiketId = $tiket?->id_tiket;
+            $reviewed = false;
+            if ($pembayaran && $tiketId) {
+                $reviewed = Review::where('id_user', $pemesanan->id_user)
+                    ->where('id_pembayaran', $pembayaran->id_pembayaran)
+                    ->where('id_tiket', $tiketId)
+                    ->exists();
+            }
+
+            $tiba = $tiket?->waktu_tiba ? Carbon::parse($tiket->waktu_tiba) : null;
+            $within30 = $tiba && $tiba->isPast() && $tiba->greaterThan($now->copy()->subDays(30));
+            $canReview = $paid && !$reviewed && $within30;
+
+            $rincian->setAttribute('review_submitted', $reviewed);
+            $rincian->setAttribute('can_review', $canReview);
+            $rincian->setAttribute('review_deadline', $tiba ? $tiba->copy()->addDays(30)->toDateTimeString() : null);
+            $rincian->setAttribute('id_pembayaran', $pembayaran?->id_pembayaran);
+        });
+
         return response()->json($pemesanan);
     }
 
@@ -64,32 +119,39 @@ class PemesananController extends Controller
 
             $user = $request->user();
 
-            DB::transaction(function () use ($request, $user, &$pemesanan) {
-                // cek kursi masih kosong
-                $kursi = Kursi::whereIn('id_kursi', $request->kursi_ids)
-                    ->where('status_kursi', 0)
-                    ->lockForUpdate()
-                    ->get();
-
-                if (count($kursi) !== count($request->kursi_ids)) {
-                    abort(422, 'Ada kursi yang sudah dipesan orang lain');
-                }
-
-                // tandai kursi jadi terisi
-                Kursi::whereIn('id_kursi', $request->kursi_ids)
-                    ->update(['status_kursi' => 1]);
-            });
             $tiket = Tiket::findOrFail($request->id_tiket);
+
+            // pastikan jadwal belum lewat
+            if (Carbon::parse($tiket->waktu_keberangkatan)->isPast()) {
+                DB::rollBack();
+                return response()->json(['message' => 'Tiket sudah exp'], 422);
+            }
+
+            // cek kursi masih kosong
+            $kursi = Kursi::whereIn('id_kursi', $request->kursi_ids)
+                ->where('status_kursi', 0)
+                ->lockForUpdate()
+                ->get();
+
+            if (count($kursi) !== count($request->kursi_ids)) {
+                DB::rollBack();
+                return response()->json(['message' => 'Ada kursi yang sudah dipesan orang lain'], 422);
+            }
 
             $jumlahTiket = count($request->kursi_ids);
 
             if ($tiket->stok < $jumlahTiket) {
+                DB::rollBack();
                 return response()->json(['message' => 'Stok tiket tidak mencukupi'], 400);
             }
 
             // kurangi stok
             $tiket->stok -= $jumlahTiket;
             $tiket->save();
+
+            // tandai kursi jadi terisi
+            Kursi::whereIn('id_kursi', $request->kursi_ids)
+                ->update(['status_kursi' => 1]);
 
             // pemesanan utama
             $pemesanan = Pemesanan::create([
@@ -134,9 +196,6 @@ class PemesananController extends Controller
             ], 500);
         }
     }
-
-
-
 
     // Batalkan pemesanan berdasarkan id 
     public function cancel($id)

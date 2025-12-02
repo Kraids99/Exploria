@@ -162,6 +162,10 @@ export default function Laporan() {
               <AlertCircle className="w-4 h-4" />
               {error}
             </div>
+          ) : !data.length ? (
+            <div className="h-72 flex items-center justify-center text-sm text-orange-800">
+              Belum ada pendapatan
+            </div>
           ) : (
             <canvas ref={chartRef} className="w-full h-72" />
           )}

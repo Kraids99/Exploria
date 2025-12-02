@@ -53,12 +53,12 @@ export default function TiketEdit() {
     id_rute: "",
     id_company: "",
     nama_tiket: "",
-    jumlah_kursi: "",
+    jumlah_kursi: 25,
     waktu_keberangkatan: "",
     waktu_tiba: "",
     durasi: "",
     harga: "",
-    stok: "",
+    stok: 25,
   });
 
   useEffect(() => {
@@ -73,12 +73,12 @@ export default function TiketEdit() {
           id_rute: detail.id_rute || "",
           id_company: detail.id_company || "",
           nama_tiket: detail.nama_tiket || "",
-          jumlah_kursi: detail.jumlah_kursi || "",
+          jumlah_kursi: 25,
           waktu_keberangkatan: toDateTimeLocal(detail.waktu_keberangkatan || ""),
           waktu_tiba: toDateTimeLocal(detail.waktu_tiba || ""),
           durasi: detail.durasi || "",
           harga: detail.harga || "",
-          stok: detail.stok || "",
+          stok: 25,
         });
         setRuteOptions(rutes);
         setCompanyOptions(companies);
@@ -280,10 +280,8 @@ export default function TiketEdit() {
                   <input
                     type="number"
                     value={form.jumlah_kursi}
-                    onChange={handleChange("jumlah_kursi")}
-                    required
-                    className={styleForm}
-                    placeholder="cth: 30"
+                    disabled
+                    className={styleFormDisabled}
                   />
                 </div>
               </div>
@@ -339,10 +337,8 @@ export default function TiketEdit() {
                   <input
                     type="number"
                     value={form.stok}
-                    onChange={handleChange("stok")}
-                    required
-                    className={styleForm}
-                    placeholder="cth: 20"
+                    disabled
+                    className={styleFormDisabled}
                   />
                 </div>
               </div>

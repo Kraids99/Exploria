@@ -134,10 +134,10 @@ function SelectBus() {
                 type="submit"
                 className="mt-2 md:mt-0 w-full
                             flex h-12 items-center justify-center
-                            bg-[#2b1302]
+                            bg-[#f38f4a]
                             rounded-[999px] px-6 text-sm font-semibold text-white
                             shadow-md transition-all duration-200 ease-out
-                            hover:bg-[#440d05] transition-colors"
+                            hover:bg-[#cf4230] transition-colors"
               >
                 Ubah Pencarian
               </button>

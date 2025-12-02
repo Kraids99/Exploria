@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { getTiketByParams } from "../../api/apiTiket.jsx";
 import { useNavigate } from "react-router-dom";
+import Pagination from "../Pagination.jsx";
 
 export default function Tikets({ fromCity, toCity, date }) {
   const [tikets, setTikets] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [page, setPage] = useState(1);
+  const pageSize = 5;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,6 +27,7 @@ export default function Tikets({ fromCity, toCity, date }) {
           : [];
 
         setTikets(list);
+        setPage(1);
       } catch (err) {
         console.log(err);
         setError("Gagal mengambil data tiket");
@@ -44,9 +48,12 @@ export default function Tikets({ fromCity, toCity, date }) {
   if (!tikets || tikets.length === 0)
     return <p className="text-sm text-slate-600">Tidak ada tiket untuk rute ini.</p>;
 
+  const startIndex = (page - 1) * pageSize;
+  const paginatedTikets = tikets.slice(startIndex, startIndex + pageSize);
+
   return (
     <div className="space-y-4">
-      {tikets.map((tiket) => (
+      {paginatedTikets.map((tiket) => (
         <article
           key={tiket.id_tiket}
           className="rounded-3xl border border-slate-100 bg-white px-4 py-4 md:px-6 md:py-5 shadow-sm"
@@ -110,6 +117,12 @@ export default function Tikets({ fromCity, toCity, date }) {
           </div>
         </article>
       ))}
+      <Pagination
+        page={page}
+        totalItems={tikets.length}
+        pageSize={pageSize}
+        onChange={setPage}
+      />
     </div>
   );
 }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PencilLine, Plus, Trash2 } from "lucide-react";
 import NavbarAdmin from "../../../components/default/NavbarAdmin";
-import AdminPagination from "../../../components/admin/AdminPagination.jsx";
+import Pagination from "../../../components/Pagination.jsx";
 import { BASE_URL } from "../../../api/index.jsx";
 import { fetchCompanies, deleteCompany } from "../../../api/apiAdminCompany.jsx";
 import companyPlaceholder from "../../../assets/building.png";
@@ -72,7 +72,7 @@ export default function Company() {
       <NavbarAdmin />
 
       <main className="flex-1 w-full overflow-x-hidden p-4 sm:p-6 lg:p-10">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-betwee">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-xl sm:text-2xl font-semibold text-orange-900">Manajemen Company</h1>
             <p className="text-xs sm:text-sm text-orange-700 mt-1">
@@ -171,7 +171,7 @@ export default function Company() {
               </tbody>
             </table>
           </div>
-          <AdminPagination
+          <Pagination
             page={page}
             totalItems={companies.length}
             pageSize={pageSize}

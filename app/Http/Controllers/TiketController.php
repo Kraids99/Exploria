@@ -13,14 +13,16 @@ class TiketController extends Controller
     // Tampilkan semua tiket
     public function index()
     {
-        $allTiket = Tiket::all();
+        $allTiket = Tiket::where('waktu_keberangkatan', '>=', Carbon::now())->get();
         return response()->json($allTiket);
     }
 
     // Tampilan satu tiket berdasarkan id
     public function show($id)
     {
-        $tiket = Tiket::with(['company', 'rute.asal', 'rute.tujuan'])->find($id);
+        $tiket = Tiket::with(['company', 'rute.asal', 'rute.tujuan'])
+            ->where('waktu_keberangkatan', '>=', Carbon::now())
+            ->find($id);
 
         if (!$tiket) {
             return response()->json(['message' => 'Tiket tidak ditemukan'], 404);
@@ -99,6 +101,25 @@ class TiketController extends Controller
             'stok' => 'sometimes|integer|min:0',
         ]);
 
+        // cek harus lebih dr masa lalu
+        if ($request->has('waktu_keberangkatan')) {
+            $berangkat = Carbon::parse($request->waktu_keberangkatan);
+            if ($berangkat->isPast()) {
+                return response()->json([
+                    'message' => 'Waktu keberangkatan tidak boleh di masa lalu'
+                ], 422);
+            }
+        }
+
+        if ($request->has('waktu_tiba')) {
+            $tiba = Carbon::parse($request->waktu_tiba);
+            if ($tiba->isPast()) {
+                return response()->json([
+                    'message' => 'Waktu tiba tidak boleh di masa lalu'
+                ], 422);
+            }
+        }
+
         $tiket->update($request->all());
 
         return response()->json([
@@ -128,6 +149,7 @@ class TiketController extends Controller
         $date = $request->date;
         $start = Carbon::parse($date)->startOfDay();
         $end = Carbon::parse($date)->addDays(7)->endOfDay();
+        $now = Carbon::now();
 
         $tiket = Tiket::with(['company', 'rute.asal', 'rute.tujuan'])
             ->whereHas('rute.asal', function ($q) use ($from) {
@@ -140,6 +162,7 @@ class TiketController extends Controller
                 $start,
                 $end
             ])
+            ->where('waktu_keberangkatan', '>=', $now)
             ->get();
 
         return response()->json($tiket);

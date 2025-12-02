@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function AdminPagination({
+export default function Pagination({
   page,
   totalItems,
   pageSize = 10,

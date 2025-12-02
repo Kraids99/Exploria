@@ -46,12 +46,12 @@ export default function TiketCreate() {
     id_rute: "",
     id_company: "",
     nama_tiket: "",
-    jumlah_kursi: "",
+    jumlah_kursi: 25,
     waktu_keberangkatan: "",
     waktu_tiba: "",
     durasi: "",
     harga: "",
-    stok: "",
+    stok: 25,
   });
 
 
@@ -258,10 +258,8 @@ export default function TiketCreate() {
                   <input
                     type="number"
                     value={form.jumlah_kursi}
-                    onChange={handleChange("jumlah_kursi")}
-                    required
-                    className={styleForm}
-                    placeholder="cth: 30"
+                    disabled
+                    className={styleFormDisabled}
                   />
                 </div>
               </div>
@@ -318,10 +316,8 @@ export default function TiketCreate() {
                   <input
                     type="number"
                     value={form.stok}
-                    onChange={handleChange("stok")}
-                    required
-                    className={styleForm}
-                    placeholder="cth: 20"
+                    disabled
+                    className={styleFormDisabled}
                   />
                 </div>
               </div>

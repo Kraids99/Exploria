@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { CheckCircle2, XCircle, Mail } from "lucide-react";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
-import AdminPagination from "../../../components/admin/AdminPagination.jsx";
+import Pagination from "../../../components/Pagination.jsx";
 import { fetchPembayaran, updatePembayaranStatus, sendEticket } from "../../../api/apiPembayaran.jsx";
 import { toast } from "react-toastify";
 
@@ -252,7 +252,7 @@ export default function PembayaranAdmin() {
               </tbody>
             </table>
           </div>
-          <AdminPagination
+          <Pagination
             page={page}
             totalItems={items.length}
             pageSize={pageSize}

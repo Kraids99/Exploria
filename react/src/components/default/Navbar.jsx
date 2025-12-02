@@ -26,6 +26,11 @@ function Navbar() {
     navigate("/profile");
   };
 
+  const handleHistory = () => {
+    setOpenMenu(false);
+    navigate("/history");
+  };
+
   const handleHome = () => {
     setOpenMenu(false);
     navigate("/");
@@ -98,12 +103,18 @@ function Navbar() {
                 </button>
 
                 {openMenu && (
-                  <div className="absolute right-0 mt-2 w-48 rounded-full border border-slate-200 bg-white shadow-lg py-1">
+                  <div className="absolute right-0 mt-2 w-48 rounded-xl border border-slate-200 bg-white shadow-lg py-1">
                     <button
                       onClick={handleHome}
                       className="w-full px-4 py-2 text-sm text-slate-700 text-left hover:bg-slate-50"
                     >
                       Home
+                    </button>
+                    <button
+                      onClick={handleHistory}
+                      className="w-full px-4 py-2 text-sm text-slate-700 text-left hover:bg-slate-50"
+                    >
+                      History
                     </button>
                     <button
                       onClick={handleProfile}
@@ -286,6 +297,12 @@ function Navbar() {
                         className="w-full px-4 py-2 text-sm text-slate-700 text-left hover:bg-slate-50"
                       >
                         Home
+                      </button>
+                      <button
+                        onClick={handleHistory}
+                        className="w-full px-4 py-2 text-sm text-slate-700 text-left hover:bg-slate-50"
+                      >
+                        History
                       </button>
                       <button
                         onClick={handleProfile}
