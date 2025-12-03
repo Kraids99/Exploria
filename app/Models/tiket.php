@@ -10,12 +10,13 @@ use App\Models\Kursi;
 use App\Models\RincianPemesanan;
 use App\Models\Review;
 
-class Tiket extends Model
+class tiket extends Model
 {
     use HasFactory;
     protected $primaryKey = 'id_tiket';
     protected $table = 'tikets';
 
+    // yang bisa diisi
     protected $fillable = [
         'id_rute',
         'id_company',
@@ -28,6 +29,7 @@ class Tiket extends Model
         'stok',
     ];
     
+    // casting datetime
     protected function casts(): array
     {
         return [
@@ -36,23 +38,23 @@ class Tiket extends Model
         ];
     }
 
+    //satu tiket punya satu rute 
     public function rute()
     {
         return $this->belongsTo(Rute::class, 'id_rute');
     }
-    //satu tiket punya satu rute 
 
+    //satu tiket punya satu company
     public function company()
     {
         return $this->belongsTo(Company::class, 'id_company');
-    }
-    //satu tiket punya satu company 
+    }  
 
+    //satu tiket punya banyak kursi 
     public function kursi()
     {
         return $this->hasMany(Kursi::class, 'id_tiket');
     }
-    //satu tiket punya banyak kursi 
 
     // public function rincian()
     // {

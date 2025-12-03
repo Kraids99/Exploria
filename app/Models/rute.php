@@ -12,16 +12,19 @@ class rute extends Model
     protected $primaryKey = 'id_rute';
     public $timestamps = false;
 
+    // yang bisa diisi
     protected $fillable = [
         'id_lokasi_asal',
         'id_lokasi_tujuan',
     ];
 
+    // rute dimiliki oleh 1 lokasi asal
     public function asal()
     {
         return $this->belongsTo(Lokasi::class, 'id_lokasi_asal');
     }
 
+    // rute dimiliki oleh 1 lokasi tujuan
     public function tujuan()
     {
         return $this->belongsTo(Lokasi::class, 'id_lokasi_tujuan');

@@ -8,13 +8,14 @@ use App\Models\Pembayaran;
 use App\Models\Tiket;
 use App\Models\User;
 
-class Review extends Model
+class review extends Model
 {
     use HasFactory;
     protected $table = 'reviews';
     protected $primaryKey = 'id_review';
     public $timestamps = false;
 
+    // yang bisa diisi
     protected $fillable = [
         'id_pembayaran',
         'id_tiket',
@@ -24,29 +25,29 @@ class Review extends Model
         'tanggal_review',
     ];
 
+    // casting
     protected function casts(): array
     {
         return [
             'tanggal_review' => 'datetime',   
         ];
     }
-    //kolom tanggal_reviw otomatis dikonversi jadi objectTime 
 
+    //satu review punya satu pembayaran
     public function pembayaran()
     {
         return $this->belongsTo(Pembayaran::class, 'id_pembayaran');
-    }
-    //satu review punya satu pembayaran yang direferensiin 
+    } 
 
+    //sati review untuk satu tiket
     public function tiket()
     {
         return $this->belongsTo(Tiket::class, 'id_tiket');
-    }
-    //sati review untuk satu tiket 
+    } 
 
+    //satu review dibuat oleh satu user
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user');
-    }
-    //satu review dibuat oleh satu user 
+    } 
 }

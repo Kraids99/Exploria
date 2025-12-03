@@ -18,6 +18,7 @@ class User extends Authenticatable
     protected $table = 'users';
     public $timestamps = false;
 
+    // yang bisa diisi
     protected $fillable = [
         'nama',
         'no_telp',
@@ -28,6 +29,7 @@ class User extends Authenticatable
         'tanggal_lahir',
     ];
 
+    // casting
     protected function casts(): array
     {
         return [
@@ -36,21 +38,25 @@ class User extends Authenticatable
         ];
     }
     
+    // satu user punya satu admin
     public function admin()
     {
         return $this->hasOne(Admin::class, 'id_user');
     }
     
+    // satu user punya satu customer
     public function customer()
     {
         return $this->hasOne(Customer::class, 'id_user');
     }
 
+    // satu user punya banyak pemesanan
     public function pemesanan()
     {
         return $this->hasMany(Pemesanan::class, 'id_user');
     }
 
+    // satu user punya banyak review
     public function reviews()
     {
         return $this->hasMany(review::class, 'id_user');

@@ -13,6 +13,7 @@ class company extends Model
     protected $primaryKey = 'id_company';
     public $timestamps = false;
 
+    // yang bisa diisi
     protected $fillable = [
         'nama_company',
         'email_company',
@@ -21,6 +22,7 @@ class company extends Model
         'logo_company',
     ];
     
+    // 1 company memiliki banyak tiket
     public function tikets()
     {
         return $this->hasMany(Tiket::class, 'id_company');

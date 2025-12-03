@@ -14,10 +14,12 @@ class customer extends Model
     protected $primaryKey = 'id_customer';
     public $timestamps = false;
     
+    // yang bisa diisi
     protected $fillable = [
         'id_user'
     ];
 
+    // customer dimiliki oleh 1 user
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user');

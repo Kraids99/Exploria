@@ -13,10 +13,12 @@ class admin extends Model
     protected $primaryKey = 'id_admin';
     public $timestamps = false;
     
+    // yang bisa diisi
     protected $fillable = [
         'id_user'
     ];
 
+    // admin dimiliki oleh 1 user
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user');

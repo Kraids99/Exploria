@@ -14,6 +14,7 @@ class Pembayaran extends Model   // ← huruf besar
     public $timestamps = false;
     //kasi tau laravel nama databse 
 
+    // yang bisa diisi
     protected $fillable = [
         'id_pemesanan',
         'metode_pembayaran',
@@ -22,15 +23,15 @@ class Pembayaran extends Model   // ← huruf besar
         'tanggal_pembayaran',
     ];
 
+    //satu pembayaran dimiliki satu pemesanan 
     public function pemesanan()
     {
         return $this->belongsTo(Pemesanan::class, 'id_pemesanan');
     }
-    //satu pembayaran dimiliki satu pemesanan 
-
+    
+    //satu pembayaran punya satu review 
     public function review()
     {
         return $this->hasOne(Review::class, 'id_pembayaran');
     }
-    //satu pembayaran punya satu review 
 }
