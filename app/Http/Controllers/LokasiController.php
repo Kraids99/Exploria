@@ -19,7 +19,7 @@ class LokasiController extends Controller
     {
         $lokasi = Lokasi::find($id);
 
-        if(!$lokasi){
+        if (!$lokasi) {
             return response()->json(['message' => 'Lokasi tidak ditemukan'], 404);
         }
         return response()->json($lokasi);
@@ -49,7 +49,7 @@ class LokasiController extends Controller
     {
         $lokasi = Lokasi::find($id);
 
-        if(!$lokasi){
+        if (!$lokasi) {
             return response()->json(['message' => 'Lokasi tidak ditemukan'], 404);
         }
 
@@ -71,8 +71,13 @@ class LokasiController extends Controller
     {
         $lokasi = Lokasi::find($id);
 
-        if(!$lokasi){
+        if (!$lokasi) {
             return response()->json(['message' => 'Lokasi tidak ditemukan'], 404);
+        }
+
+        //jika lokasi masih dipakai rute
+        if ($lokasi->ruteAsal()->exists() || $lokasi->ruteTujuan()->exists()) {
+            return response()->json(['message' => 'Lokasi masih dipakai di rute, tidak bisa dihapus'], 422);
         }
 
         $lokasi->delete();

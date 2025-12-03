@@ -162,10 +162,7 @@ function Profile() {
       formData.append("nama", profile.nama || "");
       formData.append("email", profile.email || "");
       formData.append("no_telp", profile.no_telp || "");
-      formData.append(
-        "tanggal_lahir",
-        normalizeDateForInput(profile.tanggal_lahir) || ""
-      );
+      formData.append("tanggal_lahir", normalizeDateForInput(profile.tanggal_lahir) || "");
       formData.append("jenis_kelamin", profile.jenis_kelamin || "");
       formData.append("foto_user", avatarFile);
 

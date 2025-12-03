@@ -56,15 +56,16 @@ class tiket extends Model
         return $this->hasMany(Kursi::class, 'id_tiket');
     }
 
-    // public function rincian()
-    // {
-    //     return $this->hasMany(RincianPemesanan::class, 'id_tiket');
-    // }
+    public function rincianPemesanans()
+    {
+        return $this->hasMany(RincianPemesanan::class, 'id_tiket');
+    }
 
-    // public function reviews()
-    // {
-    //     return $this->hasMany(Review::class, 'id_tiket');
-    // }
+    // satu tiket punya banyak review
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'id_tiket');
+    }
 
     // public function getKodeTiketAttribute()
     // {
@@ -72,7 +73,5 @@ class tiket extends Model
     // }
 
     //alasan di komen : relasinya skrg belum di butuhkan di user 
-
-    
 
 }

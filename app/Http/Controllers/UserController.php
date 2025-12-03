@@ -7,10 +7,11 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Throwable;
 
 class UserController extends Controller
 {
-    
+
     // Tampilkan profil user login
     public function show(Request $request)
     {
@@ -25,8 +26,8 @@ class UserController extends Controller
         $validated = $request->validate([
             'nama' => 'sometimes|string|max:100',
             'no_telp' => 'sometimes|string|max:20',
+            // cek email unique dan abaikan id_user
             'email' => ['sometimes', 'email', 'max:255', Rule::unique('users')->ignore($user->id_user, 'id_user')],
-            // terima file foto (opsional)
             'foto_user' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'tanggal_lahir' => 'nullable|date',
             'jenis_kelamin' => 'nullable|string|in:Laki-laki,Perempuan',
@@ -35,11 +36,12 @@ class UserController extends Controller
         // jika ada file foto baru, hapus lama lalu simpan yang baru
         if ($request->hasFile('foto_user')) {
             if ($user->foto_user) {
-                // foto_user menyimpan URL, ambil path relative /storage
+                // foto_user menyimpan URL, ambil path /storage
                 $oldPath = str_replace('/storage/', '', $user->foto_user);
+                // hapus file lama di disk public
                 Storage::disk('public')->delete($oldPath);
             }
-            $path = $request->file('foto_user')->store('avatars', 'public');
+            $path = $request->file('foto_user')->store('user_profile', 'public');
             $validated['foto_user'] = Storage::url($path);
         }
 
@@ -56,7 +58,7 @@ class UserController extends Controller
     {
         $user = $request->user();
 
-        // Terima kedua bentuk nama field supaya kompatibel (password_lama/old_password, password_baru/password).
+        // password_lama/old_password, password_baru/password.
         $validated = $request->validate([
             'password_lama' => 'required_without:old_password|string',
             'old_password' => 'required_without:password_lama|string',
@@ -64,15 +66,14 @@ class UserController extends Controller
             'password' => 'required_without:password_baru|string|min:8|confirmed',
         ]);
 
-        // Normalisasi nama field ke variabel tunggal
         $oldPassword = $validated['password_lama'] ?? $validated['old_password'] ?? null;
         $newPassword = $validated['password_baru'] ?? $validated['password'] ?? null;
 
-        if(!$oldPassword || !$newPassword){
+        if (!$oldPassword || !$newPassword) {
             return response()->json(['message' => 'Field password tidak lengkap'], 422);
         }
 
-        if(!Hash::check($oldPassword, $user->password)){
+        if (!Hash::check($oldPassword, $user->password)) {
             return response()->json(['message' => 'Password lama salah'], 400);
         }
 
@@ -93,12 +94,15 @@ class UserController extends Controller
             return response()->json(['message' => 'Belum login'], 401);
         }
 
-        DB::transaction(function () use ($user) {
+        DB::beginTransaction();
+        try {
+            // Bersihkan foto lama jika ada
             if ($user->foto_user) {
                 $path = str_replace('/storage/', '', $user->foto_user);
                 Storage::disk('public')->delete($path);
             }
 
+            // Hapus relasi cek di (model User)
             if ($user->customer) {
                 $user->customer()->delete();
             }
@@ -106,12 +110,22 @@ class UserController extends Controller
                 $user->admin()->delete();
             }
 
-            // hapus token aktif
+            // Hapus user dan token user
             $user->tokens()->delete();
-
             $user->delete();
-        });
 
-        return response()->json(['message' => 'Akun berhasil dihapus']);
+            // kalau sukses commit ubah di database
+            DB::commit();
+            return response()->json(['message' => 'Akun berhasil dihapus']);
+        } catch (Throwable $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Gagal menghapus akun',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
+
+    // DB::transaction(function () use ($user)
+    // sebenarnya bisa pakai ini lebih simpel cuma manual dulu biar mudah dipahami
 }

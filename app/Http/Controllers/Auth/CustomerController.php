@@ -24,8 +24,8 @@ class CustomerController extends Controller
 
         $profilePath = null;
         if ($request->hasFile('foto_user')) {
-            // simpan di storage/app/public/profile_pictures
-            $profilePath = $request->file('foto_user')->store('foto_user', 'public');
+            // simpan di storage/app/public/user_profile
+            $profilePath = $request->file('foto_user')->store('user_profile', 'public');
         }
 
         // buat user baru

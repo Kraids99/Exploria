@@ -6,24 +6,20 @@ use App\Models\Pembayaran;
 use App\Models\Pemesanan;
 use App\Models\Review;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 
 class ReviewController extends Controller
 {
 
-
     // Tampilkan semua review mulai yang paling baru
     public function index(Request $request)
     {
+        // berdasarkan tiket yg dibuka
         $query = Review::with([
             'user:id_user,nama,foto_user',
             'tiket:id_tiket,nama_tiket'
-        ]);
-
-        // kalau ada ?id_tiket=... di URL, filter berdasarkan itu
-        if ($request->filled('id_tiket')) {
-            $query->where('id_tiket', $request->id_tiket);
-        }
+        ])->where('id_tiket', $request->id_tiket);
 
         $reviews = $query->orderBy('tanggal_review', 'desc')->get();
 
@@ -58,27 +54,44 @@ class ReviewController extends Controller
         // Pastikan pembayaran milik user ini dan SUDAH dibayar (status = 1)
         $pembayaran = Pembayaran::with('pemesanan.rincianPemesanan')
             ->where('id_pembayaran', $request->id_pembayaran)
-            ->whereHas('pemesanan', function ($q) use ($user) {
-                $q->where('id_user', $user->id_user);
+            ->whereHas('pemesanan', function ($query) use ($user) {
+                $query->where('id_user', $user->id_user);
             })
             ->first();
 
         if (!$pembayaran) {
+            return response()->json(['message' => 'Kamu belum melakukan pemesanan tiket ini atau belum membayar'], 403);
+        }
+
+        // Pastikan tiket yang di-review ada di pemesanan ini
+        $pemesanan = $pembayaran->pemesanan;
+        $rincianTiket = $pemesanan->rincianPemesanan()->where('id_tiket', $request->id_tiket)->with('tiket')->first();
+
+        if (!$rincianTiket) {
             return response()->json([
                 'message' => 'Kamu belum melakukan pemesanan tiket ini atau belum membayar',
             ], 403);
         }
 
-        // Pastikan tiket yang di-review ada di pemesanan ini
-        $pemesanan = $pembayaran->pemesanan;
+        // Pastikan perjalanan sudah selesai dan masih dalam 30 hari review
+        $tiket = $rincianTiket->tiket;
 
-        $punyaTiket = $pemesanan->rincianPemesanan
-            ->contains(fn($r) => $r->id_tiket == $request->id_tiket);
+        if (!$tiket || !$tiket->waktu_tiba) {
+            return response()->json(['message' => 'Data waktu tiba tidak ditemukan'], 422);
+        }
 
-        if (!$punyaTiket) {
-            return response()->json([
-                'message' => 'Kamu belum melakukan pemesanan tiket ini atau belum membayar',
-            ], 403);
+        $tiba = Carbon::parse($tiket->waktu_tiba);
+
+        if (!$tiba || $tiba->isFuture()) {
+            return response()->json(['message' => 'Review hanya bisa setelah perjalanan selesai'], 422);
+        }
+
+        $deadline = $tiba->copy()->addDays(30);
+
+        // ga boleh lebih besar dari deadline
+        // atau pakai now()->gt($deadline)
+        if ($deadline && now() > $deadline) {
+            return response()->json(['message' => 'Batas review 30 hari setelah tiba'], 422);
         }
 
         // Cegah double review
@@ -88,9 +101,7 @@ class ReviewController extends Controller
             ->exists();
 
         if ($sudahReview) {
-            return response()->json([
-                'message' => 'Kamu sudah memberikan review untuk tiket ini',
-            ], 422);
+            return response()->json(['message' => 'Kamu sudah memberikan review untuk tiket ini'], 422);
         }
 
         // Simpan review
@@ -100,16 +111,12 @@ class ReviewController extends Controller
             'id_tiket' => $request->id_tiket,
             'rating' => $request->rating,
             'komentar' => $request->komentar,
-            'tanggal_review' => now(),   // TAMBAHAN PENTING
+            'tanggal_review' => now(), 
         ]);
 
 
-        return response()->json([
-            'message' => 'Review berhasil dibuat',
-            'data' => $review,
-        ], 201);
+        return response()->json(['message' => 'Review berhasil dibuat','data' => $review], 201);
     }
-
 
     // Hapus review
     public function destroy($id, Request $request)

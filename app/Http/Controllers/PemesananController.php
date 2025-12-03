@@ -24,41 +24,12 @@ class PemesananController extends Controller
             return response()->json(['message' => 'Belum login'], 401);
         }
 
-        $now = Carbon::now();
         if ($user->tokenCan('admin')) {
             $data = Pemesanan::with(['user', 'rincianPemesanan.tiket', 'pembayaran'])->get();
         } else {
-            $data = Pemesanan::with(['rincianPemesanan.tiket', 'pembayaran'])
-                ->where('id_user', $user->id_user)
-                ->get();
+            // customer cuma bs liat data pesan sendiri
+            $data = Pemesanan::with(['rincianPemesanan.tiket', 'pembayaran'])->where('id_user', $user->id_user)->get();
         }
-
-        // Tambahkan info review per rincian (reviewed/can_review/deadline)
-        $data->each(function ($pemesanan) use ($now) {
-            $pembayaran = $pemesanan->pembayaran;
-            $paid = $pembayaran && intval($pembayaran->status_pembayaran) === 1;
-            $pemesanan->rincianPemesanan->each(function ($rincian) use ($pemesanan, $pembayaran, $paid, $now) {
-                $tiket = $rincian->tiket;
-                $tiketId = $tiket?->id_tiket;
-                $reviewed = false;
-                if ($pembayaran && $tiketId) {
-                    $reviewed = Review::where('id_user', $pemesanan->id_user)
-                        ->where('id_pembayaran', $pembayaran->id_pembayaran)
-                        ->where('id_tiket', $tiketId)
-                        ->exists();
-                }
-
-                $tiba = $tiket?->waktu_tiba ? Carbon::parse($tiket->waktu_tiba) : null;
-                $within30 = $tiba && $tiba->isPast() && $tiba->greaterThan($now->copy()->subDays(30));
-                $canReview = $paid && !$reviewed && $within30;
-
-                $rincian->setAttribute('review_submitted', $reviewed);
-                $rincian->setAttribute('can_review', $canReview);
-                $rincian->setAttribute('review_deadline', $tiba ? $tiba->copy()->addDays(30)->toDateTimeString() : null);
-                $rincian->setAttribute('id_pembayaran', $pembayaran?->id_pembayaran);
-            });
-        });
-
         return response()->json($data);
     }
 
@@ -76,30 +47,6 @@ class PemesananController extends Controller
         if (!$pemesanan) {
             return response()->json(['message' => 'Pemesanan tidak ditemukan'], 404);
         }
-
-        $pembayaran = $pemesanan->pembayaran;
-        $paid = $pembayaran && intval($pembayaran->status_pembayaran) === 1;
-        $now = Carbon::now();
-        $pemesanan->rincianPemesanan->each(function ($rincian) use ($pemesanan, $pembayaran, $paid, $now) {
-            $tiket = $rincian->tiket;
-            $tiketId = $tiket?->id_tiket;
-            $reviewed = false;
-            if ($pembayaran && $tiketId) {
-                $reviewed = Review::where('id_user', $pemesanan->id_user)
-                    ->where('id_pembayaran', $pembayaran->id_pembayaran)
-                    ->where('id_tiket', $tiketId)
-                    ->exists();
-            }
-
-            $tiba = $tiket?->waktu_tiba ? Carbon::parse($tiket->waktu_tiba) : null;
-            $within30 = $tiba && $tiba->isPast() && $tiba->greaterThan($now->copy()->subDays(30));
-            $canReview = $paid && !$reviewed && $within30;
-
-            $rincian->setAttribute('review_submitted', $reviewed);
-            $rincian->setAttribute('can_review', $canReview);
-            $rincian->setAttribute('review_deadline', $tiba ? $tiba->copy()->addDays(30)->toDateTimeString() : null);
-            $rincian->setAttribute('id_pembayaran', $pembayaran?->id_pembayaran);
-        });
 
         return response()->json($pemesanan);
     }
@@ -128,6 +75,7 @@ class PemesananController extends Controller
             }
 
             // cek kursi masih kosong
+            // lockForUpdate() untuk mengunci baris selama transaksi
             $kursi = Kursi::whereIn('id_kursi', $request->kursi_ids)
                 ->where('status_kursi', 0)
                 ->lockForUpdate()
@@ -150,8 +98,7 @@ class PemesananController extends Controller
             $tiket->save();
 
             // tandai kursi jadi terisi
-            Kursi::whereIn('id_kursi', $request->kursi_ids)
-                ->update(['status_kursi' => 1]);
+            Kursi::whereIn('id_kursi', $request->kursi_ids)->update(['status_kursi' => 1]);
 
             // pemesanan utama
             $pemesanan = Pemesanan::create([
@@ -162,6 +109,7 @@ class PemesananController extends Controller
                 'kode_tiket' => 'EXP-' . strtoupper(Str::random(8)),
             ]);
 
+            // format EXP-YYYYMMDDHHMMSS-XXXX
             if (!$pemesanan->kode_tiket) {
                 $pemesanan->kode_tiket = 'EXP-' . now()->format('YmdHis') . '-' . rand(1000, 9999);
                 $pemesanan->save();
@@ -175,11 +123,9 @@ class PemesananController extends Controller
             ]);
 
             // update status kursi
-            Kursi::whereIn('id_kursi', $request->kursi_ids)
-                ->where('id_tiket', $tiket->id_tiket)
-                ->update(['status_kursi' => true]);
-            
-            //cek kursi kosong -> cek stok tiket -> buat pemesanan + rincian 
+            Kursi::whereIn('id_kursi', $request->kursi_ids)->where('id_tiket', $tiket->id_tiket)->update(['status_kursi' => true]);
+            // Intinya
+            // cek kursi kosong -> cek stok tiket -> buat pemesanan + rincian 
             // -> tandai kursi terisi -> commit transaksi 
 
             DB::commit();
@@ -190,10 +136,7 @@ class PemesananController extends Controller
             ], 201);
         } catch (Exception $e) {
             DB::rollBack();
-            return response()->json([
-                'message' => 'Gagal membuat pemesanan',
-                'error' => $e->getMessage(),
-            ], 500);
+            return response()->json(['message' => 'Gagal membuat pemesanan','error' => $e->getMessage()], 500);
         }
     }
 

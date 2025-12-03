@@ -91,7 +91,6 @@ class PembayaranController extends Controller
         }
     }
 
-
     // Update status pembayaran (hanya admin)
     public function update(Request $request, $id)
     {
@@ -131,6 +130,7 @@ class PembayaranController extends Controller
             $pemesanan = $pembayaran->pemesanan;
             if($pemesanan && $pemesanan->user?->email) 
             {
+                // Muat relasi yang belum di-load agar email punya data lengkap tanpa N+1
                 $pemesanan->loadMissing([
                     'user',
                     'rincianPemesanan.tiket.company',
@@ -138,6 +138,7 @@ class PembayaranController extends Controller
                     'rincianPemesanan.tiket.rute.tujuan',
                 ]);
 
+                // buat new pemesanan mail
                 Mail::to($pemesanan->user->email)->send(new EticketMail($pemesanan));
                 $pembayaran->mail_tiket = true;                      // tandai sudah kirim
                 $pembayaran->tanggal_pembayaran = now()->toDateString(); // isi tanggal kirim

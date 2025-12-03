@@ -38,6 +38,7 @@ export default function PembayaranAdmin() {
     try {
       const data = await fetchPembayaran();
       setItems(Array.isArray(data) ? data : []);
+      console.log(data);
     } catch (err) {
       setError("Gagal memuat data pembayaran");
     } finally {

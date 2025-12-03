@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-// memakai helper kek authorize()  , validate()
+// memakai helper kek authorize(), validate()
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;

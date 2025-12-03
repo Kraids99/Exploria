@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tiket;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
+use App\Models\rincianPemesanan;
 
 class TiketController extends Controller
 {
@@ -53,9 +52,9 @@ class TiketController extends Controller
         ]);
 
         // Pastikan waktu keberangkatan tidak di masa lalu
+        // mengubah string dengan pola m/d/Y H:i:s menjadi dateTime
         $berangkat = Carbon::createFromFormat('m/d/Y H:i:s', $request->waktu_keberangkatan);
-        if($berangkat->isPast()) 
-        {
+        if ($berangkat->isPast()) {
             return response()->json([
                 'message' => 'Waktu keberangkatan tidak boleh di masa lalu'
             ], 422);
@@ -137,6 +136,16 @@ class TiketController extends Controller
             return response()->json(['message' => 'Tiket tidak ditemukan'], 404);
         }
 
+        // pastikan tiket sudah selesai baru bisa dihapus
+        if (Carbon::parse($tiket->waktu_tiba)->isFuture()) {
+            return response()->json(['message' => 'Tiket belum selesai, tidak bisa dihapus'], 422);
+        }
+
+        // jika ada pemesanan dari tiket gabisa di hapus
+        if ($tiket->rincianPemesanans()->exists()) {
+            return response()->json(['message' => 'Tiket sudah dibeli, tidak bisa dihapus'], 422);
+        }
+
         $tiket->delete();
         return response()->json(['message' => 'Tiket berhasil dihapus']);
     }
@@ -148,15 +157,16 @@ class TiketController extends Controller
         $to = $request->to;
         $date = $request->date;
         $start = Carbon::parse($date)->startOfDay();
+        // cari data tiket lebih dari 7 hari
         $end = Carbon::parse($date)->addDays(7)->endOfDay();
         $now = Carbon::now();
 
         $tiket = Tiket::with(['company', 'rute.asal', 'rute.tujuan'])
-            ->whereHas('rute.asal', function ($q) use ($from) {
-                $q->where('kota', $from);
+            ->whereHas('rute.asal', function ($query) use ($from) {
+                $query->where('kota', $from);
             })
-            ->whereHas('rute.tujuan', function ($q) use ($to) {
-                $q->where('kota', $to);
+            ->whereHas('rute.tujuan', function ($query) use ($to) {
+                $query->where('kota', $to);
             })
             ->whereBetween('waktu_keberangkatan', [
                 $start,

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class CompanyController extends Controller
 {
@@ -24,7 +25,7 @@ class CompanyController extends Controller
     {
         $company = Company::find($id);
 
-        if(!$company){
+        if (!$company) {
             return response()->json(['message' => 'Company tidak ditemukan'], 404);
         }
 
@@ -56,19 +57,19 @@ class CompanyController extends Controller
             'data' => $company
         ], 201);
     }
-    
+
     // Update company (admin only)
     public function update(Request $request, $id)
     {
         $company = Company::find($id);
 
-        if(!$company){
+        if (!$company) {
             return response()->json(['message' => 'Company tidak ditemukan'], 404);
         }
 
         $data = $request->validate([
             'nama_company' => 'sometimes|string|max:255',
-            'email_company' => 'sometimes|string|email|max:255|unique:companies,email_company,' . $id . ',id_company',
+            'email_company' => ['sometimes','email','max:255', Rule::unique('companies', 'email_company')->ignore($id,'id_company'),],
             'no_telp_company' => 'sometimes|string|max:20',
             'alamat_company' => 'sometimes|string|max:255',
             'logo_company' => 'sometimes|file|image|max:2048',
@@ -89,14 +90,19 @@ class CompanyController extends Controller
         ]);
     }
 
-    
+
     // Hapus company (admin only)
     public function destroy($id)
     {
         $company = Company::find($id);
 
-        if(!$company){
+        if (!$company) {
             return response()->json(['message' => 'Company tidak ditemukan'], 404);
+        }
+
+        // Kalau ada tiket pakai ni company
+        if ($company->tikets()->exists()) {
+            return response()->json(['message' => 'Company memiliki tiket aktif/riwayat, tidak bisa dihapus'], 422);
         }
 
         $company->delete();

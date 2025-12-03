@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Rute;
 use Illuminate\Http\Request;
-use Illluminate\Support\Facades\Auth;
 
 class RuteController extends Controller
 {
@@ -21,7 +20,7 @@ class RuteController extends Controller
     {
         $rute = Rute::with(['asal', 'tujuan'])->find($id);
 
-        if(!$rute){
+        if (!$rute) {
             return response()->json(['message' => 'Rute tidak ditemukan'], 404);
         }
 
@@ -52,7 +51,7 @@ class RuteController extends Controller
     {
         $rute = Rute::find($id);
 
-        if(!$rute){
+        if (!$rute) {
             return response()->json(['message' => 'Rute tidak ditemukan'], 404);
         }
 
@@ -74,8 +73,13 @@ class RuteController extends Controller
     {
         $rute = Rute::find($id);
 
-        if(!$rute){
+        if (!$rute) {
             return response()->json(['message' => 'Rute tidak ditemukan'], 404);
+        }
+
+        // Jika rute masih dipakai tiket
+        if ($rute->tikets()->exists()) {
+            return response()->json(['message' => 'Rute masih memiliki tiket, tidak bisa dihapus'], 422);
         }
 
         $rute->delete();

@@ -6,18 +6,15 @@ use App\Models\Kursi;
 
 class KursiController extends Controller
 {
-    public function byTiket($id)
+    public function show($id)
     {
-        $kursi = Kursi::where('id_tiket', $id)
-                      ->orderBy('kode')
-                      ->get();
-        //ini querynya 
+        // ngambil semua kursi dari tiket secara urut kode
+        $kursi = Kursi::where('id_tiket', $id)->orderBy('kode')->get();
 
-        return response()->json([
-            'message' => 'Daftar kursi',
-            'data'    => $kursi,
-        ]);
-        //balikin json ke frontend 
+        if(!$kursi){
+            return response()->json(['message' => 'Kursi tidak ditemukan'], 404);
+        }
+
+        return response()->json($kursi);
     }
-    //mengambil semua kursi berdasarkan id_tiket 
 }
