@@ -64,8 +64,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/pembayaran/update/{id}', [PembayaranController::class, 'update']);
 });
 
-
-
 // Company
 Route::get('/company', [CompanyController::class, 'index']);
 Route::get('/company/{id}', [CompanyController::class, 'show']);
@@ -81,7 +79,6 @@ Route::get('/rute/{id}', [RuteController::class, 'show']);
 // Review
 Route::get('/review', [ReviewController::class, 'index']);
 Route::get('/review/{id}', [ReviewController::class, 'show']);
-Route::post('/review/create', [ReviewController::class, 'store']);
 
 Route::middleware(['auth:sanctum', 'abilities:customer'])->group(function () {
     // Pemesanan
