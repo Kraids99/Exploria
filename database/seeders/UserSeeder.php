@@ -19,6 +19,15 @@ class UserSeeder extends Seeder
                 'foto_user' => NULL,
                 'jenis_kelamin' => NULL,
                 'tanggal_lahir' => NULL,
+            ],
+            [
+                'nama' => 'user',
+                'no_telp' => '085261259680',
+                'email' => 'user@gmail.com',
+                'password' => Hash::make('user123'),
+                'foto_user' => NULL,
+                'jenis_kelamin' => NULL,
+                'tanggal_lahir' => NULL,
             ]
         ]);
     }

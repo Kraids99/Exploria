@@ -44,6 +44,7 @@ class KursiSeeder extends Seeder
             DB::table('kursis')->insert($kursi);
         }
     }
+    
     // public function run(): void
     // {
     //     DB::table('kursis')->insert([

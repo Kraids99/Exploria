@@ -19,6 +19,9 @@ class DatabaseSeeder extends Seeder
             RuteSeeder::class,
             TiketSeeder::class,
             KursiSeeder::class,
+            PemesananSeeder::class,
+            PembayaranSeeder::class,
+            RincianPemesananSeeder::class,
         ]);
     }
 }
