@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import Footer from "../../components/default/Footer";
 import Navbar from "../../components/default/Navbar";
-import { getPemesananList } from "../../api/apiPemesanan.jsx";
-import { createReview } from "../../api/apiReview.jsx";
+import { fetchPemesanan, fetchPemesananById } from "../../api/customer/apiPemesanan.jsx";
+import { createReview } from "../../api/customer/apiReview.jsx";
 import { toast } from "react-toastify";
 
 const formatDate = (value) => {
@@ -43,8 +43,22 @@ export default function History() {
       try {
         setLoading(true);
         setError("");
-        const res = await getPemesananList();
-        setOrders(Array.isArray(res) ? res : []);
+        const res = await fetchPemesanan();
+        const list = Array.isArray(res) ? res : [];
+        // ambil detail per pemesanan supaya dapat flag can_review/review_submitted dari backend
+        const enriched = await Promise.all(
+          list.map(async (order) => {
+            const id = order.id_pemesanan || order.id;
+            if (!id) return order;
+            try {
+              const detail = await fetchPemesananById(id);
+              return detail?.data ?? detail ?? order;
+            } catch {
+              return order;
+            }
+          })
+        );
+        setOrders(enriched);
       } catch (err) {
         setError(err?.message || "Gagal memuat riwayat.");
       } finally {
@@ -75,17 +89,40 @@ export default function History() {
         ) : (
           <div className="space-y-6">
             {orders.map((order) => {
-              const rincian = order.rincian_pemesanan || order.rincianPemesanan || [];
+              const rincian =
+                order.rincian_pemesanan ||
+                order.rincian_pemesanans ||
+                order.rincianPemesanan ||
+                [];
               const firstRincian = Array.isArray(rincian) ? rincian[0] : null;
               const tiket = firstRincian?.tiket;
+              const tiketId = tiket?.id_tiket || firstRincian?.id_tiket;
               const company = tiket?.company;
               const asal = tiket?.rute?.asal;
               const tujuan = tiket?.rute?.tujuan;
               const status = order.status_pemesanan || order.status || "Tidak diketahui";
               const reviewSubmitted = Boolean(firstRincian?.review_submitted);
-              const canReview = Boolean(firstRincian?.can_review);
+              let canReview = Boolean(firstRincian?.can_review);
               const reviewDeadline = firstRincian?.review_deadline;
-              const idPembayaran = firstRincian?.id_pembayaran;
+              const idPembayaran =
+                firstRincian?.id_pembayaran ||
+                order.pembayaran?.id_pembayaran ||
+                order.id_pembayaran;
+
+              // fallback: hitung canReview jika flag tidak ada
+              if (firstRincian && !firstRincian?.can_review) {
+                const paid =
+                  order.pembayaran && Number(order.pembayaran.status_pembayaran) === 1;
+                const tibaRaw = tiket?.waktu_tiba;
+                if (paid && tibaRaw) {
+                  const tibaDate = new Date(tibaRaw);
+                  const now = new Date();
+                  const deadline = new Date(tibaDate.getTime() + 30 * 24 * 60 * 60 * 1000);
+                  if (tibaDate <= now && now <= deadline && !reviewSubmitted) {
+                    canReview = true;
+                  }
+                }
+              }
 
               return (
                 <div
@@ -139,8 +176,8 @@ export default function History() {
                   <div className="mt-3 flex items-center justify-between text-xs text-slate-600">
                     <div className="flex items-center gap-2">
                       {reviewSubmitted ? (
-                        <span className="inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-1 text-green-700 font-semibold">
-                          Sudah review
+                        <span className="inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1 text-slate-700 font-semibold">
+                          Review tidak tersedia
                         </span>
                       ) : canReview ? (
                         <button
@@ -149,7 +186,7 @@ export default function History() {
                           onClick={() =>
                             setReviewModal({
                               open: true,
-                              tiketId: tiket?.id_tiket,
+                              tiketId: tiketId,
                               pembayaranId: idPembayaran,
                               pemesananId: order.id_pemesanan || order.id,
                             })
@@ -187,15 +224,24 @@ export default function History() {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-slate-800 mb-1">Rating</label>
-                <select
-                  value={reviewForm.rating}
-                  onChange={(e) => setReviewForm((prev) => ({ ...prev, rating: Number(e.target.value) }))}
-                  className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
-                >
-                  {[5, 4, 3, 2, 1].map((r) => (
-                    <option key={r} value={r}>{r}</option>
-                  ))}
-                </select>
+                <div className="flex items-center gap-2">
+                  {[1, 2, 3, 4, 5].map((star) => {
+                    const active = reviewForm.rating >= star;
+                    return (
+                      <button
+                        type="button"
+                        key={star}
+                        onClick={() => setReviewForm((prev) => ({ ...prev, rating: star }))}
+                        className="text-2xl leading-none"
+                        aria-label={`Pilih rating ${star}`}
+                      >
+                        <span className={active ? "text-orange-500" : "text-slate-300"}>
+                          ★
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-800 mb-1">Komentar (opsional)</label>
@@ -238,8 +284,21 @@ export default function History() {
                     // refresh list to update status
                     setOrders([]);
                     setLoading(true);
-                    const res = await getPemesananList();
-                    setOrders(Array.isArray(res) ? res : []);
+                    const res = await fetchPemesanan();
+                    const list = Array.isArray(res) ? res : [];
+                    const enriched = await Promise.all(
+                      list.map(async (order) => {
+                        const id = order.id_pemesanan || order.id;
+                        if (!id) return order;
+                        try {
+                          const detail = await fetchPemesananById(id);
+                          return detail?.data ?? detail ?? order;
+                        } catch {
+                          return order;
+                        }
+                      })
+                    );
+                    setOrders(enriched);
                     setReviewModal({ open: false, tiketId: null, pembayaranId: null, pemesananId: null });
                   } catch (err) {
                     toast.error(err?.message || "Gagal mengirim review");

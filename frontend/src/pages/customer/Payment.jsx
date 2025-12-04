@@ -18,8 +18,8 @@ import walletShopee from "../../assets/wallets/wallet-shopeepay.png";
 import walletOVO from "../../assets/wallets/wallet-ovo.png";
 import walletGopay from "../../assets/wallets/wallet-gopay.png";
 
-import { getPemesananById } from "../../api/apiPemesanan.jsx";
-import { createPembayaran } from "../../api/apiPembayaran.jsx";
+import { fetchPemesananById } from "../../api/customer/apiPemesanan.jsx";
+import { createPembayaran } from "../../api/customer/apiPembayaran.jsx";
 import { toast } from "react-toastify";
 import { alertError } from "../../lib/Alert.jsx";
 

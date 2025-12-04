@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
-import { fetchRuteById, updateRute } from "../../../api/apiAdminRute.jsx";
-import { fetchLokasi } from "../../../api/apiAdminLokasi.jsx";
+import { fetchRuteById, updateRute } from "../../../api/admin/apiAdminRute.jsx";
+import { fetchLokasi } from "../../../api/admin/apiAdminLokasi.jsx";
 
 import { alertSuccess } from "../../../lib/Alert.jsx";
 import { toast } from "react-toastify";

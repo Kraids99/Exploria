@@ -3,7 +3,7 @@ import Navbar from "../../components/default/Navbar.jsx";
 import FieldDate from "../../components/default/FieldDate.jsx";
 import FieldSelect from "../../components/default/FieldSelect.jsx";
 
-import { getLokasi, getTiketByParams } from "../../api/apiTiket.jsx";
+import { fetchLokasi, getTiketByParams } from "../../api/customer/apiTiket.jsx";
 import Tikets from "../../components/tiket/Tikets.jsx";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -37,7 +37,7 @@ function SelectBus() {
     const fetchLocations = async () => {
       try {
         setLoading(true);
-        const data = await getLokasi();
+      const data = await fetchLokasi();
         const uniqueCities = [...new Set(data.map((item) => item.kota))];
         setLocations(uniqueCities);
       } catch (error) {

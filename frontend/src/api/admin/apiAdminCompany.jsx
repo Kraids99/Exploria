@@ -1,4 +1,4 @@
-import useAxios from "./index.jsx";
+import useAxios from "../index.jsx";
 
 // makeCompany
 const makeCompany = (data = {}) => {
@@ -14,13 +14,13 @@ const makeCompany = (data = {}) => {
 // show all
 export async function fetchCompanies() {
   const res = await useAxios.get("/company");
-  return res.data?.data || [];
+  return res.data?.data || res.data || [];
 }
 
 // show by id
 export async function fetchCompanyById(id) {
   const res = await useAxios.get(`/company/${id}`);
-  return res.data?.data || {};
+  return res.data?.data || res.data || {};
 }
 
 // create company
@@ -34,21 +34,15 @@ export async function createCompany(data) {
 // update company
 export async function updateCompany(id, data) {
   const formData = makeCompany(data);
+  formData.append("_method", "PATCH");
   // karna ada file jadi harus ada type multipart
-  return useAxios.post(`/company/update/${id}?_method=PUT`, formData, {
+  const res = await useAxios.post(`/company/update/${id}`, formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
+  return res.data;
 }
 
 // delete company
 export async function deleteCompany(id) {
   return useAxios.delete(`/company/delete/${id}`);
 }
-
-export default {
-  fetchCompanies,
-  fetchCompanyById,
-  createCompany,
-  updateCompany,
-  deleteCompany,
-};

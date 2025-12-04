@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
-import { createRute } from "../../../api/apiAdminRute.jsx";
-import { fetchLokasi } from "../../../api/apiAdminLokasi.jsx";
+import { createRute } from "../../../api/admin/apiAdminRute.jsx";
+import { fetchLokasi } from "../../../api/admin/apiAdminLokasi.jsx";
 import { toast } from "react-toastify";
 import { alertSuccess } from "../../../lib/Alert.jsx";
 

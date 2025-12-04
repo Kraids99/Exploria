@@ -8,8 +8,8 @@ import Footer from "../../components/default/Footer.jsx";
 import BusLoader from "../../components/default/BusLoader.jsx";
 import header from "../../assets/busHeader.jpeg";
 
-import { getTiketByParams } from "../../api/apiTiket.jsx";
-import { getReviewByTiket } from "../../api/apiReview.jsx";
+import { getTiketByParams } from "../../api/customer/apiTiket.jsx";
+import { getReviewByTiket } from "../../api/customer/apiReview.jsx";
 
 export default function DetailTiket() {
   const navigate = useNavigate();

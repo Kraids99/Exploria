@@ -1,49 +1,38 @@
 import useAxios from "./index.jsx";
 
-const getProfile = async () => {
-  try {
-    const response = await useAxios.get("/user");
-    return response.data;
-  } catch (error) {
-    throw error.response.data;
-  }
+// makeUser FormData untuk profil user
+const makeUser = (data = {}) => {
+  const formData = new FormData();
+  formData.append("nama", data.nama || "");
+  formData.append("email", data.email || "");
+  formData.append("no_telp", data.no_telp || "");
+  formData.append("tanggal_lahir", data.tanggal_lahir || "");
+  formData.append("jenis_kelamin", data.jenis_kelamin || "");
+  if (data.foto_user) formData.append("foto_user", data.foto_user);
+  return formData;
 };
 
-const updateProfile = async (data) => {
-  try {
-    // Jika ada file foto, data akan berupa FormData sehingga header perlu multipart.
-    const isFormData = typeof FormData !== "undefined" && data instanceof FormData;
-    // Beberapa backend (termasuk Laravel) lebih stabil untuk upload file pakai POST + _method=PATCH.
-    const method = isFormData ? "post" : "patch";
-    if (isFormData && !data.has("_method")) {
-      data.append("_method", "PATCH");
-    }
+export async function getProfile() {
+  const res = await useAxios.get("/user");
+  return res.data;
+}
 
-    const response = await useAxios[method]("/user/update", data, {
-      headers: isFormData ? { "Content-Type": "multipart/form-data" } : {},
-    });
-    return response.data;
-  } catch (error) {
-    throw error.response?.data || error;
-  }
-};
+export async function updateProfile(data) {
+  const formData = makeUser(data);
+  formData.append("_method", "PATCH"); // pakai POST + _method untuk multipart
 
-const updatePassword = async (data) => {
-  try {
-    const response = await useAxios.patch("/user/update/password", data);
-    return response.data;
-  } catch (error) {
-    throw error.response?.data || error;
-  }
-};
+  const res = await useAxios.post("/user/update", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return res.data;
+}
 
-const deleteAccount = async () => {
-  try {
-    const response = await useAxios.delete("/user");
-    return response.data;
-  } catch (error) {
-    throw error.response?.data || error;
-  }
-};
+export async function updatePassword(data) {
+  const res = await useAxios.patch("/user/update/password", data);
+  return res.data;
+}
 
-export {getProfile, updateProfile, updatePassword, deleteAccount}
+export async function deleteAccount() {
+  const res = await useAxios.delete("/user");
+  return res.data;
+}

@@ -4,7 +4,7 @@ import { PencilLine, Plus, Trash2 } from "lucide-react";
 import NavbarAdmin from "../../../components/default/NavbarAdmin";
 import Pagination from "../../../components/Pagination.jsx";
 import { BASE_URL } from "../../../api/index.jsx";
-import { fetchCompanies, deleteCompany } from "../../../api/apiAdminCompany.jsx";
+import { fetchCompanies, deleteCompany } from "../../../api/admin/apiAdminCompany.jsx";
 import companyPlaceholder from "../../../assets/building.png";
 import { toast } from "react-toastify";
 import { alertSuccess, alertConfirm} from "../../../lib/Alert.jsx";

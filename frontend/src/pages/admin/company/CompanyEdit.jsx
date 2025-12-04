@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
 import { BASE_URL } from "../../../api/index.jsx";
 // API admin company (get detail + update)
-import { fetchCompanyById, updateCompany } from "../../../api/apiAdminCompany.jsx";
+import { fetchCompanyById, updateCompany } from "../../../api/admin/apiAdminCompany.jsx";
 import companyPlaceholder from "../../../assets/building.png";
 import { alertSuccess } from "../../../lib/Alert.jsx";
 import { toast } from "react-toastify";

@@ -8,11 +8,12 @@ const useAxios = axios.create({
 
 // tambahkan token
 useAxios.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token"); // ambil token login dari localStorage
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+    //Tanpa kata “Bearer”, backend tidak tahu cara memproses token.
+    config.headers.Authorization = `Bearer ${token}`; // selipkan ke header Authorization
   }
-  return config;
+  return config; // lanjutkan request
 });
 
 export default useAxios;

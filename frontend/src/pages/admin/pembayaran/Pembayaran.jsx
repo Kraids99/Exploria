@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { CheckCircle2, XCircle, Mail } from "lucide-react";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
 import Pagination from "../../../components/Pagination.jsx";
-import { fetchPembayaran, updatePembayaranStatus, sendEticket } from "../../../api/apiPembayaran.jsx";
+import { fetchPembayaran, updatePembayaranStatus, sendEticket } from "../../../api/admin/apiAdminPembayaran.jsx";
 import { toast } from "react-toastify";
 
 const formatRupiah = (value) => {

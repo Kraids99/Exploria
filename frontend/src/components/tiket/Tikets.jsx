@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getTiketByParams } from "../../api/apiTiket.jsx";
+import { getTiketByParams } from "../../api/customer/apiTiket.jsx";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../Pagination.jsx";
 

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
 import { Loader2, TrendingUp, AlertCircle } from "lucide-react";
 import Chart from "chart.js/auto";
-import { fetchPembayaran } from "../../../api/apiPembayaran.jsx";
+import { fetchPembayaran } from "../../../api/admin/apiAdminPembayaran.jsx";
 
 const rupiah = (value) => {
   if (value === 0 || value) return `Rp ${value}`;

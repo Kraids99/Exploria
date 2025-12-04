@@ -2,7 +2,7 @@ import background from "../../assets/bg-signinsignup.jpg";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
-import { SignIn } from "../../api/apiAuth.jsx";
+import { SignIn } from "../../api/auth/apiAuth.jsx";
 import Footer from "../../components/default/Footer.jsx";
 import Navbar from "../../components/default/Navbar.jsx";
 import { toast } from "react-toastify";

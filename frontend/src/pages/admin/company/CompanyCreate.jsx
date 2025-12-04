@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
-import { createCompany } from "../../../api/apiAdminCompany.jsx";
+import { createCompany } from "../../../api/admin/apiAdminCompany.jsx";
 import companyPlaceholder from "../../../assets/building.png";
 
 import { toast } from "react-toastify";

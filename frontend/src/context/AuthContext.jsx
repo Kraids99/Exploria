@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { checkAuth } from "../api/apiAuth";
+import { checkAuth } from "../api/auth/apiAuth";
 
 const AuthContext = createContext();
 
@@ -9,6 +9,7 @@ export function AuthProvider({ children }) {
   const [initializing, setInitializing] = useState(true);
 
   // showLoading true hanya untuk init pertama supaya tidak unmount children saat refreshAuth dipanggil
+  // cek token ke /check-auth lalu set user + role berdasarkan abilities token
   const fetchAuth = async (showLoading = false) => {
     let responseData = null;
     if (showLoading) setInitializing(true);
@@ -17,6 +18,7 @@ export function AuthProvider({ children }) {
       responseData = res;
       setUser(res.user);
 
+      // tentukan role dari abilities Sanctum
       if (res.abilities?.includes("admin")) {
         setRole("admin");
       } else if (res.abilities?.includes("customer")) {
@@ -25,6 +27,7 @@ export function AuthProvider({ children }) {
         setRole(null);
       }
     } catch (err) {
+      // token invalid/expired
       setUser(null);
       setRole(null);
       localStorage.removeItem("token");

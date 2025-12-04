@@ -10,7 +10,7 @@ import { alertSuccess, alertConfirm } from "../../../lib/Alert.jsx";
 import {
   fetchLokasi,
   deleteLokasi,
-} from "../../../api/apiAdminLokasi.jsx";
+} from "../../../api/admin/apiAdminLokasi.jsx";
 
 export default function LokasiList() {
   const navigate = useNavigate();

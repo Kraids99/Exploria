@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { PencilLine, Plus, Trash2 } from "lucide-react";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
 import Pagination from "../../../components/Pagination.jsx";
-import { fetchRute, deleteRute } from "../../../api/apiAdminRute.jsx";
+import { fetchRute, deleteRute } from "../../../api/admin/apiAdminRute.jsx";
 
 import { alertConfirm, alertSuccess } from "../../../lib/Alert.jsx";
 import { toast } from "react-toastify";

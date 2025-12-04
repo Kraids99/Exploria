@@ -3,12 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { PencilLine, Plus, Trash2 } from "lucide-react";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
 import Pagination from "../../../components/Pagination.jsx";
-import { fetchTiket, deleteTiket } from "../../../api/apiAdminTiket.jsx";
-import { fetchCompanies } from "../../../api/apiAdminCompany.jsx";
+import { fetchTiket, deleteTiket } from "../../../api/admin/apiAdminTiket.jsx";
+import { fetchCompanies } from "../../../api/admin/apiAdminCompany.jsx";
 
 import { alertConfirm, alertSuccess } from "../../../lib/Alert.jsx";
 import { toast } from "react-toastify";
-import { getTiketByParams } from "../../../api/apiTiket.jsx";
+import { getTiketByParams } from "../../../api/customer/apiTiket.jsx";
 
 // Format waktu ke tampilan dd-MM-YYYY HH:mm
 const formatDateTime = (value) => {

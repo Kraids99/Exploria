@@ -1,8 +1,8 @@
 import background from "../../assets/dashboard.jpg";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { checkAuth } from "../../api/apiAuth.jsx";
-import { getLokasi } from "../../api/apiTiket.jsx";
+import { checkAuth } from "../../api/auth/apiAuth.jsx";
+import { fetchLokasi } from "../../api/customer/apiTiket.jsx";
 import FieldDate from "../default/FieldDate.jsx";
 import FieldSelect from "../default/FieldSelect.jsx";
 import { toast } from "react-toastify";
@@ -18,7 +18,7 @@ function DashboardLP() {
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const data = await getLokasi();
+        const data = await fetchLokasi();
         const uniqueCities = [...new Set(data.map((item) => item.kota))];
         setLocations(uniqueCities);
       } catch (error) {

@@ -8,9 +8,9 @@ import header from "../../assets/busHeader.jpeg";
 import {
   getPembayaranById,
   updatePembayaranStatus,
-} from "../../api/apiPembayaran.jsx";
-import { getPemesananById } from "../../api/apiPemesanan.jsx";
-import { getTiketById } from "../../api/apiTiket.jsx";
+} from "../../api/customer/apiPembayaran.jsx";
+import { fetchPemesananById } from "../../api/customer/apiPemesanan.jsx";
+import { getTiketById } from "../../api/customer/apiTiket.jsx";
 import { toast } from "react-toastify";
 
 // helper: bikin VA random

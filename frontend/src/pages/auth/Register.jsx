@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SignUpCustomer } from "../../api/apiAuth.jsx";
+import { SignUpCustomer } from "../../api/auth/apiAuth.jsx";
 import { useNavigate } from "react-router-dom";
 import background from "../../assets/bg-signinsignup.jpg"
 import Navbar from "../../components/default/Navbar.jsx";

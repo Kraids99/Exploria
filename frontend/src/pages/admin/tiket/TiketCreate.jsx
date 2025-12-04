@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
-import { createTiket } from "../../../api/apiAdminTiket.jsx";
-import { fetchRute } from "../../../api/apiAdminRute.jsx";
-import { fetchCompanies } from "../../../api/apiAdminCompany.jsx";
+import { createTiket } from "../../../api/admin/apiAdminTiket.jsx";
+import { fetchRute } from "../../../api/admin/apiAdminRute.jsx";
+import { fetchCompanies } from "../../../api/admin/apiAdminCompany.jsx";
 
 import { toast } from "react-toastify";
 import { alertSuccess } from "../../../lib/Alert.jsx";

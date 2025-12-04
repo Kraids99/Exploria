@@ -6,8 +6,8 @@ import Navbar from "../../components/default/Navbar";
 import Footer from "../../components/default/Footer";
 import BusLoader from "../../components/default/BusLoader";
 
-import { getTiketById, getKursiByTiket } from "../../api/apiTiket";
-import { createPemesanan } from "../../api/apiPemesanan";
+import { getTiketById, getKursiByTiket } from "../../api/customer/apiTiket";
+import { createPemesanan } from "../../api/customer/apiPemesanan";
 
 import { toast } from "react-toastify";
 import header from "../../assets/busHeader.jpeg";

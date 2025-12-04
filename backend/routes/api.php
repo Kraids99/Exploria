@@ -44,7 +44,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/tiket/search', [TiketController::class, 'search']);
     Route::get('/tiket', [TiketController::class, 'index']);
     Route::get('/tiket/{id}', [TiketController::class, 'show']);
+
+    //Kursi
     Route::get("/tiket/{id_tiket}/kursi", [KursiController::class,'byTiket']);
+
     // User
     Route::get('/user', [UserController::class, 'show']);
     Route::match(['put', 'patch'], '/user/update', [UserController::class, 'update']);
