@@ -1,4 +1,3 @@
-// src/pages/customer/Payment3.jsx
 import { useState, useEffect } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 
@@ -12,7 +11,7 @@ import { toast } from "react-toastify";
 
 function Payment3() {
   const navigate = useNavigate();
-  const { id } = useParams(); // id_tiket dari /ereceipt/:id
+  const { id } = useParams();
   const [searchParams] = useSearchParams();
 
   const id_pembayaran = searchParams.get("payment") || null;
@@ -22,13 +21,8 @@ function Payment3() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState("");
-  const [submittingReview, setSubmittingReview] = useState(false);
-
-  // 🔒 Kunci tombol back browser & backspace (seperti Payment & Payment2)
+  //Agar tidak bisa menekan tombol back browser & backspace 
   useEffect(() => {
-    // dorong state dummy biar pointer history ada di sini
     window.history.pushState({ lockedPayment3: true }, "", window.location.href);
 
     const handlePopState = () => {
@@ -95,12 +89,11 @@ function Payment3() {
     }
   }, [id]);
 
-  // ---- state loading / error (tanpa Navbar) ----
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col bg-[#F5F5F7] font-sans">
         <main className="flex-1 flex items-center justify-center">
-          <BusLoader message="Memuat detail pembayaran..." />
+          <BusLoader message="Memuat pembayaran..." />
         </main>
         <Footer />
       </div>
@@ -129,7 +122,7 @@ function Payment3() {
     );
   }
 
-  // ---- mapping data tiket ----
+  // pengisian data 
   const companyName = tiket.company?.nama_company || "Nama Perusahaan";
 
   const departureTime =
@@ -146,57 +139,8 @@ function Payment3() {
   const arrivalCity = tiket.rute?.tujuan?.kota || "-";
   const arrivalTerminal = tiket.rute?.tujuan?.terminal || "-";
 
-  // kode E-Ticket
-  const storedUser = localStorage.getItem("user");
-  const user = storedUser ? JSON.parse(storedUser) : null;
-  const userCode = user ? (user.id_user || user.id) : "guest";
-
-  const eticketCode =
-    kodeTiketQuery ||
-    tiket.kode_tiket ||
-    `EXP-${userCode}-${tiket.id_tiket}-${departureDate || "nodate"}`;
-
-  // ---- submit review ----
-  const handleSubmitReview = async (e) => {
-    e.preventDefault();
-
-    if (!id_pembayaran) {
-      toast.error("ID pembayaran tidak ditemukan, tidak bisa menyimpan review");
-      return;
-    }
-
-    if (!rating) {
-      toast.error("Silakan pilih rating terlebih dahulu");
-      return;
-    }
-
-    try {
-      setSubmittingReview(true);
-
-      await createReview({
-        id_pembayaran: id_pembayaran,
-        id_tiket: tiket.id_tiket || Number(id),
-        rating,
-        komentar: comment,
-      });
-
-      toast.success("Terima kasih atas ulasanmu!");
-      navigate("/"); // kembali ke beranda
-    } catch (err) {
-      console.error(err);
-      const backendMsg =
-        err?.errors?.id_tiket?.[0] ||
-        err?.message ||
-        "Gagal mengirim review";
-      toast.error(backendMsg);
-    } finally {
-      setSubmittingReview(false);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-slate-50 font-sans flex flex-col">
-      {/* HEADER IMAGE */}
       <section className="max-w-5xl mx-auto px-4 pt-6 w-full">
         <div className="rounded-3xl overflow-hidden shadow-md">
           <img
@@ -207,7 +151,6 @@ function Payment3() {
         </div>
       </section>
 
-      {/* STEP INDICATOR */}
       <section className="max-w-4xl mx-auto w-full px-4 mt-8">
         <div className="bg-white rounded-2xl shadow-md px-4 py-6 md:px-8 md:py-8">
           <h1 className="text-xl md:text-2xl font-semibold text-slate-900 mb-4">
@@ -245,7 +188,6 @@ function Payment3() {
         </div>
       </section>
 
-      {/* KONTEN */}
       <section className="w-[92%] md:w-[80%] max-w-4xl mx-auto bg-white p-5 md:p-8 rounded-xl shadow mt-6 mb-10">
         {/* Ringkasan perjalanan */}
         <div className="mt-2 bg-gray-50 rounded-2xl shadow-md p-5 md:p-7">
@@ -292,44 +234,6 @@ function Payment3() {
             Simpan E-ticket dan jangan dibagikan ke orang lain.
           </p>
         </div>
-{/* 
-        <p className="text-center text-black text-2xl md:text-3xl mt-10 mb-2">
-          Bagaimana Pengalaman Anda?
-        </p>
-        <p className="text-center text-gray-500 text-xs md:text-sm mb-4">
-          Berikan rating dan ulasan terkait dengan layanan kami
-        </p> */}
-{/* 
-        <form onSubmit={handleSubmitReview} className="mt-2 space-y-4">
-          <div className="flex justify-center gap-2">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <button
-                key={star}
-                type="button"
-                onClick={() => setRating(star)}
-                className="text-3xl transition-transform"
-              >
-                <span
-                  className={
-                    star <= rating ? "text-yellow-400" : "text-gray-300"
-                  }
-                >
-                  ★
-                </span>
-              </button>
-            ))}
-          </div> */}
-{/* 
-          <div>
-            <textarea
-              className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm
-                         focus:outline-none focus:ring-1 focus:ring-orange-400"
-              rows={3}
-              placeholder="Tulis ulasanmu di sini (opsional)..."
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-            />
-          </div> */}
 
           {/* Tombol kirim review */}
           <button
@@ -341,15 +245,6 @@ function Payment3() {
           >
             Kembali ke Beranda
           </button>
-        {/* </form> */}
-{/* 
-        <button
-          type="button"
-          className="mt-2 w-full text-[11px] md:text-xs text-gray-500 underline"
-          onClick={() => navigate("/")}
-        >
-          Lewati, langsung kembali ke beranda
-        </button> */}
       </section>
 
       <Footer />

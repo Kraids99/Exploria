@@ -19,6 +19,7 @@ return new class extends Migration
             $table->float('rating');
             $table->string('komentar')->nullable();
             $table->date('tanggal_review')->nullable();
+            $table->boolean('status_review')->nullable();
 
             $table->foreign('id_pembayaran')
                 ->references('id_pembayaran')

@@ -4,7 +4,6 @@ function AboutSection() {
   return (
     <section className="bg-white py-16">
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-10 px-4 md:flex-row">
-        {/* Gambar */}
         <div className="flex-1 w-full">
           <div className="overflow-hidden rounded-[32px] bg-slate-100 shadow-md">
             <img
@@ -15,7 +14,7 @@ function AboutSection() {
           </div>
         </div>
 
-        {/* Teks */}
+
         <div className="flex-1 space-y-4 text-center md:text-left">
           <h2 className="text-2xl font-bold text-slate-900 md:text-3xl">
             <span className="text-brand-500">Exploria</span> adalah partner

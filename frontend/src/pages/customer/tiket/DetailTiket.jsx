@@ -1,4 +1,3 @@
-// src/pages/DetailTiket.jsx
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { FaStar, FaArrowLeft } from "react-icons/fa";
@@ -11,7 +10,7 @@ import header from "../../../assets/busHeader.jpeg";
 import { getTiketByParams } from "../../../api/customer/apiTiket.jsx";
 import { getReviewByTiket } from "../../../api/customer/apiReview.jsx";
 
-export default function DetailTiket() {
+function DetailTiket() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [searchParams] = useSearchParams();
@@ -23,8 +22,6 @@ export default function DetailTiket() {
   const [tiket, setTiket] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
-  const [creatingOrder, setCreatingOrder] = useState(false);
 
   // state untuk review
   const [reviews, setReviews] = useState([]);
@@ -116,7 +113,6 @@ export default function DetailTiket() {
     fetchReviews();
   }, [tiket?.id_tiket]);
 
-  // ========= LOADING / ERROR / NOT FOUND (responsif + sidebar padding) =========
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col bg-[#F5F5F7]">
@@ -197,7 +193,6 @@ export default function DetailTiket() {
       <Navbar />
 
       <main className="flex-1 pl-14 md:pl-0 pt-6 md:pt-24 pb-12">
-        {/* HEADER + TOMBOL KEMBALI */}
         <section className="max-w-5xl mx-auto px-4">
           <div className="flex items-center gap-2 mb-3">
             <button
@@ -225,7 +220,6 @@ export default function DetailTiket() {
         <section className="max-w-6xl mx-auto px-4 pb-0 mt-6">
           <div className="mt-2 rounded-[32px] bg-white shadow-lg border border-slate-100">
             <div className="px-5 py-5 md:px-10 md:py-8">
-              {/* Judul + info singkat */}
               <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div className="text-center md:text-left">
                   <h1 className="text-2xl md:text-3xl font-bold text-slate-900">
@@ -248,11 +242,9 @@ export default function DetailTiket() {
 
                 <div className="mt-4">
                   <div className="relative h-28 md:h-28">
-                    {/* garis tengah */}
                     <div className="absolute left-6 right-6 top-1/2 h-1 -translate-y-1/2 bg-slate-900 rounded-full" />
 
                     <div className="relative flex justify-between items-start px-2 md:px-4">
-                      {/* titik awal */}
                       <div className="flex flex-col items-center text-center text-[11px] text-slate-500"><br /><br />
                         <div className="w-4 h-4 rounded-full border-2 border-slate-900 bg-[#f38f4a]" />
                         <span className="mt-2 font-semibold text-slate-700">
@@ -266,7 +258,6 @@ export default function DetailTiket() {
                         </span>
                       </div>
 
-                      {/* titik akhir */}
                       <div className="flex flex-col items-center text-center text-[11px] text-slate-500"><br /><br />
                         <div className="w-4 h-4 rounded-full border-2 border-slate-900 bg-[#f38f4a]" />
                         <span className="mt-2 font-semibold text-slate-700">
@@ -357,4 +348,7 @@ export default function DetailTiket() {
       <Footer />
     </div>
   );
+
 }
+
+export default DetailTiket; 

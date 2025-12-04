@@ -16,6 +16,7 @@ function Login() {
 
   const navigate = useNavigate();
 
+  //validasi inputan 
   const validateLogin = () => {
     if (!email.trim() || !password.trim()) {
       const msg = "Email dan password wajib diisi";
@@ -111,10 +112,8 @@ function Login() {
 
   return (
     <div className="relative min-h-screen flex flex-col font-sans">
-      {/* NAVBAR FIXED */}
       <Navbar />
 
-      {/* MAIN: kasih padding top supaya nggak ketabrak navbar */}
       <main
         className="
           relative flex-1 flex justify-center
@@ -124,7 +123,6 @@ function Login() {
           md:pt-32 md:pb-16 /* lebih lega di layar besar */
         "
       >
-        {/* BACKGROUND */}
         <div className="absolute inset-0 -z-10">
           <img
             src={background}
@@ -134,7 +132,6 @@ function Login() {
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/60 to-slate-900/90" />
         </div>
 
-        {/* CARD LOGIN */}
         <div
           className="
             w-full max-w-md
@@ -201,7 +198,6 @@ function Login() {
         </div>
       </main>
 
-      {/* FOOTER di bawah (ketarik karena flex-col + flex-1 di main) */}
       <Footer />
     </div>
   );

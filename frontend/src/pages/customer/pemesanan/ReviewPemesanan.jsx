@@ -1,23 +1,42 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 
 import Navbar from "../../../components/default/Navbar";
 import Footer from "../../../components/default/Footer";
+import BusLoader from "../../../components/default/BusLoader.jsx";
+
 import header from "../../../assets/busHeader.jpeg";
 import kursiIcon from "../../../assets/logoKursi.jpg";
 
-import { getPemesananById } from "../../../api/customer/apiPemesanan.jsx";
 import { getTiketById } from "../../../api/customer/apiTiket";
+import { createPemesanan } from "../../../api/customer/apiPemesanan.jsx";
 import { toast } from "react-toastify";
 import { FaArrowLeft } from "react-icons/fa";
 
-export default function SelectPayment() {
-  const { id_pemesanan } = useParams();
-  const navigate = useNavigate();
 
-  const [pemesanan, setPemesanan] = useState(null);
+function ReviewPemesanan() {
+  // isi dengan id_tiket dari halaman sebelumnya
+  const { id_pemesanan: id_tiket } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const navState = location.state || {};
+  const [kursiIds, setKursiIds] = useState(navState.kursiIds || []);
+
   const [tiket, setTiket] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+
+  const [user] = useState(() => {
+    try {
+      const raw = localStorage.getItem("user");
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const userId = user ? user.id_user ?? user.id ?? null : null;
 
   const formatTanggalJam = (datetime) => {
     if (!datetime) return { tanggal: "-", jam: "--:--" };
@@ -28,7 +47,7 @@ export default function SelectPayment() {
       weekday: "short",
       day: "2-digit",
       month: "short",
-    }); // "Min, 24 Feb"
+    });
     const jam = d.toLocaleTimeString("id-ID", {
       hour: "2-digit",
       minute: "2-digit",
@@ -36,40 +55,85 @@ export default function SelectPayment() {
     return { tanggal, jam };
   };
 
+  // fallback kursiIds kalau user reload
+  useEffect(() => {
+    if (kursiIds && kursiIds.length > 0) return;
+
+    try {
+      const draftRaw = sessionStorage.getItem("draft-pemesanan");
+      if (!draftRaw) return;
+      const draft = JSON.parse(draftRaw);
+      if (Array.isArray(draft.kursiIds) && draft.kursiIds.length > 0) {
+        setKursiIds(draft.kursiIds);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }, [kursiIds]);
+
+  // ambil detail tiket
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 1. ambil pemesanan
-        const res = await getPemesananById(id_pemesanan);
-        const pem = res?.data ?? res; // jaga2 kalau backend balikin {data: {...}}
-        setPemesanan(pem);
-
-        // 2. ambil tiket (kalau belum eager load sampai rute & company)
-        const rincianList =
-          pem?.rincianPemesanan || pem?.rincian_pemesanan || [];
-        const firstRincian = rincianList[0];
-
-        const tiketId =
-          firstRincian?.id_tiket || firstRincian?.tiket?.id_tiket || null;
-
-        if (tiketId) {
-          const tiketRes = await getTiketById(tiketId);
-          const tiketObj = tiketRes?.data ?? tiketRes;
-          setTiket(tiketObj);
+        if (!id_tiket) {
+          toast.error("ID tiket tidak ditemukan.");
+          navigate(-1);
+          return;
         }
+
+        const tiketRes = await getTiketById(id_tiket);
+        const tiketObj = tiketRes?.data ?? tiketRes;
+        setTiket(tiketObj);
       } catch (err) {
         console.error(err);
-        toast.error("Gagal mengambil data pemesanan");
+        toast.error("Gagal mengambil data tiket");
       } finally {
         setLoading(false);
       }
     };
 
-    if (id_pemesanan) fetchData();
-  }, [id_pemesanan]);
+    fetchData();
+  }, [id_tiket, navigate]);
 
   const handleBack = () => {
     navigate(-1);
+  };
+
+  const handleNext = async () => {
+    if (!userId) {
+      toast.error("Silakan login terlebih dahulu.");
+      return;
+    }
+
+    if (!tiket || !kursiIds || kursiIds.length === 0) {
+      toast.error("Data kursi belum lengkap.");
+      return;
+    }
+
+    const payload = {
+      id_tiket: tiket.id_tiket,
+      kursi_ids: kursiIds,
+    };
+
+    try {
+      setSubmitting(true);
+      const res = await createPemesanan(payload);
+      const pemesanan = res?.data ?? res;
+
+      // bersihkan draft
+      sessionStorage.removeItem("draft-pemesanan");
+
+      toast.success("Pemesanan berhasil dibuat");
+      
+      navigate(`/selectpayment/${pemesanan.id_pemesanan}`);
+    } catch (error) {
+      console.error(error);
+      const msg =
+        error?.response?.data?.message || "Gagal membuat pemesanan";
+      toast.error(msg);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (loading) {
@@ -77,20 +141,20 @@ export default function SelectPayment() {
       <>
         <Navbar />
         <main className="min-h-screen flex items-center justify-center bg-gray-50 pl-14 md:pl-0 pt-6 md:pt-24 px-4">
-          Loading...
+          <BusLoader message="Memuat data review pemesanan..." />
         </main>
         <Footer />
       </>
     );
   }
 
-  if (!pemesanan) {
+  if (!tiket || !kursiIds || kursiIds.length === 0) {
     return (
       <>
         <Navbar />
         <main className="min-h-screen flex items-center justify-center bg-gray-50 pl-14 md:pl-0 pt-6 md:pt-24 px-4">
           <p className="text-sm text-slate-600 text-center">
-            Pemesanan tidak ditemukan
+            Data pemesanan belum lengkap. Silakan pilih kursi kembali.
           </p>
         </main>
         <Footer />
@@ -98,17 +162,9 @@ export default function SelectPayment() {
     );
   }
 
-  const user = pemesanan.user || {};
-
-  const rincianList =
-    pemesanan.rincianPemesanan || pemesanan.rincian_pemesanan || [];
-  const rincian = rincianList[0] || {};
-  const jumlahKursi = rincian.jumlah_tiket || 0;
-
+  const jumlahKursi = kursiIds.length;
   const hargaSatuan = tiket?.harga || 0;
-  const totalBayar =
-    pemesanan.total_biaya_pemesanan ??
-    (jumlahKursi && hargaSatuan ? jumlahKursi * hargaSatuan : 0);
+  const totalBayar = jumlahKursi * hargaSatuan;
 
   const companyName =
     tiket?.company?.nama_company || tiket?.nama_tiket || "Detail Pemesanan";
@@ -124,11 +180,6 @@ export default function SelectPayment() {
   const { tanggal: tglTiba, jam: jamTiba } = formatTanggalJam(
     tiket?.waktu_tiba
   );
-
-  const handleNext = () => {
-    // logic tetap sama, cuma styling yang diubah
-    navigate(`/selectpayment/${pemesanan.id_pemesanan}`);
-  };
 
   return (
     <>
@@ -162,7 +213,6 @@ export default function SelectPayment() {
 
           {/* Card utama */}
           <div className="bg-white rounded-2xl shadow px-4 py-5 md:px-6 md:py-6">
-            {/* Judul + stepper */}
             <h1 className="text-xl md:text-2xl font-semibold text-slate-900 mb-4 text-center md:text-left">
               {companyName}
             </h1>
@@ -174,11 +224,10 @@ export default function SelectPayment() {
                   className="flex items-center gap-2 text-xs md:text-sm font-medium"
                 >
                   <div
-                    className={`w-8 h-8 flex items-center justify-center rounded-full border-2 ${
-                      idx === 1
+                    className={`w-8 h-8 flex items-center justify-center rounded-full border-2 ${idx === 1
                         ? "bg-orange-500 border-orange-500 text-white"
                         : "border-slate-300 text-slate-500"
-                    }`}
+                      }`}
                   >
                     {idx + 1}
                   </div>
@@ -204,7 +253,6 @@ export default function SelectPayment() {
 
             {/* Baris jadwal & terminal */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 items-start">
-              {/* Kiri: berangkat */}
               <div className="text-center md:text-left">
                 <p className="text-xs uppercase text-slate-500">Berangkat</p>
                 <p className="mt-1 text-sm font-semibold text-slate-900">
@@ -213,13 +261,11 @@ export default function SelectPayment() {
                 <p className="text-sm text-slate-700">{asalTerminal}</p>
               </div>
 
-              {/* Tengah: nama bus + arrow */}
               <div className="flex flex-col items-center justify-center text-xs text-slate-500">
                 <span className="mb-2 text-center">{companyName}</span>
                 <span className="text-3xl text-orange-500">→</span>
               </div>
 
-              {/* Kanan: tiba */}
               <div className="text-center md:text-right">
                 <p className="text-xs uppercase text-slate-500">Tiba</p>
                 <p className="mt-1 text-sm font-semibold text-slate-900">
@@ -229,7 +275,6 @@ export default function SelectPayment() {
               </div>
             </div>
 
-            {/* Badge jumlah kursi */}
             <div className="mt-6">
               <div className="mb-6">
                 <button className="border inline-flex items-center gap-2 border-gray-400 rounded-lg px-3 py-1 text-sm font-medium">
@@ -252,11 +297,11 @@ export default function SelectPayment() {
                 </h3>
                 <p className="mb-1">
                   Alamat Email :{" "}
-                  <span className="font-medium">{user.email || "-"}</span>
+                  <span className="font-medium">{user?.email || "-"}</span>
                 </p>
                 <p>
                   Telepon :{" "}
-                  <span className="font-medium">{user.no_telp || "-"}</span>
+                  <span className="font-medium">{user?.no_telp || "-"}</span>
                 </p>
               </div>
 
@@ -267,12 +312,12 @@ export default function SelectPayment() {
                 </h3>
                 <p className="mb-1">
                   Nama :{" "}
-                  <span className="font-medium">{user.nama || "-"}</span>
+                  <span className="font-medium">{user?.nama || "-"}</span>
                 </p>
                 <p className="mb-1">
                   Jenis Kelamin :{" "}
                   <span className="font-medium">
-                    {user.jenis_kelamin || "-"}
+                    {user?.jenis_kelamin || "-"}
                   </span>
                 </p>
                 <p className="mb-1">
@@ -292,9 +337,10 @@ export default function SelectPayment() {
             <div className="mt-10 flex justify-center">
               <button
                 onClick={handleNext}
-                className="w-full md:w-1/2 py-3 rounded-full bg-orange-500 text-white font-semibold text-sm hover:bg-orange-600 transition"
+                disabled={submitting}
+                className="w-full md:w-1/2 py-3 rounded-full bg-orange-500 text-white font-semibold text-sm hover:bg-orange-600 transition disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                Lanjutkan ke Pembayaran
+                {submitting ? "Memproses..." : "Lanjutkan ke Pembayaran"}
               </button>
             </div>
           </div>
@@ -305,3 +351,5 @@ export default function SelectPayment() {
     </>
   );
 }
+
+export default ReviewPemesanan; 

@@ -115,8 +115,6 @@ function Register() {
 
       const data = res.data ?? res;
 
-      // ganti alertSuccess dengan toast.success biasa
-
       navigate("/login");
       alertSuccess("Registrasi berhasil! Silahkan login terlebih dahulu!");
     } catch (err) {
@@ -124,12 +122,10 @@ function Register() {
 
       let msg = "Registrasi gagal";
 
-      // kalau axios: err.response.data
       const data = err.response?.data || err;
 
       // error email sudah dipakai
       if (data?.errors?.email?.length) {
-        // dari backend: "The email has already been taken."
         msg = "Email sudah terdaftar, silakan gunakan email lain.";
       } else if (typeof data?.message === "string") {
         msg = data.message;

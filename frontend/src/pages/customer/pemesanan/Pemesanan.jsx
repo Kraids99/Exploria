@@ -1,4 +1,3 @@
-// src/pages/customer/Pemesanan.jsx
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -7,13 +6,12 @@ import Footer from "../../../components/default/Footer";
 import BusLoader from "../../../components/default/BusLoader";
 
 import { getTiketById, getKursiByTiket } from "../../../api/customer/apiTiket";
-import { createPemesanan } from "../../../api/customer/apiPemesanan";
 
 import { toast } from "react-toastify";
 import header from "../../../assets/busHeader.jpeg";
 import { FaArrowLeft } from "react-icons/fa";
 
-export default function Pemesanan() {
+function Pemesanan() {
   const { id_tiket } = useParams();
   const navigate = useNavigate();
 
@@ -29,7 +27,6 @@ export default function Pemesanan() {
   const userId = parsedUser
     ? parsedUser.id_user ?? parsedUser.id ?? null
     : null;
-  console.log("user from localStorage:", parsedUser, "userId:", userId);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,11 +36,11 @@ export default function Pemesanan() {
           getKursiByTiket(id_tiket),
         ]);
 
-        // tiketDetail bisa {data: {...}} atau langsung object
+        //set detail tiket 
         const tiketObj = tiketDetail?.data ?? tiketDetail;
         setDetailTiket(tiketObj || null);
 
-        // kursiList bisa {data: [...]} atau langsung array
+        // set kursi list 
         const kursiArr = Array.isArray(kursiList)
           ? kursiList
           : Array.isArray(kursiList?.data)
@@ -63,7 +60,7 @@ export default function Pemesanan() {
 
   const handleSeatClick = (seat) => {
     if (!seat) return;
-    const isBooked = seat.status_kursi === true;
+    const isBooked = seat.status_kursi == 1 || seat.status_kursi === true;
     if (isBooked) return;
 
     setSelectedSeats((prev) => {
@@ -75,41 +72,39 @@ export default function Pemesanan() {
     });
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (!detailTiket) return;
 
     if (!userId) {
       toast.error("Silakan login terlebih dahulu.");
       return;
     }
+
+    if (selectedSeats.length === 0) {
+      toast.error("Silakan pilih minimal 1 kursi.");
+      return;
+    }
+
     const kursiIds = selectedSeats.map((s) => s.id_kursi);
 
-    const payload = {
-      id_tiket: detailTiket.id_tiket,
-      kursi_ids: kursiIds,
-      // id_user tidak perlu, diambil dari token (auth:sanctum)
-    };
+    // simpan draft ke sessionStorage (jaga2 kalau user reload di review)
+    sessionStorage.setItem(
+      "draft-pemesanan",
+      JSON.stringify({
+        id_tiket: detailTiket.id_tiket,
+        kursiIds,
+      })
+    );
 
-    try {
-      setSubmitting(true);
-      const res = await createPemesanan(payload);
-      const pemesanan = res?.data ?? res;
-
-      toast.success("Pemesanan berhasil dibuat");
-      navigate(`/reviewPesanan/${pemesanan.id_pemesanan}`);
-    } catch (error) {
-      console.error(error);
-      toast.error("Gagal membuat pemesanan");
-    } finally {
-      setSubmitting(false);
-    }
+    navigate(`/reviewPesanan/${detailTiket.id_tiket}`, {
+      state: { kursiIds },
+    });
   };
 
   const handleBack = () => {
     navigate(-1);
   };
 
-  // ================== STATE LOADING / ERROR (RESPONSIF) ==================
   if (loading) {
     return (
       <>
@@ -146,9 +141,10 @@ export default function Pemesanan() {
   const companyName = detailTiket.company?.nama_company ?? "-";
   const berangkat =
     detailTiket.waktu_keberangkatan?.substring(11, 16) || "--:--";
-  const sampai = detailTiket.waktu_tiba.substring(11, 16) || "--:--";
+  const sampai =
+    detailTiket.waktu_tiba?.substring(11, 16) || "--:--";
 
-  // ----- helper untuk layout kursi ala bus -----
+  // helper layout kursi 
   const sortedSeats = [...kursi].sort((a, b) => {
     const rowA = parseInt(a.kode, 10);
     const rowB = parseInt(b.kode, 10);
@@ -173,7 +169,7 @@ export default function Pemesanan() {
       return <div className="w-12 h-10" />;
     }
 
-    // ❗️PAKAI == 1 supaya 1 / "1" / true semua dianggap terisi
+    // 1 / "1" / true → dianggap terisi
     const isBooked = seat.status_kursi == 1 || seat.status_kursi === true;
     const isSelected = selectedSeats.some(
       (s) => s.id_kursi === seat.id_kursi
@@ -210,7 +206,6 @@ export default function Pemesanan() {
 
       <main className="min-h-screen bg-gray-50 pb-16 pl-14 md:pl-0 pt-6 md:pt-24">
         <section className="max-w-6xl mx-auto px-4 space-y-8">
-          {/* HEADER + PANAH KEMBALI */}
           <section className="max-w-5xl mx-auto">
             <div className="flex items-center gap-2 mb-3">
               <button
@@ -234,7 +229,6 @@ export default function Pemesanan() {
             </div>
           </section>
 
-          {/* STEP PROGRESS */}
           <div className="bg-white rounded-2xl shadow px-4 py-4 md:px-6 md:py-5">
             <h1 className="text-xl md:text-2xl font-semibold text-slate-900 mb-4 text-center md:text-left">
               {companyName}
@@ -269,9 +263,8 @@ export default function Pemesanan() {
             </div>
           </div>
 
-          {/* Konten utama: kiri kursi, kanan ringkasan */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-            {/* ------- KIRI: layout kursi bus ------- */}
+            {/* Layout Bus*/}
             <section className="bg-white rounded-2xl shadow p-4 md:p-6">
               <h2 className="text-lg font-semibold mb-4 text-center md:text-left">
                 Pilih Kursi
@@ -293,10 +286,8 @@ export default function Pemesanan() {
                 </div>
               </div>
 
-              {/* Body bus (scroll horizontal kalau sempit) */}
               <div className="w-full overflow-x-auto">
                 <div className="mx-auto w-fit bg-slate-50 rounded-2xl border border-slate-200 p-6 md:p-10">
-                  {/* Sopir di atas */}
                   <div className="flex justify-center mb-5">
                     <div className="px-3 py-1 rounded-md bg-amber-950 text-amber-50 border text-xs font-medium">
                       Sopir
@@ -304,7 +295,6 @@ export default function Pemesanan() {
                   </div>
 
                   <div className="flex gap-6">
-                    {/* Kolom kiri A/B */}
                     <div className="flex flex-col gap-3">
                       {rowNumbers.map((row) => (
                         <div
@@ -317,7 +307,6 @@ export default function Pemesanan() {
                       ))}
                     </div>
 
-                    {/* Kolom kanan C/D */}
                     <div className="flex flex-col gap-3">
                       {rowNumbers.map((row) => (
                         <div
@@ -334,7 +323,6 @@ export default function Pemesanan() {
               </div>
             </section>
 
-            {/* ------- KANAN: ringkasan pemesanan ------- */}
             <section className="bg-white rounded-2xl shadow p-4 md:p-6 flex flex-col gap-6">
               <div>
                 <h2 className="text-lg font-semibold mb-4 text-center md:text-left">
@@ -416,3 +404,5 @@ export default function Pemesanan() {
     </>
   );
 }
+
+export default Pemesanan;

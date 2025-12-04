@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import Navbar from "../../../components/default/Navbar";
 import Footer from "../../../components/default/Footer";
 import BusLoader from "../../../components/default/BusLoader.jsx";
 
@@ -21,7 +20,6 @@ import walletGopay from "../../../assets/wallets/wallet-gopay.png";
 import { getPemesananById } from "../../../api/customer/apiPemesanan.jsx";
 import { createPembayaran } from "../../../api/customer/apiPembayaran.jsx";
 import { toast } from "react-toastify";
-import { alertError } from "../../../lib/Alert.jsx";
 
 function Payment() {
   // sekarang id yang dipakai = id_pemesanan
@@ -110,11 +108,9 @@ function Payment() {
     }
   }, [id_pemesanan]);
 
-  // state loading / error (TANPA NAVBAR DI PAYMENT)
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 font-sans flex flex-col">
-        {/* Navbar sengaja tidak ditampilkan di tahap pembayaran */}
         <main className="flex-1 flex items-center justify-center pt-6 md:pt-24 px-4">
           <BusLoader message="Memuat detail pembayaran..." />
         </main>

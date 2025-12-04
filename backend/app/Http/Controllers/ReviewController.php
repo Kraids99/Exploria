@@ -49,6 +49,7 @@ class ReviewController extends Controller
             'id_tiket' => 'required|exists:tikets,id_tiket',
             'rating' => 'required|integer|min:1|max:5',
             'komentar' => 'nullable|string',
+            'status_review' => 'nullable|boolean',
         ]);
 
         // Pastikan pembayaran milik user ini dan SUDAH dibayar (status = 1)
@@ -103,6 +104,7 @@ class ReviewController extends Controller
             'rating' => $request->rating,
             'komentar' => $request->komentar,
             'tanggal_review' => now(), 
+            'status_review' => $request->status_review??false, 
         ]);
 
 

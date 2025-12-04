@@ -4,13 +4,16 @@ import { BASE_URL } from "../../api/index.jsx";
 import logo from "../../assets/logo.png";
 import logovertical from "../../assets/logo-v.png";
 import defaultAvatar from "../../assets/user_default.png";
-import { Home, User, LogOut } from "lucide-react";
+import { Home, User, LogOut, Clock } from "lucide-react";
 
-export default function Navbar() {
+function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  //state dropdown 
   const [openMenu, setOpenMenu] = useState(false);
+
+  //state data user dari local
   const [user, setUser] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem("user"));
@@ -23,8 +26,10 @@ export default function Navbar() {
     !!localStorage.getItem("token")
   );
 
+  //sinkron state navbar jika local berubah 
   useEffect(() => {
     const syncAuth = () => {
+      //cek ulang token dan update 
       setIsAuthenticated(!!localStorage.getItem("token"));
       setRole(localStorage.getItem("role"));
       try {
@@ -39,6 +44,7 @@ export default function Navbar() {
     return () => window.removeEventListener("storage", syncAuth);
   }, []);
 
+  //helper untuk menghapus semua session user 
   const clearSession = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
@@ -75,15 +81,16 @@ export default function Navbar() {
     return url.startsWith("/") ? `${BASE_URL}${url}` : `${BASE_URL}/${url}`;
   };
 
+  //untuk foto profile 
   const avatarSrc =
     normalizeUrl(user?.foto_user || user?.avatar) || defaultAvatar;
   const displayName = user?.nama || "Customer";
   const displayRole = role === "admin" ? "Admin" : "Customer";
 
-  // ========= DI SINI: daftar route yang mau pakai sidebar di mobile =========
+  // daftar route yang mau pakai sidebar di mobile
   const isAdminRoute = location.pathname.startsWith("/admin");
-  const isAuthPage =   location.pathname === "/login" || location.pathname === "/register";
-  
+  const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
+
   // daftar halaman customer yang mau punya sidebar di mobile
   const shouldUseSidebarRoute =
     !isAdminRoute &&
@@ -99,8 +106,10 @@ export default function Navbar() {
       location.pathname.startsWith("/payment") ||
       location.pathname.startsWith("/ereceipt") ||
       location.pathname.startsWith("/history")
-      );
-  
+    );
+
+
+
   const showSidebarMobile = isAuthenticated && shouldUseSidebarRoute;
   return (
     <>
@@ -261,6 +270,32 @@ export default function Navbar() {
                   Profil
                 </span>
               </button>
+
+              <button
+                type="button"
+                onClick={handleHistory}
+                className="
+                flex items-center gap-3
+                rounded-2xl px-3 py-2.5
+                hover:bg-slate-50
+                w-full
+                justify-center group-hover:justify-start
+                transition-colors duration-200
+                "
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-800">
+                  <Clock className="h-5 w-5" />
+                </div>
+                <span
+                  className="
+                    hidden group-hover:inline
+                    text-sm font-medium text-slate-800
+                  "
+                >
+                  History
+                </span>
+              </button>
+
             </nav>
 
             {/* Spacer biar logout di bawah */}
@@ -376,3 +411,4 @@ export default function Navbar() {
   );
 }
 
+export default Navbar; 

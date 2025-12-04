@@ -1,7 +1,7 @@
 import React from "react";
-//untuk loading setiap halaman 
+//untuk loading setiap halaman (manual bentuknya)
 
-export default function BusLoader({ message = "Sedang memuat data..." }) {
+function BusLoader({ message = "Sedang memuat data..." }) {
   return (
     <div className="flex flex-col items-center gap-4">
       {/* Area jalan + bus */}
@@ -41,3 +41,4 @@ export default function BusLoader({ message = "Sedang memuat data..." }) {
   );
 }
 
+export default BusLoader; 

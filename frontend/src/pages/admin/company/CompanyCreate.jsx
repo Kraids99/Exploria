@@ -103,7 +103,7 @@ export default function CompanyCreate() {
       navigate("/admin/company");
       alertSuccess("Berhasil menambahkan Company!");
     } catch (err) {
-      let apiMessage = "Gagal menambah company. Silahkan Coba lagi."; // ⬅️ pakai let
+      let apiMessage = "Gagal menambah company. Silahkan Coba lagi."; 
 
       const data = err.response?.data;
 

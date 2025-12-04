@@ -14,6 +14,9 @@ import {
 import { BASE_URL } from "../../api";
 import defaultAvatar from "../../assets/user_default.png";
 
+
+//helper untuk memastikan url profile valid 
+
 const normalizeAvatarUrl = (raw) => {
   if (!raw) return defaultAvatar;
   if (raw.startsWith("http")) return raw;
@@ -25,6 +28,7 @@ const normalizeAvatarUrl = (raw) => {
   return `${host}/${path}`;
 };
 
+//menu default sidebar admin 
 const defaultItems = [
   { label: "Company", icon: Building2, path: "/admin/company" },
   { label: "Lokasi", icon: MapPin, path: "/admin/lokasi" },
@@ -34,10 +38,11 @@ const defaultItems = [
   { label: "Laporan", icon: FileText, path: "/admin/laporan" },
 ];
 
-export default function NavbarAdmin({ items }) {
+function NavbarAdmin({ items }) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
+  
   const [user, setUser] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem("user"));
@@ -49,6 +54,7 @@ export default function NavbarAdmin({ items }) {
 
   const menu = items && items.length ? items : defaultItems;
 
+  //sinkron user kalau local berubah 
   useEffect(() => {
     const syncUser = () => {
       try {
@@ -85,8 +91,6 @@ export default function NavbarAdmin({ items }) {
   };
 
   return (
-    // 📌 Mobile: w-16 (ikon saja, melebar saat hover)
-    // 📌 Desktop (md+): w-64 full, label selalu kelihatan
     <aside
       className="
         group
@@ -104,7 +108,6 @@ export default function NavbarAdmin({ items }) {
         flex-col
       "
     >
-      {/* HEADER + AVATAR */}
       <div className="px-3 py-4 border-b border-white/10 relative">
         <div className="flex flex-col items-center gap-3 md:flex-row md:items-center">
           <div className="w-11 h-11 rounded-full overflow-hidden bg-slate-700/60 flex items-center justify-center text-white font-semibold ring-2 ring-white/10">
@@ -118,9 +121,6 @@ export default function NavbarAdmin({ items }) {
             />
           </div>
 
-          {/* Info admin:
-              - mobile: sembunyi, muncul saat hover
-              - desktop: selalu tampil */}
           <div className="hidden group-hover:block md:block leading-tight text-left">
             <h1 className="text-sm font-semibold text-orange-100">
               Admin Panel
@@ -170,7 +170,6 @@ export default function NavbarAdmin({ items }) {
         )}
       </div>
 
-      {/* MENU ICON + LABEL */}
       <nav className="flex-1 px-2 py-4 space-y-2 overflow-y-auto">
         {menu.map((item) => {
           const active =
@@ -195,9 +194,6 @@ export default function NavbarAdmin({ items }) {
               `}
             >
               <item.icon className="w-5 h-5 shrink-0" />
-              {/* label:
-                  - mobile: hidden, muncul saat hover
-                  - desktop: inline terus */}
               <span className="hidden group-hover:inline md:inline whitespace-nowrap">
                 {item.label}
               </span>
@@ -208,3 +204,5 @@ export default function NavbarAdmin({ items }) {
     </aside>
   );
 }
+
+export default NavbarAdmin;

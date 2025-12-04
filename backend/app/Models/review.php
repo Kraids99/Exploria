@@ -23,13 +23,15 @@ class review extends Model
         'rating',
         'komentar',
         'tanggal_review',
+        'status_review',
     ];
 
     // casting
     protected function casts(): array
     {
         return [
-            'tanggal_review' => 'datetime',   
+            'tanggal_review' => 'datetime',  
+            'status_review' => 'boolean', 
         ];
     }
 

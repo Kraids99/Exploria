@@ -9,13 +9,13 @@ import { styleForm } from "../../../lib/FormStyles.js";
 export default function LokasiCreate() {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const [form, setForm] = useState({ terminal: "", kota: "" });
 
   const handleChange = (field) => (e) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
   };
 
+  //validasi 
   const validateData = () => {
     if(!form.kota || !form.terminal){
       setErrorMessage("Kota dan Terminal tidak boleh kosong!"); 
@@ -26,7 +26,7 @@ export default function LokasiCreate() {
     setErrorMessage(""); 
     return true; 
   }
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);

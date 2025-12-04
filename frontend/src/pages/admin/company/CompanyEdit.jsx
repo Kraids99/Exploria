@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
 import { BASE_URL } from "../../../api/index.jsx";
-// API admin company (get detail + update)
+
 import { fetchCompanyById, updateCompany } from "../../../api/admin/apiAdminCompany.jsx";
 import companyPlaceholder from "../../../assets/building.png";
 import { alertSuccess } from "../../../lib/Alert.jsx";
@@ -139,12 +139,9 @@ export default function CompanyEdit() {
       navigate("/admin/company");
       alertSuccess("Berhasil mengubah data Company" + form.name);
     } catch (err) {
-      let apiMessage = "Gagal menambah company. Silahkan Coba lagi."; // ⬅️ pakai let
+      let apiMessage = "Gagal menambah company. Silahkan Coba lagi."; 
 
       const data = err.response?.data;
-
-      // buat debug kalau mau liat bentuk responsenya
-      // console.log("error data", data);
 
       if (data?.errors?.email_company?.length) {
         // dari Laravel validator 'email_company'
