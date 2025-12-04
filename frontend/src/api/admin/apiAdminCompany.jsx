@@ -33,7 +33,8 @@ export async function createCompany(data) {
 
 // update company
 export async function updateCompany(id, data) {
-  const formData = makeCompany(data);
+  // Terima FormData (untuk upload logo) atau object biasa
+  const formData = data instanceof FormData ? data : makeCompany(data);
   formData.append("_method", "PATCH");
   // karna ada file jadi harus ada type multipart
   const res = await useAxios.post(`/company/update/${id}`, formData, {

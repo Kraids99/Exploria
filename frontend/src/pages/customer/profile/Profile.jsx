@@ -172,7 +172,7 @@ function Profile() {
       await updateProfile(formData);
 
       const latest = await getProfile();
-      const avatarPath = latest?.foto_user || "";
+      const avatarPath = latest?.foto_user || latest?.user_profile || latest?.avatar || "";
       const avatarUrlLocal = avatarPath ? normalizeUrl(avatarPath) : "";
 
       setProfile((prev) => ({
@@ -271,7 +271,11 @@ function Profile() {
       }
 
       const res = await updateProfile(payload);
-      const updatedAvatar = res?.user?.foto_user || res?.foto_user;
+      const updatedAvatar =
+        res?.user?.foto_user ||
+        res?.user?.user_profile ||
+        res?.foto_user ||
+        res?.user_profile;
 
       let avatarUrlLocal = profile.avatar || "";
       if (updatedAvatar) {
@@ -289,7 +293,18 @@ function Profile() {
         ...(res?.user || authUser || {}),
         ...formProfile,
         avatar: avatarUrlLocal,
-        foto_user: res?.user?.foto_user || res?.foto_user || avatarUrlLocal,
+        foto_user:
+          res?.user?.foto_user ||
+          res?.foto_user ||
+          avatarUrlLocal ||
+          res?.user?.user_profile ||
+          res?.user_profile,
+        user_profile:
+          res?.user?.user_profile ||
+          res?.user_profile ||
+          res?.user?.foto_user ||
+          res?.foto_user ||
+          avatarUrlLocal,
       };
       localStorage.setItem("user", JSON.stringify(mergedUser));
       setAuthUser(mergedUser);

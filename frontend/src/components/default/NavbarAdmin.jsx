@@ -11,22 +11,9 @@ import {
   LogOut,
   ChevronDown,
 } from "lucide-react";
-import { BASE_URL } from "../../api";
 import defaultAvatar from "../../assets/user_default.png";
+import { normalizeUrl } from "../../lib/UrlPath";
 
-
-//helper untuk memastikan url profile valid 
-
-const normalizeAvatarUrl = (raw) => {
-  if (!raw) return defaultAvatar;
-  if (raw.startsWith("http")) return raw;
-
-  const host = BASE_URL.replace(/\/+$/, "");
-  const cleaned = raw.replace(/^\/+/, "");
-  const path = cleaned.startsWith("storage/") ? cleaned : `storage/${cleaned}`;
-
-  return `${host}/${path}`;
-};
 
 //menu default sidebar admin 
 const defaultItems = [
@@ -70,8 +57,8 @@ function NavbarAdmin({ items }) {
   }, []);
 
   const avatarSrc = useMemo(() => {
-    const raw = user?.user_profile || user?.foto_user || "";
-    return normalizeAvatarUrl(raw);
+    const raw = user?.foto_user;
+    return normalizeUrl(raw) || defaultAvatar;
   }, [user]);
 
   const displayName = user?.nama || "Admin";

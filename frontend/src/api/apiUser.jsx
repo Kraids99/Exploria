@@ -18,7 +18,7 @@ export async function getProfile() {
 }
 
 export async function updateProfile(data) {
-  const formData = makeUser(data);
+  const formData = data instanceof FormData ? data : makeUser(data);
   formData.append("_method", "PATCH"); // pakai POST + _method untuk multipart
 
   const res = await useAxios.post("/user/update", formData, {

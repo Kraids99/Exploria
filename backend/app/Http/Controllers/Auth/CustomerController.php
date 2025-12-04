@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Models\User;
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
 
 class CustomerController extends Controller
@@ -26,6 +27,8 @@ class CustomerController extends Controller
         if ($request->hasFile('foto_user')) {
             // simpan di storage/app/public/user_profile
             $profilePath = $request->file('foto_user')->store('user_profile', 'public');
+            // simpan url publik agar konsisten
+            $profilePath = Storage::url($profilePath);
         }
 
         // buat user baru

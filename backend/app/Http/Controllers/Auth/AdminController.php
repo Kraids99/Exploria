@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Models\User;
 use App\Models\Admin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 
@@ -27,6 +28,8 @@ class AdminController extends Controller
         if ($request->hasFile('foto_user')) {
             // simpan di storage/app/public/user_profile
             $profilePath = $request->file('foto_user')->store('user_profile', 'public');
+            // simpan url publik agar konsisten dengan response lain
+            $profilePath = Storage::url($profilePath);
         }
 
 

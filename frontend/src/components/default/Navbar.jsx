@@ -1,10 +1,10 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { BASE_URL } from "../../api/index.jsx";
 import logo from "../../assets/logo.png";
 import logovertical from "../../assets/logo-v.png";
 import defaultAvatar from "../../assets/user_default.png";
 import { Home, User, LogOut, Clock } from "lucide-react";
+import { normalizeUrl } from "../../lib/UrlPath";
 
 function Navbar() {
   const navigate = useNavigate();
@@ -75,15 +75,9 @@ function Navbar() {
     navigate("/");
   };
 
-  const normalizeUrl = (url) => {
-    if (!url) return "";
-    if (url.startsWith("http")) return url;
-    return url.startsWith("/") ? `${BASE_URL}${url}` : `${BASE_URL}/${url}`;
-  };
-
   //untuk foto profile 
   const avatarSrc =
-    normalizeUrl(user?.foto_user || user?.avatar) || defaultAvatar;
+    normalizeUrl(user?.foto_user || user?.user_profile || user?.avatar) || defaultAvatar;
   const displayName = user?.nama || "Customer";
   const displayRole = role === "admin" ? "Admin" : "Customer";
 

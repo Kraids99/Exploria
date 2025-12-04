@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Throwable;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -15,7 +16,12 @@ class UserController extends Controller
     // Tampilkan profil user login
     public function show(Request $request)
     {
-        return response()->json($request->user());
+        $user = $request->user();
+        if ($user && $user->foto_user && !Str::startsWith($user->foto_user, ['http://', 'https://', '/storage'])) {
+            // normalisasi supaya selalu url publik
+            $user->foto_user = Storage::url($user->foto_user);
+        }
+        return response()->json($user);
     }
 
     // Update profil user (nama, email, foto, dll)
