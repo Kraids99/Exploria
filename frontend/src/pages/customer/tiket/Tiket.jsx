@@ -11,10 +11,11 @@ import { useEffect, useState } from "react";
 
 import { toast } from "react-toastify";
 
-function SelectBus() {
+function Tiket() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
 
+  //nilai awal kota asal dan tujuan 
   const fromCity1 = params.get("from") || "";
   const toCity1 = params.get("to") || "";
   const date1 = params.get("date") || "";
@@ -29,9 +30,11 @@ function SelectBus() {
     setDate(date1);
   }, [fromCity1, toCity1, date1]);
 
+  //lokasi unik dari backend 
   const [locations, setLocations] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  //ambil daftar lokasi 
   useEffect(() => {
     const fetchLocations = async () => {
       try {
@@ -50,6 +53,7 @@ function SelectBus() {
     fetchLocations();
   }, []);
 
+  
   const validateData = () => {
     if (!date) {
       toast.error("Tanggal tidak boleh kosong");
@@ -64,6 +68,7 @@ function SelectBus() {
     return true;
   };
 
+  //handler ubah pencarian 
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -154,4 +159,4 @@ function SelectBus() {
   );
 }
 
-export default SelectBus;
+export default Tiket;
