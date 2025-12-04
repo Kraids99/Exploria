@@ -1,66 +1,41 @@
-import Navbar from "../../components/default/Navbar"; 
-import Footer from "../../components/default/Footer";
+import Navbar from "../../default/Navbar"; 
+import Footer from "../../default/Footer";
 
-import imgBali from "../../assets/destination/bali.jpg";
-import bis1 from "../../assets/destination/bis1.jpg";
-import bis2 from "../../assets/destination/bis2.jpg";
-import bis3 from "../../assets/destination/bis3.jpg";
-import bis4 from "../../assets/destination/bis4.jpg";
-import bis5 from "../../assets/destination/bis5.jpg";
-import bis6 from "../../assets/destination/bis6.jpg";
+import imgHoliday from "../../../assets/Holiday.jpg";
+import bis1 from "../../../assets/destination/Bis1.jpg";
+import bis2 from "../../../assets/destination/Bis2.jpg";
+import bis3 from "../../../assets/destination/Bis3.jpg";
 
-function Bali() {
-
+function Holiday () {
     const busInBali = [
         {
             name: "Sinar Jaya",
             terminal: "Terminal Mengwi",
-            location: "Mengwi, Kab. Badung, Bali",
+            location: "Yogyakarta",
             phone: "0812-3344-5566",
             open: "05.00 – 22.00 WITA",
+            harga: "3 tiket gratis 1",
             image: bis1,
         },
         {
             name: "Lorena",
             terminal: "Terminal Ubung",
-            location: "Denpasar Utara, Bali",
+            location: "Yogyakarta",
             phone: "0813-9988-2211",
             open: "06.00 – 21.00 WITA",
+            harga: "3 tiket gratis 1",
             image: bis2,
         },
         {
             name: "Gunung Harta",
             terminal: "Terminal Batubulan",
-            location: "Gianyar, Bali",
+            location: "Yogyakarta",
             phone: "0811-7777-909",
             open: "24 Jam",
+            harga: "3 tiket gratis 1",
             image: bis3,
-        },
-        {
-            name: "Air bus",
-            terminal: "Terminal Canggu",
-            location: "Gianyar, Bali",
-            phone: "0811-7777-909",
-            open: "24 Jam",
-            image: bis4,
-        },
-        {
-            name: "Sinar Baru",
-            terminal: "Terminal Kuta",
-            location: "Mengwi, Kab. Badung, Bali",
-            phone: "0812-3344-5566",
-            open: "05.00 – 22.00 WITA",
-            image: bis5,
-        },
-        {
-            name: "Rosalina",
-            terminal: "Terminal Denpasar",
-            location: "Mengwi, Kab. Badung, Bali",
-            phone: "0812-3344-5566",
-            open: "05.00 – 21.00 WITA",
-            image: bis6,
         }
-    ];
+    ]
 
     return (
         <div className="w-full min-h-screen overflow-y-auto pb-20">
@@ -68,29 +43,26 @@ function Bali() {
 
                 <div className="w-full flex justify-center overflow-hidden cursor-pointer relative mt-25">
                     <img
-                        src={imgBali}
-                        alt="Bali"
+                        src={imgHoliday}
+                        alt="Holiday"
                         className="w-250 h-100 object-cover rounded-2xl shadow-lg brightness-75"
                     />
 
                     {/* Overlay Text */}
                     <div className="absolute bottom-4 left-4 text-white">
-                        <h2 className="mx-32 text-2xl font-bold">Bali</h2>
-                        <p className="text-sm mx-32">Wonderfull City of Tourism</p>
+                        <h2 className="mx-32 text-2xl font-bold">Liburan Bersama Keluarga</h2>
+                        <p className="text-sm mx-32">Beli 3 tiket gratis 1, cocok untuk liburan akhir pekan bersama keluarga</p>
                     </div>
                 </div>
-              
+
                 <div ClassName="px-6 mt-4">
                     <p className=" mx-36 mt-4 text-blue-950 leading-relaxed">
-                        Bali merupakan destinasi wisata paling populer di Indonesia, terkenal dengan
-                        keindahan pantai, budaya yang kaya, serta berbagai tempat wisata seperti,
-                        Uluwatu, Kuta, Canggu, dan Ubud.
+                        Asikk liburan bersama keluarga dengan tiket gratis satu. Buruan cek bus kesukaanmu dibawah ini^^!
                     </p>
-                </div> 
+                </div>
 
                 <div className="mt-8 w-full flex justify-center px-4">
                     <div className="w-full max-w-5xl">
-                        <h2 className="text-xl font-semibold mx-6 mb-4">Terminal di Bali</h2>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 place-items-center">
                             {busInBali.map((bus) => (
@@ -110,6 +82,10 @@ function Bali() {
                                     {/* CONTENT */}
                                     <div className="p-3">
                                         <h3 className="font-bold text-base mb-1">{bus.name}</h3>
+
+                                        <p className="text-bold text-orange-600">
+                                        <span className="font-medium"></span> {bus.harga}
+                                        </p>
 
                                         <p className="text-sm text-gray-700">
                                         <span className="font-medium">Terminal:</span> {bus.terminal}
@@ -137,4 +113,4 @@ function Bali() {
     );
 }
 
-export default Bali;
+export default Holiday;

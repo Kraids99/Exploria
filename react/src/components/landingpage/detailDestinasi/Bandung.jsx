@@ -1,97 +1,93 @@
-import Navbar from "../../components/default/Navbar"; 
-import Footer from "../../components/default/Footer";
+import Navbar from "../../default/Navbar"; 
+import Footer from "../../default/Footer";
 
-import imgDiscount from "../../assets/BisDiscount.jpg";
-import bis1 from "../../assets/destination/bis1.jpg";
-import bis2 from "../../assets/destination/bis2.jpg";
-import bis3 from "../../assets/destination/bis3.jpg";
-import bis4 from "../../assets/destination/bis4.jpg";
-import bis5 from "../../assets/destination/bis5.jpg";
-import bis6 from "../../assets/destination/bis6.jpg";
+import imgBandung from "../../../assets/destination/bandung.jpg";
+import bis1 from "../../../assets/destination/Bis1.jpg";
+import bis2 from "../../../assets/destination/Bis2.jpg";
+import bis3 from "../../../assets/destination/Bis3.jpg";
+import bis4 from "../../../assets/destination/Bis4.jpg";
+import bis5 from "../../../assets/destination/Bis5.jpg";
+import bis6 from "../../../assets/destination/Bis6.jpg";
 
-function Discount () {
+function Bandung() {
     const busInBali = [
         {
             name: "Sinar Jaya",
             terminal: "Terminal Mengwi",
-            location: "Yogyakarta",
+            location: "Bandung",
             phone: "0812-3344-5566",
             open: "05.00 – 22.00 WITA",
-            harga: "Rp 550.000",
             image: bis1,
         },
         {
             name: "Lorena",
             terminal: "Terminal Ubung",
-            location: "Yogyakarta",
+            location: "Bandung",
             phone: "0813-9988-2211",
             open: "06.00 – 21.00 WITA",
-            harga: "Rp 320.000",
             image: bis2,
         },
         {
             name: "Gunung Harta",
             terminal: "Terminal Batubulan",
-            location: "Yogyakarta",
+            location: "Bandung",
             phone: "0811-7777-909",
             open: "24 Jam",
-            harga: "Rp 230.000",
             image: bis3,
         },
         {
             name: "Air bus",
             terminal: "Terminal Canggu",
-            location: "Yogyakarta",
+            location: "Bandung",
             phone: "0811-7777-909",
             open: "24 Jam",
-            harga: "Rp 400.000",
             image: bis4,
         },
         {
             name: "Sinar Baru",
             terminal: "Terminal Kuta",
-            location: "Yogyakarta",
+            location: "Bandung",
             phone: "0812-3344-5566",
             open: "05.00 – 22.00 WITA",
-            harga: "Rp 290.000",
             image: bis5,
         },
         {
             name: "Rosalina",
             terminal: "Terminal Denpasar",
-            location: "Yogyakarta",
+            location: "Bandung",
             phone: "0812-3344-5566",
             open: "05.00 – 21.00 WITA",
-            harga: "Rp 500.000",
             image: bis6,
         },
     ]
+
     return (
         <div className="w-full min-h-screen overflow-y-auto pb-20">
             <Navbar />
-
+            
                 <div className="w-full flex justify-center overflow-hidden cursor-pointer relative mt-25">
                     <img
-                        src={imgDiscount}
-                        alt="Discount"
+                        src={imgBandung}
+                        alt="Bandung"
                         className="w-250 h-100 object-cover rounded-2xl shadow-lg brightness-75"
                     />
 
                     {/* Overlay Text */}
                     <div className="absolute bottom-4 left-4 text-white">
-                        <h2 className="mx-32 text-2xl font-bold">Diskon Hanya Untuk Kamu</h2>
-                        <p className="text-sm mx-32">Hingga 50% Nikmati Potongan harga spesial untuk rute pilihan</p>
+                        <h2 className="mx-32 text-2xl font-bold">Bandung</h2>
+                        <p className="text-sm mx-32">Metropolite City of Tourism</p>
                     </div>
                 </div>
-
+                
                 <div ClassName="px-6 mt-4">
                     <p className=" mx-36 mt-4 text-blue-950 leading-relaxed">
-                        Nikmati diskonmu! dengan harga terjangkau untuk paket bis yang tersedia di bawah ini
+                        Kota Bandung dikenal dengan wisata kuliner, alam, dan suasana kotanya yang sejuk..
                     </p>
-                </div>
+                </div> 
 
                 <div className="mt-8 w-full flex justify-center px-4">
                     <div className="w-full max-w-5xl">
+                        <h2 className="text-xl font-semibold mx-6 mb-4">Terminal di Bandung</h2>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 place-items-center">
                             {busInBali.map((bus) => (
@@ -101,7 +97,7 @@ function Discount () {
                                     >
                                     {/* IMAGE */}
                                     <div className="w-full h-28 bg-gray-200 flex items-center justify-center">
-                                        <img
+                                       <img
                                             src={bus.image}
                                             alt={bus.name}
                                             className="w-full h-32 object-cover"
@@ -111,10 +107,6 @@ function Discount () {
                                     {/* CONTENT */}
                                     <div className="p-3">
                                         <h3 className="font-bold text-base mb-1">{bus.name}</h3>
-
-                                        <p className="text-bold text-orange-600">
-                                        <span className="font-medium"></span> {bus.harga}
-                                        </p>
 
                                         <p className="text-sm text-gray-700">
                                         <span className="font-medium">Terminal:</span> {bus.terminal}
@@ -142,4 +134,4 @@ function Discount () {
     );
 }
 
-export default Discount;
+export default Bandung;

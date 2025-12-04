@@ -1,4 +1,6 @@
 // src/components/DealsSection.jsx
+import { useNavigate } from "react-router-dom";
+
 const deals = [
   {
     title: "Diskon Hanya Untukmu",
@@ -7,6 +9,7 @@ const deals = [
     badge: "Tersedia sampai 30 November 2025",
     image:
       "https://images.pexels.com/photos/799463/pexels-photo-799463.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    path: "/diskon",   // <--- tambahkan path
   },
   {
     title: "Liburan Bersama Keluarga",
@@ -15,10 +18,13 @@ const deals = [
     badge: "Tersedia sampai 30 Januari 2026",
     image:
       "https://images.pexels.com/photos/1430677/pexels-photo-1430677.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    path: "/holiday",    // <--- tambahkan path
   },
 ];
 
 function DealsSection() {
+  const navigate = useNavigate();
+
   return (
     <section className="bg-white pb-20 pt-4">
       <div className="mx-auto max-w-6xl px-4">
@@ -54,9 +60,14 @@ function DealsSection() {
                   <p className="mt-1 text-xs text-slate-100/80 md:text-sm">
                     {deal.description}
                   </p>
-                  <button className="
-                        mt-4 rounded-full bg-white px-4 py-1.5 text-xs font-semibold text-slate-900 
-                        hover:bg-black hover:text-brand-100 hover:transition-colors duration-200 ease-out">
+                  <button
+                    type="button"
+                    onClick={() => navigate(deal.path)}
+                    className="
+                      mt-4 rounded-full bg-white px-4 py-1.5 text-xs font-semibold text-slate-900 
+                      hover:bg-black hover:text-brand-100 hover:transition-colors duration-200 ease-out
+                    "
+                  >
                     Lihat selengkapnya
                   </button>
                 </div>
@@ -69,4 +80,4 @@ function DealsSection() {
   );
 }
 
-export default DealsSection;
+export default DealsSection;

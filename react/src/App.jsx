@@ -24,12 +24,12 @@ import TiketEdit from "./pages/admin/tiket/TiketEdit.jsx";
 import Pemesanan from "./pages/customer/Pemesanan.jsx";
 import ReviewPemesanan from "./pages/customer/ReviewPemesanan.jsx"; 
 import History from "./pages/customer/History.jsx";
-import Bali from "./components/landingpage/Bali.jsx"; 
-import Bandung from "./components/landingpage/Bandung.jsx";
-import Yogyakarta from "./components/landingpage/Yogyakarta.jsx";
-import Surabaya from "./components/landingpage/Surabaya.jsx"; 
-import Discount from "./components/landingpage/Discount.jsx";
-import Holiday from "./components/landingpage/Holiday.jsx";
+import Bali from "./components/landingpage/detailDestinasi/Bali.jsx"; 
+import Bandung from "./components/landingpage/detailDestinasi/Bandung.jsx";
+import Yogyakarta from "./components/landingpage/detailDestinasi/Yogyakarta.jsx";
+import Surabaya from "./components/landingpage/detailDestinasi/Surabaya.jsx"; 
+import Discount from "./components/landingpage/detailDeals/Discount.jsx";
+import Holiday from "./components/landingpage/detailDeals/Holiday.jsx";
 
 // routernya Admin
 function AdminRoute({ children }) {

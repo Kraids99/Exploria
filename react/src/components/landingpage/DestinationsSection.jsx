@@ -1,44 +1,43 @@
 import { useNavigate } from "react-router-dom";
 
-import Bandung from "../../assets/destination/bandung.jpg";
-import Yogyakarta from "../../assets/destination/yogyakarta.jpg";
-import Surabaya from "../../assets/destination/surabaya.jpg";
-import Bali from "../../assets/destination/bali.jpg";
-
-import detailBali from "../../components/landingpage/Bali.jsx";
-import detailBandung from "../../components/landingpage/Bandung.jsx";
-import detailYogyakarta from "../../components/landingpage/Yogyakarta.jsx";
-import detailSurabaya from "../../components/landingpage/Surabaya.jsx";
+import BandungImg from "../../assets/destination/bandung.jpg";
+import YogyakartaImg from "../../assets/destination/yogyakarta.jpg";
+import SurabayaImg from "../../assets/destination/surabaya.jpg";
+import BaliImg from "../../assets/destination/bali.jpg";
 
 const destinations = [
   {
     city: "Bandung",
     caption: "150.000 akomodasi",
-    image: Bandung,
-    path: detailBandung,
+    image: BandungImg,
+    path: "/destinasi/bandung",
   },
   {
     city: "Yogyakarta",
     caption: "260.000 akomodasi",
-    image: Yogyakarta,
-    path: detailYogyakarta,
+    image: YogyakartaImg,
+    path: "/destinasi/yogyakarta",
   },
   {
     city: "Surabaya",
     caption: "350.000 akomodasi",
-    image: Surabaya,
-    path: detailSurabaya,
+    image: SurabayaImg,
+    path: "/destinasi/surabaya",
   },
   {
     city: "Bali",
     caption: "750.000 akomodasi",
-    image: Bali,
-    path: detailBali,
+    image: BaliImg,
+    path: "/destinasi/bali",
   },
 ];
 
 function DestinationsSection() {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // <- huruf kecil
+
+  const handleClick = (path) => {
+    navigate(path);
+  };
 
   return (
     <section className="bg-white pb-16 pt-4">
@@ -60,7 +59,7 @@ function DestinationsSection() {
           {destinations.map((item) => (
             <article
               key={item.city}
-              onClick={() => Navigate(item.path)}
+              onClick={() => handleClick(item.path)}
               className="group cursor-pointer overflow-hidden rounded-[20px] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
             >
               <div className="relative">
