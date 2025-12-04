@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 
 import Footer from "../../../components/default/Footer";
+import BusLoader from "../../../components/default/BusLoader.jsx"; 
 import kursiIcon from "../../../assets/logoKursi.jpg";
 import header from "../../../assets/busHeader.jpeg";
 
@@ -44,9 +45,8 @@ function Payment2() {
 
   const [randomVA] = useState(() => generateVirtualAccount());
 
-  // 🔒 Kunci tombol back browser & backspace (kayak di halaman Payment)
+  //Kunci tombol back browser & backspace (kayak di halaman Payment)
   useEffect(() => {
-    // dorong state dummy supaya pointer history ada di sini
     window.history.pushState({ lockedPayment2: true }, "", window.location.href);
 
     const handlePopState = () => {
@@ -54,6 +54,7 @@ function Payment2() {
       toast.error(
         "Tidak bisa kembali ke halaman sebelumnya saat proses pembayaran."
       );
+
       // dorong lagi state yang sama supaya tetap di halaman ini
       window.history.pushState(
         { lockedPayment2: true },
@@ -63,7 +64,7 @@ function Payment2() {
     };
 
     const handleKeyDown = (e) => {
-      // kalau user tekan Backspace saat fokus bukan di input/textarea
+      // kalau user tekan Backspace saat fokus bukan di input
       if (
         e.key === "Backspace" &&
         (e.target === document.body || e.target === document.documentElement)
@@ -139,12 +140,11 @@ function Payment2() {
     }
   }, [id_pembayaran]);
 
-  // ----- STATE VIEW (tanpa Navbar) -----
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 font-sans flex flex-col">
-        <main className="flex-1 flex items-center justify-center">
-          <p className="text-sm text-slate-600">Memuat detail pembayaran...</p>
+        <main className="flex-1 flex items-center justify-center pt-6 md:pt-24 px-4">
+          <BusLoader message="Memuat metode pembayaran...." />
         </main>
         <Footer />
       </div>
@@ -175,7 +175,7 @@ function Payment2() {
     );
   }
 
-  // ---------- mapping data ----------
+  // pengisian data 
   const companyName = tiket.company?.nama_company || "Nama Perusahaan";
 
   const departureTime =
@@ -237,7 +237,6 @@ function Payment2() {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans flex flex-col">
-      {/* HEADER IMAGE */}
       <section className="max-w-5xl mx-auto px-4 pt-6 w-full">
         <div className="rounded-3xl overflow-hidden shadow-md">
           <img
@@ -248,7 +247,6 @@ function Payment2() {
         </div>
       </section>
 
-      {/* STEP INDICATOR */}
       <section className="max-w-4xl mx-auto w-full px-4 mt-8">
         <div className="bg-white rounded-2xl shadow-md px-4 py-6 md:px-8 md:py-8">
           <h1 className="text-xl md:text-2xl font-semibold text-slate-900 mb-4">
@@ -262,11 +260,10 @@ function Payment2() {
                 className="flex items-center gap-2 text-xs md:text-sm font-medium"
               >
                 <div
-                  className={`w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-full border-2 ${
-                    idx === 2
+                  className={`w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-full border-2 ${idx === 2
                       ? "bg-orange-500 border-orange-500 text-white"
                       : "border-slate-300 text-slate-500"
-                  }`}
+                    }`}
                 >
                   {idx + 1}
                 </div>
@@ -286,9 +283,8 @@ function Payment2() {
         </div>
       </section>
 
-      {/* MAIN PAYMENT CARD */}
+
       <section className="w-[92%] md:w-[80%] max-w-4xl mx-auto bg-white p-5 md:p-8 rounded-xl shadow mt-6 mb-10">
-        {/* Info tiket / rute */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-6 border-b pb-6 gap-4">
           <div className="text-left">
             <p className="text-sm font-semibold">{departureCity}</p>
@@ -308,7 +304,7 @@ function Payment2() {
           </div>
         </div>
 
-        {/* Seat */}
+
         <button className="inline-flex items-center gap-2 border border-gray-400 rounded-lg px-3 py-1 text-xs md:text-sm font-medium mb-6">
           <img src={kursiIcon} alt="kursi" className="w-5 h-5" />
           {jumlahKursi} Kursi

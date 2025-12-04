@@ -7,13 +7,14 @@ import {
   LuPencilLine,
   LuCamera,
   LuTrash2,
-  LuArrowLeft,          // ⬅️ TAMBAHAN
+  LuArrowLeft,          
 } from "react-icons/lu";
 import { MdDelete } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../../../components/default/Navbar.jsx";
 import Footer from "../../../components/default/Footer.jsx";
-import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx"; // ⬅️ TAMBAHAN
+import BusLoader from "../../../components/default/BusLoader.jsx";
+import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx"; 
 import {
   getProfile,
   updatePassword,
@@ -433,7 +434,7 @@ function Profile() {
     }
   };
 
-  // ========= LOADING STATE (BEDA UNTUK ADMIN & USER) =========
+
   if (loadingProfile) {
     if (isAdminView) {
       return (
@@ -447,20 +448,18 @@ function Profile() {
     }
 
     return (
-      <div className="min-h-screen flex flex-col bg-slate-50">
-        <Navbar />
-        <main className="flex-1 flex items-center justify-center pl-14 md:pl-0">
-          <p className="text-slate-600 text-sm">Memuat profil...</p>
+      <div className="min-h-screen bg-slate-50 font-sans flex flex-col">
+        <Navbar/>
+        <main className="flex-1 flex items-center justify-center pt-6 md:pt-24 px-4">
+          <BusLoader message="Memuat profil..." />
         </main>
         <Footer />
       </div>
     );
   }
 
-  // ========= BAGIAN KONTEN PROFIL (dipakai admin & user) =========
   const cards = (
     <>
-      {/* Kartu avatar + info singkat */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mt-4 md:mt-0">
         <div className="flex flex-col items-center text-center gap-3">
           <div className="relative group">
@@ -794,14 +793,13 @@ function Profile() {
     </>
   );
 
-  // ========= RETURN KHUSUS ADMIN =========
+  //return khusus admin 
   if (isAdminView) {
     return (
       <div className="min-h-screen flex bg-orange-50">
         <NavbarAdmin />
         <main className="flex-1 p-4 sm:p-6 lg:p-10">
           <div className="max-w-4xl mx-auto space-y-6">
-            {/* Header + tombol kembali */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div>
                 <h1 className="text-xl sm:text-2xl font-semibold text-orange-900">
@@ -820,7 +818,7 @@ function Profile() {
     );
   }
 
-  // ========= RETURN UNTUK USER BIASA =========
+  //return untuk user
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Navbar />
