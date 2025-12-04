@@ -2,12 +2,12 @@
 import { useState, useEffect } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 
-import Footer from "../../components/default/Footer";
-import header from "../../assets/busHeader.jpeg";
-import BusLoader from "../../components/default/BusLoader.jsx";
+import Footer from "../../../components/default/Footer";
+import header from "../../../assets/busHeader.jpeg";
+import BusLoader from "../../../components/default/BusLoader.jsx";
 
-import { getTiketById } from "../../api/customer/apiTiket.jsx";
-import { createReview } from "../../api/customer/apiReview.jsx";
+import { getTiketById } from "../../../api/customer/apiTiket.jsx";
+import { createReview } from "../../../api/customer/apiReview.jsx";
 import { toast } from "react-toastify";
 
 function Payment3() {

@@ -2,19 +2,14 @@ import React from "react";
 
 export default function Pagination({
   page,
-  totalPages,
+  totalItems,
   pageSize = 10,
   onChange,
 }) {
-
-  // bagi total halaman dibagi sama pageSize kemudian dibulatkan ke atas
-  const totalPages = Math.max(1, Math.ceil(totalPages / pageSize));
-  
-  // kalau pagesnya cuma 1 ga ada brrti
+  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
   if (totalPages <= 1) return null;
 
-  // navigasinya
-  const nav = (target) => {
+  const goTo = (target) => {
     if (target < 1 || target > totalPages) return;
     onChange(target);
   };
@@ -27,7 +22,7 @@ export default function Pagination({
       <div className="flex items-center gap-2">
         <button
           type="button"
-          onClick={() => nav(page - 1)}
+          onClick={() => goTo(page - 1)}
           disabled={page === 1}
           className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-100 transition"
         >
@@ -35,7 +30,7 @@ export default function Pagination({
         </button>
         <button
           type="button"
-          onClick={() => nav(page + 1)}
+          onClick={() => goTo(page + 1)}
           disabled={page === totalPages}
           className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-100 transition"
         >

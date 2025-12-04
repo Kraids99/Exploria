@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PencilLine, Plus, Trash2 } from "lucide-react";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
-import Pagination from "../../../components/Pagination.jsx";
+import Pagination from "../../../components/default/Pagination.jsx";
 import { fetchRute, deleteRute } from "../../../api/admin/apiAdminRute.jsx";
 
 import { alertConfirm, alertSuccess } from "../../../lib/Alert.jsx";

@@ -11,50 +11,29 @@ import {
 } from "react-icons/lu";
 import { MdDelete } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
-import Navbar from "../../components/default/Navbar.jsx";
-import Footer from "../../components/default/Footer.jsx";
-import NavbarAdmin from "../../components/default/NavbarAdmin.jsx"; // ⬅️ TAMBAHAN
-import { useAuth } from "../../context/AuthContext.jsx";
+import Navbar from "../../../components/default/Navbar.jsx";
+import Footer from "../../../components/default/Footer.jsx";
+import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx"; // ⬅️ TAMBAHAN
 import {
   getProfile,
   updatePassword,
   updateProfile,
   deleteAccount,
-} from "../../api/apiUser.jsx";
-import { BASE_URL } from "../../api/index.jsx";
-import defaultAvatar from "../../assets/user_default.png";
+} from "../../../api/apiUser.jsx";
+import defaultAvatar from "../../../assets/user_default.png";
 import { toast } from "react-toastify";
-import { alertConfirm } from "../../lib/Alert.jsx";
-
-const normalizeDateForInput = (dateStr) => {
-  if (!dateStr) return "";
-  if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr;
-  const d = new Date(dateStr);
-  if (Number.isNaN(d.getTime())) return "";
-  return d.toISOString().slice(0, 10);
-};
-
-const formatDate = (dateStr) => {
-  if (!dateStr) return "-";
-  const d = new Date(dateStr);
-  if (Number.isNaN(d.getTime())) return dateStr;
-  return d.toLocaleDateString("id-ID", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-};
-
-const normalizeUrl = (url) => {
-  if (!url) return "";
-  if (url.startsWith("http://") || url.startsWith("https://")) return url;
-  const host = BASE_URL.replace(/\/+$/, "");
-  const path = url.startsWith("/") ? url : `/${url}`;
-  return `${host}${path}`;
-};
+import { alertConfirm } from "../../../lib/Alert.jsx";
+import { formatDate, normalizeDateForInput } from "../../../lib/FormatWaktu.js";
+import { normalizeUrl } from "../../../lib/UrlPath.js";
 
 function Profile() {
-  const { isAuthenticated, user: authUser, refreshAuth, logout } = useAuth();
+  const [authUser, setAuthUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("user"));
+    } catch (err) {
+      return null;
+    }
+  });
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -92,12 +71,24 @@ function Profile() {
   });
   const [pwdMessage, setPwdMessage] = useState("");
   const [pwdError, setPwdError] = useState("");
+  const clearSession = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("user");
+  };
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login");
-      return;
-    }
+    const syncAuth = () => {
+      const token = localStorage.getItem("token");
+      try {
+        setAuthUser(JSON.parse(localStorage.getItem("user")));
+      } catch (err) {
+        setAuthUser(null);
+      }
+      if (!token) {
+        navigate("/login");
+      }
+    };
 
     const fetchProfile = async () => {
       setLoadingProfile(true);
@@ -128,6 +119,9 @@ function Profile() {
         } else if (authUser?.foto_user) {
           setAvatarPreview(normalizeUrl(authUser.foto_user));
         }
+
+        localStorage.setItem("user", JSON.stringify(res));
+        setAuthUser(res);
       } catch (err) {
         console.log(err);
         setError("Gagal memuat profil.");
@@ -136,8 +130,16 @@ function Profile() {
       }
     };
 
+    if (!localStorage.getItem("token")) {
+      navigate("/login");
+      return undefined;
+    }
+
+    syncAuth();
     fetchProfile();
-  }, [isAuthenticated, navigate, authUser]);
+    window.addEventListener("storage", syncAuth);
+    return () => window.removeEventListener("storage", syncAuth);
+  }, [navigate]);
 
   const handleProfileChange = (e) => {
     setFormProfile({ ...formProfile, [e.target.name]: e.target.value });
@@ -186,7 +188,8 @@ function Profile() {
         setAvatarPreview(avatarUrlLocal);
       }
 
-      await refreshAuth();
+      localStorage.setItem("user", JSON.stringify(latest));
+      setAuthUser(latest);
       setMessage("Foto profil berhasil diperbarui.");
       toast.success("Foto profil berhasil diperbarui.");
       setAvatarFile(null);
@@ -281,7 +284,14 @@ function Profile() {
         avatar: avatarUrlLocal,
       }));
 
-      await refreshAuth();
+      const mergedUser = {
+        ...(res?.user || authUser || {}),
+        ...formProfile,
+        avatar: avatarUrlLocal,
+        foto_user: res?.user?.foto_user || res?.foto_user || avatarUrlLocal,
+      };
+      localStorage.setItem("user", JSON.stringify(mergedUser));
+      setAuthUser(mergedUser);
 
       setMessage("Profil berhasil diperbarui.");
       toast.success("Profil berhasil diperbarui.");
@@ -408,7 +418,7 @@ function Profile() {
     setLoadingDelete(true);
     try {
       await deleteAccount();
-      logout();
+      clearSession();
       toast.success("Akun berhasil dihapus");
       navigate("/", { replace: true });
     } catch (err) {

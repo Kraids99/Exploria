@@ -1,22 +1,55 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useState } from "react";
-import { useAuth } from "../../context/AuthContext";
+import { useEffect, useState } from "react";
 import { BASE_URL } from "../../api/index.jsx";
 import logo from "../../assets/logo.png";
 import logovertical from "../../assets/logo-v.png";
 import defaultAvatar from "../../assets/user_default.png";
 import { Home, User, LogOut } from "lucide-react";
 
-function Navbar() {
-  const { isAuthenticated, user, role, logout } = useAuth();
+export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
 
   const [openMenu, setOpenMenu] = useState(false);
+  const [user, setUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("user"));
+    } catch (err) {
+      return null;
+    }
+  });
+  const [role, setRole] = useState(localStorage.getItem("role"));
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    !!localStorage.getItem("token")
+  );
+
+  useEffect(() => {
+    const syncAuth = () => {
+      setIsAuthenticated(!!localStorage.getItem("token"));
+      setRole(localStorage.getItem("role"));
+      try {
+        setUser(JSON.parse(localStorage.getItem("user")));
+      } catch (err) {
+        setUser(null);
+      }
+    };
+
+    syncAuth();
+    window.addEventListener("storage", syncAuth);
+    return () => window.removeEventListener("storage", syncAuth);
+  }, []);
+
+  const clearSession = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("user");
+    setIsAuthenticated(false);
+    setRole(null);
+    setUser(null);
+  };
 
   const handleLogout = () => {
-    logout();
-    localStorage.removeItem("token");
+    clearSession();
     setOpenMenu(false);
     navigate("/");
   };
@@ -343,4 +376,3 @@ function Navbar() {
   );
 }
 
-export default Navbar;

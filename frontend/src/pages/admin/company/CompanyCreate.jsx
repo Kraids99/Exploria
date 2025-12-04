@@ -3,16 +3,13 @@ import { useNavigate } from "react-router-dom";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
 import { createCompany } from "../../../api/admin/apiAdminCompany.jsx";
 import companyPlaceholder from "../../../assets/building.png";
-
 import { toast } from "react-toastify";
 import { alertSuccess } from "../../../lib/Alert.jsx";
-
-const styleForm = "block w-full rounded-xl border border-orange-100 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200 transition";
+import { styleForm } from "../../../lib/FormStyles.js";
 
 export default function CompanyCreate() {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -44,14 +41,12 @@ export default function CompanyCreate() {
     //pengecekan 
     const tipeFiles = ["image/png", "image/jpeg"];
     if (!tipeFiles.includes(file.type)) {
-      setErrorMessage("Format file harus PNG, JPG, atau JPEG!");
       toast.error("Format file harus PNG, JPG, atau JPEG!");
       e.target.value = "";
       return;
     }
 
     //lolos validasi 
-    setErrorMessage("");
     if (file) {
       setForm((prev) => ({ ...prev, logo: file }));
     }
@@ -66,32 +61,28 @@ export default function CompanyCreate() {
       address: "",
       logo: null,
     });
-    setErrorMessage("");
   };
 
   const validateDataForm = () => {
     if (!form.name || !form.email || !form.phone
       || !form.address
     ) {
-      setErrorMessage("Inputan tidak boleh kosong!");
       toast.error("Inputan data tidak boleh kosong!");
       return false;
     }
 
+    // No telp hanya angka 10-13 digit
     if (!/^[0-9]{10,13}$/.test(form.phone)) {
-      setErrorMessage("No telepon harus berupa 10-13 digit angka");
       toast.error("No telepon harus berupa 10-13 digit angka");
       return false;
     }
 
-    // 3. Format email
+    // validasi email
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-      setErrorMessage("Format email tidak valid");
       toast.error("Format email tidak valid");
       return false;
     }
 
-    setErrorMessage("");
     return true;
   }
 
@@ -99,7 +90,6 @@ export default function CompanyCreate() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setErrorMessage("");
 
     const isValid = validateDataForm();
     if (!isValid) {

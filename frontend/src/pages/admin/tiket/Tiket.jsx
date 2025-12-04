@@ -2,22 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PencilLine, Plus, Trash2 } from "lucide-react";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
-import Pagination from "../../../components/Pagination.jsx";
+import Pagination from "../../../components/default/Pagination.jsx";
 import { fetchTiket, deleteTiket } from "../../../api/admin/apiAdminTiket.jsx";
 import { fetchCompanies } from "../../../api/admin/apiAdminCompany.jsx";
 
 import { alertConfirm, alertSuccess } from "../../../lib/Alert.jsx";
 import { toast } from "react-toastify";
 import { getTiketByParams } from "../../../api/customer/apiTiket.jsx";
-
-// Format waktu ke tampilan dd-MM-YYYY HH:mm
-const formatDateTime = (value) => {
-  if (!value) return "-";
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return value;
-  const pad = (n) => String(n).padStart(2, "0");
-  return `${pad(d.getDate())}-${pad(d.getMonth() + 1)}-${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-};
+import { formatDateTime } from "../../../lib/FormatWaktu.js";
 
 export default function TiketList() {
   const navigate = useNavigate();

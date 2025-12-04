@@ -4,8 +4,7 @@ import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
 import { createLokasi } from "../../../api/admin/apiAdminLokasi.jsx";
 import { toast } from "react-toastify";
 import { alertSuccess } from "../../../lib/Alert.jsx";
-
-const styleForm = "block w-full rounded-xl border border-orange-100 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200 transition";
+import { styleForm } from "../../../lib/FormStyles.js";
 
 export default function LokasiCreate() {
   const navigate = useNavigate();

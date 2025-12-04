@@ -1,23 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { CheckCircle2, XCircle, Mail } from "lucide-react";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
-import Pagination from "../../../components/Pagination.jsx";
+import Pagination from "../../../components/default/Pagination.jsx";
 import { fetchPembayaran, updatePembayaranStatus, sendEticket } from "../../../api/admin/apiAdminPembayaran.jsx";
 import { toast } from "react-toastify";
-
-const formatRupiah = (value) => {
-  const num = Number(value);
-  if (Number.isNaN(num)) return "-";
-  return "Rp " + num.toLocaleString("id-ID");
-};
-
-const formatDateTime = (value) => {
-  if (!value) return "-";
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return "-";
-  const pad = (n) => String(n).padStart(2, "0");
-  return `${pad(d.getDate())}-${pad(d.getMonth() + 1)}-${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-};
+import { formatDateTime } from "../../../lib/FormatWaktu.js";
+import { formatRupiah } from "../../../lib/FormatRupiah.js";
 
 export default function PembayaranAdmin() {
   const [items, setItems] = useState([]);

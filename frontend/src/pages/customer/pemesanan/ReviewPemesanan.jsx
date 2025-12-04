@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import Navbar from "../../components/default/Navbar";
-import Footer from "../../components/default/Footer";
-import header from "../../assets/busHeader.jpeg";
-import kursiIcon from "../../assets/logoKursi.jpg";
+import Navbar from "../../../components/default/Navbar";
+import Footer from "../../../components/default/Footer";
+import header from "../../../assets/busHeader.jpeg";
+import kursiIcon from "../../../assets/logoKursi.jpg";
 
-import { fetchPemesananById } from "../../api/customer/apiPemesanan";
-import { getTiketById } from "../../api/customer/apiTiket";
+import { fetchPemesananById } from "../../../api/customer/apiPemesanan";
+import { getTiketById } from "../../../api/customer/apiTiket";
 import { toast } from "react-toastify";
 import { FaArrowLeft } from "react-icons/fa";
 

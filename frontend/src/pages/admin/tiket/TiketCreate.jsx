@@ -7,10 +7,7 @@ import { fetchCompanies } from "../../../api/admin/apiAdminCompany.jsx";
 
 import { toast } from "react-toastify";
 import { alertSuccess } from "../../../lib/Alert.jsx";
-
-const styleForm = "block w-full rounded-xl border border-orange-100 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200 transition";
-// warna berbeda supaya terlihat auto generate, bukan inputan
-const styleFormDisabled = "block w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-500 shadow-sm cursor-not-allowed";
+import { styleForm, styleFormDisabled } from "../../../lib/FormStyles.js";
 
 // Format input datetime-local ke format backend (m/d/Y H:i:s)
 const dateTime = (value) => {

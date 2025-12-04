@@ -2,15 +2,15 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import Navbar from "../../components/default/Navbar";
-import Footer from "../../components/default/Footer";
-import BusLoader from "../../components/default/BusLoader";
+import Navbar from "../../../components/default/Navbar";
+import Footer from "../../../components/default/Footer";
+import BusLoader from "../../../components/default/BusLoader";
 
-import { getTiketById, getKursiByTiket } from "../../api/customer/apiTiket";
-import { createPemesanan } from "../../api/customer/apiPemesanan";
+import { getTiketById, getKursiByTiket } from "../../../api/customer/apiTiket";
+import { createPemesanan } from "../../../api/customer/apiPemesanan";
 
 import { toast } from "react-toastify";
-import header from "../../assets/busHeader.jpeg";
+import header from "../../../assets/busHeader.jpeg";
 import { FaArrowLeft } from "react-icons/fa";
 
 export default function Pemesanan() {

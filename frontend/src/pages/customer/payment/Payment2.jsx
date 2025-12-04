@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 
-import Footer from "../../components/default/Footer";
-import kursiIcon from "../../assets/logoKursi.jpg";
-import header from "../../assets/busHeader.jpeg";
+import Footer from "../../../components/default/Footer";
+import kursiIcon from "../../../assets/logoKursi.jpg";
+import header from "../../../assets/busHeader.jpeg";
 
 import {
   getPembayaranById,
   updatePembayaranStatus,
-} from "../../api/customer/apiPembayaran.jsx";
-import { fetchPemesananById } from "../../api/customer/apiPemesanan.jsx";
-import { getTiketById } from "../../api/customer/apiTiket.jsx";
+} from "../../../api/customer/apiPembayaran.jsx";
+import { fetchPemesananById } from "../../../api/customer/apiPemesanan.jsx";
+import { getTiketById } from "../../../api/customer/apiTiket.jsx";
 import { toast } from "react-toastify";
 
 // helper: bikin VA random

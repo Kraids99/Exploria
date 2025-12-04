@@ -3,13 +3,13 @@ import { useEffect, useState } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { FaStar, FaArrowLeft } from "react-icons/fa";
 
-import Navbar from "../../components/default/Navbar.jsx";
-import Footer from "../../components/default/Footer.jsx";
-import BusLoader from "../../components/default/BusLoader.jsx";
-import header from "../../assets/busHeader.jpeg";
+import Navbar from "../../../components/default/Navbar.jsx";
+import Footer from "../../../components/default/Footer.jsx";
+import BusLoader from "../../../components/default/BusLoader.jsx";
+import header from "../../../assets/busHeader.jpeg";
 
-import { getTiketByParams } from "../../api/customer/apiTiket.jsx";
-import { getReviewByTiket } from "../../api/customer/apiReview.jsx";
+import { getTiketByParams } from "../../../api/customer/apiTiket.jsx";
+import { getReviewByTiket } from "../../../api/customer/apiReview.jsx";
 
 export default function DetailTiket() {
   const navigate = useNavigate();

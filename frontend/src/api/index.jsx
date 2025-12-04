@@ -6,14 +6,13 @@ const useAxios = axios.create({
   baseURL: `${BASE_URL}/api`,
 });
 
-// tambahkan token
+// tambahkan token di setiap request
 useAxios.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token"); // ambil token login dari localStorage
+  const token = localStorage.getItem("token");
   if (token) {
-    //Tanpa kata “Bearer”, backend tidak tahu cara memproses token.
-    config.headers.Authorization = `Bearer ${token}`; // selipkan ke header Authorization
+    config.headers.Authorization = `Bearer ${token}`;
   }
-  return config; // lanjutkan request
+  return config;
 });
 
 export default useAxios;

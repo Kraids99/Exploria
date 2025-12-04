@@ -3,18 +3,8 @@ import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
 import { Loader2, TrendingUp, AlertCircle } from "lucide-react";
 import Chart from "chart.js/auto";
 import { fetchPembayaran } from "../../../api/admin/apiAdminPembayaran.jsx";
-
-const rupiah = (value) => {
-  if (value === 0 || value) return `Rp ${value}`;
-  return "-";
-};
-
-const formatDateLabel = (dateStr) => {
-  const d = new Date(dateStr);
-  if (Number.isNaN(d.getTime())) return "-";
-  const pad = (n) => String(n).padStart(2, "0");
-  return `${pad(d.getMonth() + 1)}/${pad(d.getDate())}`;
-};
+import { formatRupiah } from "../../../lib/FormatRupiah.js";
+import { formatDate } from "../../../lib/FormatWaktu.js";
 
 export default function Laporan() {
   const [data, setData] = useState([]);
@@ -62,7 +52,7 @@ export default function Laporan() {
 
       const sortedDates = Object.keys(grouped).sort();
       const rows = sortedDates.map((tgl) => ({
-        label: formatDateLabel(tgl),
+        label: formatDate(tgl),
         total: grouped[tgl],
       }));
 
@@ -103,7 +93,7 @@ export default function Laporan() {
         scales: {
           y: {
             ticks: {
-              callback: (val) => rupiah(val),
+              callback: (val) => formatRupiah(val),
             },
             grid: { color: "#f97316" },
           },
@@ -144,7 +134,7 @@ export default function Laporan() {
               <div>
                 <p className="text-xs text-slate-600">Total Pendapatan</p>
                 <p className="text-lg font-semibold text-orange-900">
-                  {rupiah(totalPendapatan)}
+                  {formatRupiah(totalPendapatan)}
                 </p>
               </div>
             </div>

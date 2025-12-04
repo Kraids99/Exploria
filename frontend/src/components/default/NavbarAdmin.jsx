@@ -12,7 +12,6 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { BASE_URL } from "../../api";
-import { useAuth } from "../../context/AuthContext";
 import defaultAvatar from "../../assets/user_default.png";
 
 const normalizeAvatarUrl = (raw) => {
@@ -38,18 +37,31 @@ const defaultItems = [
 export default function NavbarAdmin({ items }) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const { user, refreshAuth, logout } = useAuth();
 
+  const [user, setUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("user"));
+    } catch (err) {
+      return null;
+    }
+  });
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const menu = items && items.length ? items : defaultItems;
 
   useEffect(() => {
-    if (!user) {
-      refreshAuth();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+    const syncUser = () => {
+      try {
+        setUser(JSON.parse(localStorage.getItem("user")));
+      } catch (err) {
+        setUser(null);
+      }
+    };
+
+    syncUser();
+    window.addEventListener("storage", syncUser);
+    return () => window.removeEventListener("storage", syncUser);
+  }, []);
 
   const avatarSrc = useMemo(() => {
     const raw = user?.user_profile || user?.foto_user || "";
@@ -66,7 +78,9 @@ export default function NavbarAdmin({ items }) {
 
   const handleLogout = () => {
     setIsProfileOpen(false);
-    logout();
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("user");
     navigate("/");
   };
 

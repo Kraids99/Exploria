@@ -28,7 +28,7 @@ class AuthController extends Controller
         // tentukan abilities berdasarkan role user
         $abilities  = $user->admin()->exists() ? ['admin'] : ['customer'];
 
-        // buat token baru
+        // buat token baru pakai plain text token yang nnti pakainya di index.jsx
         $token = $user->createToken('Personal Access Token', $abilities)->plainTextToken;
 
         // mengembalikan response
@@ -55,3 +55,9 @@ class AuthController extends Controller
         return response()->json(['message' => 'Belum login'], 401);
     }
 }
+
+// kira" gt lah
+// jadi createToken() dapatnya accessToken dan plainTextToken
+// accessToken itu modelnya, plainTextToken itu string tokennya
+// jadi client perlunya yang plainTextToken
+// client perlu token utuh untuk disimpan (misal di localStorage)

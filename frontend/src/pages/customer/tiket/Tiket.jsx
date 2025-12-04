@@ -1,16 +1,15 @@
-import Footer from "../../components/default/Footer.jsx";
-import Navbar from "../../components/default/Navbar.jsx";
-import FieldDate from "../../components/default/FieldDate.jsx";
-import FieldSelect from "../../components/default/FieldSelect.jsx";
+import Footer from "../../../components/default/Footer.jsx";
+import Navbar from "../../../components/default/Navbar.jsx";
+import FieldDate from "../../../components/default/FieldDate.jsx";
+import FieldSelect from "../../../components/default/FieldSelect.jsx";
 
-import { fetchLokasi, getTiketByParams } from "../../api/customer/apiTiket.jsx";
-import Tikets from "../../components/tiket/Tikets.jsx";
+import { fetchLokasi, getTiketByParams } from "../../../api/customer/apiTiket.jsx";
+import Tikets from "../../../components/tiket/Tikets.jsx";
+import BusLoader from "../../../components/default/BusLoader.jsx";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import { toast } from "react-toastify";
-
-import BusLoader from "../../components/default/BusLoader.jsx";
 
 function SelectBus() {
   const [params] = useSearchParams();

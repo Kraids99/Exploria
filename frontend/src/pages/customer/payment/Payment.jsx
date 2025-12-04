@@ -1,27 +1,27 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import Navbar from "../../components/default/Navbar";
-import Footer from "../../components/default/Footer";
-import BusLoader from "../../components/default/BusLoader.jsx";
+import Navbar from "../../../components/default/Navbar";
+import Footer from "../../../components/default/Footer";
+import BusLoader from "../../../components/default/BusLoader.jsx";
 
-import kursiIcon from "../../assets/logoKursi.jpg";
-import header from "../../assets/busHeader.jpeg";
+import kursiIcon from "../../../assets/logoKursi.jpg";
+import header from "../../../assets/busHeader.jpeg";
 
-import bankBCA from "../../assets/bank/bank-bca.png";
-import bankBNI from "../../assets/bank/bank-bni.png";
-import bankBRI from "../../assets/bank/bank-bri.png";
-import bankMandiri from "../../assets/bank/bank-mandiri.png";
+import bankBCA from "../../../assets/bank/bank-bca.png";
+import bankBNI from "../../../assets/bank/bank-bni.png";
+import bankBRI from "../../../assets/bank/bank-bri.png";
+import bankMandiri from "../../../assets/bank/bank-mandiri.png";
 
-import walletDana from "../../assets/wallets/wallet-dana.png";
-import walletShopee from "../../assets/wallets/wallet-shopeepay.png";
-import walletOVO from "../../assets/wallets/wallet-ovo.png";
-import walletGopay from "../../assets/wallets/wallet-gopay.png";
+import walletDana from "../../../assets/wallets/wallet-dana.png";
+import walletShopee from "../../../assets/wallets/wallet-shopeepay.png";
+import walletOVO from "../../../assets/wallets/wallet-ovo.png";
+import walletGopay from "../../../assets/wallets/wallet-gopay.png";
 
-import { fetchPemesananById } from "../../api/customer/apiPemesanan.jsx";
-import { createPembayaran } from "../../api/customer/apiPembayaran.jsx";
+import { fetchPemesananById } from "../../../api/customer/apiPemesanan.jsx";
+import { createPembayaran } from "../../../api/customer/apiPembayaran.jsx";
 import { toast } from "react-toastify";
-import { alertError } from "../../lib/Alert.jsx";
+import { alertError } from "../../../lib/Alert.jsx";
 
 function Payment() {
   // sekarang id yang dipakai = id_pemesanan

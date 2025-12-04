@@ -1,6 +1,6 @@
 import logoH from "../../assets/logo-h.jpg";
 
-function Footer() {
+export default function Footer() {
   return (
     <footer className="bg-[#020617] text-white">
       <div className="mx-auto max-w-6xl px-4 py-10">
@@ -60,5 +60,3 @@ function Footer() {
     </footer>
   );
 }
-
-export default Footer;

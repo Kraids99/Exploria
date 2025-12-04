@@ -1,14 +1,13 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Home from "./pages/customer/Home";
+import Home from "./pages/customer/home/Home.jsx";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
-import { AuthProvider, useAuth } from "./context/AuthContext";
-import SelectBus from "./pages/customer/Tiket";
-import DetailTiket from "./pages/customer/DetailTiket";
-import Profile from "./pages/customer/Profile"
-import Payment from "./pages/customer/Payment.jsx";
-import Payment2 from "./pages/customer/Payment2.jsx";
-import Payment3 from "./pages/customer/Payment3.jsx";
+import SelectBus from "./pages/customer/tiket/Tiket.jsx";
+import DetailTiket from "./pages/customer/tiket/DetailTiket.jsx";
+import Profile from "./pages/customer/profile/Profile.jsx";
+import Payment from "./pages/customer/payment/Payment.jsx";
+import Payment2 from "./pages/customer/payment/Payment2.jsx";
+import Payment3 from "./pages/customer/payment/Payment3.jsx";
 import Company from "./pages/admin/company/Company.jsx";
 import CompanyCreate from "./pages/admin/company/CompanyCreate.jsx";
 import CompanyEdit from "./pages/admin/company/CompanyEdit.jsx";
@@ -23,76 +22,59 @@ import TiketCreate from "./pages/admin/tiket/TiketCreate.jsx";
 import TiketEdit from "./pages/admin/tiket/TiketEdit.jsx";
 import PembayaranAdmin from "./pages/admin/pembayaran/Pembayaran.jsx";
 import Laporan from "./pages/admin/laporan/Laporan.jsx";
-import Pemesanan from "./pages/customer/Pemesanan.jsx";
-import ReviewPemesanan from "./pages/customer/ReviewPemesanan.jsx"; 
-import History from "./pages/customer/History.jsx";
+import Pemesanan from "./pages/customer/pemesanan/Pemesanan.jsx";
+import ReviewPemesanan from "./pages/customer/pemesanan/ReviewPemesanan.jsx"; 
+import History from "./pages/customer/history/History.jsx";
+import AdminRoute from "./routes/AdminRoute.jsx";
+import CustomerRoute from "./routes/CustomerRoute.jsx";
+import AuthRoute from "./routes/AuthRoute.jsx";
 
-// routernya Admin
-function AdminRoute({ children }) {
-  const { isAuthenticated, isAdmin, initializing} = useAuth();
-
-  if(initializing){
-    return(
-      <div className="min-h-screen flex items-center justify-center bg-orange-50">
-        <p className="text-sm text-slate-600">Memuat....</p>
-      </div>
-    )
-  }
-  
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-
-  if (!isAdmin) {
-    return <Navigate to="/" replace />;
-  }
-
-  return children;
-}
-
-// Landing route: jika admin sudah login, langsung ke dashboard admin
 function LandingRoute() {
-  const { isAuthenticated, isAdmin } = useAuth();
-  if (isAuthenticated && isAdmin) {
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+
+  if (token && role === "admin") {
     return <Navigate to="/admin/company" replace />;
   }
   return <Home />;
 }
 
+{/* <CustomerRoute> itu punya customer */}
+{/* <AdminRoute> itu punya admin */}
+// sisanya public route
+
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<LandingRoute />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/search" element={<SelectBus />} />
-          <Route path="/detailTiket/:id" element={<DetailTiket />} />
-          <Route path="/pesan/:id_tiket" element={<Pemesanan/>}/>
-          <Route path="/reviewPesanan/:id_pemesanan" element={<ReviewPemesanan/>}/>
-          <Route path="/selectpayment/:id_pemesanan" element={<Payment />} />
-          <Route path="/payment/:id_pembayaran" element={<Payment2 />} />
-          <Route path="/ereceipt/:id" element={<Payment3 />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/admin/company" element={<AdminRoute><Company /></AdminRoute>} />
-          <Route path="/admin/company/create" element={<AdminRoute><CompanyCreate /></AdminRoute>} />
-          <Route path="/admin/company/:id/edit" element={<AdminRoute><CompanyEdit /></AdminRoute>} />
-          <Route path="/admin/lokasi" element={<AdminRoute><Lokasi /></AdminRoute>} />
-          <Route path="/admin/lokasi/create" element={<AdminRoute><LokasiCreate /></AdminRoute>} />
-          <Route path="/admin/lokasi/:id/edit" element={<AdminRoute><LokasiEdit /></AdminRoute>} />
-          <Route path="/admin/rute" element={<AdminRoute><Rute /></AdminRoute>} />
-          <Route path="/admin/rute/create" element={<AdminRoute><RuteCreate /></AdminRoute>} />
-          <Route path="/admin/rute/:id/edit" element={<AdminRoute><RuteEdit /></AdminRoute>} />
-          <Route path="/admin/tiket" element={<AdminRoute><Tiket /></AdminRoute>} />
-          <Route path="/admin/tiket/create" element={<AdminRoute><TiketCreate /></AdminRoute>} />
-          <Route path="/admin/tiket/:id/edit" element={<AdminRoute><TiketEdit /></AdminRoute>} />
-          <Route path="/admin/pembayaran" element={<AdminRoute><PembayaranAdmin /></AdminRoute>} />
-          <Route path="/admin/laporan" element={<AdminRoute><Laporan /></AdminRoute>} />
-          <Route path="/history" element={<History />}/>
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LandingRoute />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/search" element={<SelectBus />} />
+        <Route path="/detailTiket/:id" element={<DetailTiket />} />
+        <Route path="/pesan/:id_tiket" element={<CustomerRoute><Pemesanan /></CustomerRoute>}/>
+        <Route path="/reviewPesanan/:id_pemesanan" element={<CustomerRoute><ReviewPemesanan /></CustomerRoute>}/>
+        <Route path="/selectpayment/:id_pemesanan" element={<CustomerRoute><Payment /></CustomerRoute>} />
+        <Route path="/payment/:id_pembayaran" element={<CustomerRoute><Payment2 /></CustomerRoute>} />
+        <Route path="/ereceipt/:id" element={<CustomerRoute><Payment3 /></CustomerRoute>} />
+        <Route path="/profile" element={<AuthRoute><Profile /></AuthRoute>} />
+        <Route path="/admin/company" element={<AdminRoute><Company /></AdminRoute>} />
+        <Route path="/admin/company/create" element={<AdminRoute><CompanyCreate /></AdminRoute>} />
+        <Route path="/admin/company/:id/edit" element={<AdminRoute><CompanyEdit /></AdminRoute>} />
+        <Route path="/admin/lokasi" element={<AdminRoute><Lokasi /></AdminRoute>} />
+        <Route path="/admin/lokasi/create" element={<AdminRoute><LokasiCreate /></AdminRoute>} />
+        <Route path="/admin/lokasi/:id/edit" element={<AdminRoute><LokasiEdit /></AdminRoute>} />
+        <Route path="/admin/rute" element={<AdminRoute><Rute /></AdminRoute>} />
+        <Route path="/admin/rute/create" element={<AdminRoute><RuteCreate /></AdminRoute>} />
+        <Route path="/admin/rute/:id/edit" element={<AdminRoute><RuteEdit /></AdminRoute>} />
+        <Route path="/admin/tiket" element={<AdminRoute><Tiket /></AdminRoute>} />
+        <Route path="/admin/tiket/create" element={<AdminRoute><TiketCreate /></AdminRoute>} />
+        <Route path="/admin/tiket/:id/edit" element={<AdminRoute><TiketEdit /></AdminRoute>} />
+        <Route path="/admin/pembayaran" element={<AdminRoute><PembayaranAdmin /></AdminRoute>} />
+        <Route path="/admin/laporan" element={<AdminRoute><Laporan /></AdminRoute>} />
+        <Route path="/history" element={<CustomerRoute><History /></CustomerRoute>} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

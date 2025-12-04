@@ -1,8 +1,7 @@
 import background from "../../assets/bg-signinsignup.jpg";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext.jsx";
-import { SignIn } from "../../api/auth/apiAuth.jsx";
+import { SignIn, checkAuth } from "../../api/auth/apiAuth.jsx";
 import Footer from "../../components/default/Footer.jsx";
 import Navbar from "../../components/default/Navbar.jsx";
 import { toast } from "react-toastify";
@@ -15,7 +14,6 @@ function Login() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  const { refreshAuth } = useAuth();
   const navigate = useNavigate();
 
   const validateLogin = () => {
@@ -61,10 +59,19 @@ function Login() {
 
       localStorage.setItem("token", cleanedToken);
 
-      const authRes = await refreshAuth();
+      let authRes = res;
 
-      let userData = authRes?.user ?? authRes?.data ?? null;
+      try {
+        // pastikan dapat abilities/user terbaru setelah token diset
+        authRes = await checkAuth();
+      } catch (err) {
+        console.log("checkAuth gagal, lanjut pakai respons login", err);
+      }
 
+      let abilities = authRes?.abilities || res?.abilities || [];
+      let userData = authRes?.user ?? authRes?.data ?? res?.user ?? res?.data ?? null;
+
+      // fallback: ambil profile jika belum ada
       if (!userData) {
         const profileRes = await getProfile();
         userData = profileRes?.data ?? profileRes;
@@ -74,7 +81,21 @@ function Login() {
         localStorage.setItem("user", JSON.stringify(userData));
       }
 
-      const isAdmin = authRes?.abilities?.includes("admin");
+      const resolvedRole = (() => {
+        if (authRes?.role) return authRes.role;
+        if (res?.role) return res.role;
+        if (abilities?.includes("admin")) return "admin";
+        if (abilities?.includes("customer")) return "customer";
+        return null;
+      })();
+
+      if (resolvedRole) {
+        localStorage.setItem("role", resolvedRole);
+      } else {
+        localStorage.removeItem("role");
+      }
+
+      const isAdmin = resolvedRole === "admin";
 
       setTimeout(() => {
         setShowSuccess(false);

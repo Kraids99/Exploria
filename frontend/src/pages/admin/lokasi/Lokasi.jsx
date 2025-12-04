@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PencilLine, Plus, Trash2 } from "lucide-react";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
-import Pagination from "../../../components/Pagination.jsx";
+import Pagination from "../../../components/default/Pagination.jsx";
 // API admin lokasi (list/detail/delete)
 
 import { toast } from "react-toastify";
@@ -20,7 +20,7 @@ export default function LokasiList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Saat mount: ambil data lokasi
+  // ambil data lokasi
   useEffect(() => {
     const load = async () => {
       try {

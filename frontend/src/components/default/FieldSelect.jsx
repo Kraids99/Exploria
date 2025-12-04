@@ -1,4 +1,3 @@
-
 export default function FieldSelect({ label, value, onChange, options, placeholder }) {
   return (
     <div className="rounded-2xl border border-slate-100 bg-slate-50/70 px-4 py-3 text-xs md:text-sm">
