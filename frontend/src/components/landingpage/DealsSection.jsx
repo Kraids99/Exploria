@@ -65,7 +65,7 @@ function DealsSection() {
                     onClick={() => navigate(deal.path)}
                     className="
                       mt-4 rounded-full bg-white px-4 py-1.5 text-xs font-semibold text-slate-900 
-                      hover:bg-black hover:text-brand-100 hover:transition-colors duration-200 ease-out
+                      hover:bg-black hover:text-amber-600 hover:transition-colors duration-200 ease-out
                     "
                   >
                     Lihat selengkapnya
