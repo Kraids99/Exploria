@@ -1,16 +1,44 @@
-import Bandung from "../../assets/destination/bandung.jpg";
-import Yogyakarta from "../../assets/destination/yogyakarta.jpg";
-import Surabaya from "../../assets/destination/surabaya.jpg";
-import Bali from "../../assets/destination/bali.jpg";
+import { useNavigate } from "react-router-dom";
+
+import BandungImg from "../../assets/destination/bandung.jpg";
+import YogyakartaImg from "../../assets/destination/yogyakarta.jpg";
+import SurabayaImg from "../../assets/destination/surabaya.jpg";
+import BaliImg from "../../assets/destination/bali.jpg";
 
 const destinations = [
-  { city: "Bandung", caption: "150.000 akomodasi", image: Bandung },
-  { city: "Yogyakarta", caption: "260.000 akomodasi", image: Yogyakarta },
-  { city: "Surabaya", caption: "350.000 akomodasi", image: Surabaya },
-  { city: "Bali", caption: "750.000 akomodasi", image: Bali },
+  {
+    city: "Bandung",
+    caption: "150.000 akomodasi",
+    image: BandungImg,
+    path: "/destinasi/bandung",
+  },
+  {
+    city: "Yogyakarta",
+    caption: "260.000 akomodasi",
+    image: YogyakartaImg,
+    path: "/destinasi/yogyakarta",
+  },
+  {
+    city: "Surabaya",
+    caption: "350.000 akomodasi",
+    image: SurabayaImg,
+    path: "/destinasi/surabaya",
+  },
+  {
+    city: "Bali",
+    caption: "750.000 akomodasi",
+    image: BaliImg,
+    path: "/destinasi/bali",
+  },
 ];
 
 function DestinationsSection() {
+  const navigate = useNavigate(); // <- huruf kecil
+
+  const handleClick = (path) => {
+    navigate(path);
+  };
+
   return (
     <section className="bg-white pb-16 pt-4">
       <div className="mx-auto max-w-6xl px-4">
@@ -27,10 +55,11 @@ function DestinationsSection() {
           </p>
         </header>
 
-        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
+        <div className="grid gap-6 md:grid-cols-4">
           {destinations.map((item) => (
             <article
               key={item.city}
+              onClick={() => handleClick(item.path)}
               className="group cursor-pointer overflow-hidden rounded-[20px] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
             >
               <div className="relative">

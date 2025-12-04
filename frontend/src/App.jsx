@@ -28,6 +28,11 @@ import History from "./pages/customer/history/History.jsx";
 import AdminRoute from "./routes/AdminRoute.jsx";
 import CustomerRoute from "./routes/CustomerRoute.jsx";
 import AuthRoute from "./routes/AuthRoute.jsx";
+import Bali from "./components/detaillandingpage/destinasi/Bali.jsx"; 
+import Bandung from "./components/detaillandingpage/destinasi/Bandung.jsx";
+import Yogyakarta from "./components/detaillandingpage/destinasi/Yogyakarta.jsx";
+import Surabaya from "./components/detaillandingpage/destinasi/Surabaya.jsx"; 
+import Discount from "./components/detaillandingpage/deals/Diskon.jsx";
 
 function LandingRoute() {
   const token = localStorage.getItem("token");
@@ -73,6 +78,12 @@ function App() {
         <Route path="/admin/pembayaran" element={<AdminRoute><PembayaranAdmin /></AdminRoute>} />
         <Route path="/admin/laporan" element={<AdminRoute><Laporan /></AdminRoute>} />
         <Route path="/history" element={<CustomerRoute><History /></CustomerRoute>} />
+        <Route path="/history" element={<History />}/>
+          <Route path="/destinasi/bali" element={<Bali />}/>
+          <Route path="/destinasi/bandung" element={<Bandung />}/>
+          <Route path="/destinasi/yogyakarta" element={<Yogyakarta />}/>
+          <Route path="/destinasi/surabaya" element={<Surabaya />}/>
+          <Route path="/diskon" element={<Discount />}/>
       </Routes>
     </BrowserRouter>
   );

@@ -1,3 +1,6 @@
+// src/components/DealsSection.jsx
+import { useNavigate } from "react-router-dom";
+
 const deals = [
   {
     title: "Diskon Hanya Untukmu",
@@ -6,6 +9,7 @@ const deals = [
     badge: "Tersedia sampai 30 November 2025",
     image:
       "https://images.pexels.com/photos/799463/pexels-photo-799463.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    path: "/diskon",   // <--- tambahkan path
   },
   {
     title: "Liburan Bersama Keluarga",
@@ -14,10 +18,13 @@ const deals = [
     badge: "Tersedia sampai 30 Januari 2026",
     image:
       "https://images.pexels.com/photos/1430677/pexels-photo-1430677.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    path: "/holiday",    // <--- tambahkan path
   },
 ];
 
 function DealsSection() {
+  const navigate = useNavigate();
+
   return (
     <section className="bg-white pb-20 pt-4">
       <div className="mx-auto max-w-6xl px-4">
@@ -39,7 +46,7 @@ function DealsSection() {
                 className="h-64 w-full object-cover opacity-90"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/40 to-transparent" />
-              <div className="absolute inset-0 flex flex-col justify-between p-5 md:p-6">
+              <div className="absolute inset-0 flex flex-col justify-between p-5">
                 <div className="flex justify-between text-[10px] font-medium">
                   <span className="rounded-full bg-black/50 px-3 py-1">
                     {deal.badge}
@@ -54,10 +61,11 @@ function DealsSection() {
                     {deal.description}
                   </p>
                   <button
+                    type="button"
+                    onClick={() => navigate(deal.path)}
                     className="
                       mt-4 rounded-full bg-white px-4 py-1.5 text-xs font-semibold text-slate-900 
-                      transition-colors duration-200 ease-out
-                      hover:bg-black hover:text-brand-100
+                      hover:bg-black hover:text-brand-100 hover:transition-colors duration-200 ease-out
                     "
                   >
                     Lihat selengkapnya
@@ -72,4 +80,4 @@ function DealsSection() {
   );
 }
 
-export default DealsSection;
+export default DealsSection;
