@@ -2,8 +2,70 @@ import Navbar from "../../components/default/Navbar";
 import Footer from "../../components/default/Footer";
 
 import imgDiscount from "../../assets/BisDiscount.jpg";
+import bis1 from "../../assets/destination/bis1.jpg";
+import bis2 from "../../assets/destination/bis2.jpg";
+import bis3 from "../../assets/destination/bis3.jpg";
+import bis4 from "../../assets/destination/bis4.jpg";
+import bis5 from "../../assets/destination/bis5.jpg";
+import bis6 from "../../assets/destination/bis6.jpg";
 
 function Discount () {
+    const busInBali = [
+        {
+            name: "Sinar Jaya",
+            terminal: "Terminal Mengwi",
+            location: "Yogyakarta",
+            phone: "0812-3344-5566",
+            open: "05.00 – 22.00 WITA",
+            harga: "Rp 550.000",
+            image: bis1,
+        },
+        {
+            name: "Lorena",
+            terminal: "Terminal Ubung",
+            location: "Yogyakarta",
+            phone: "0813-9988-2211",
+            open: "06.00 – 21.00 WITA",
+            harga: "Rp 320.000",
+            image: bis2,
+        },
+        {
+            name: "Gunung Harta",
+            terminal: "Terminal Batubulan",
+            location: "Yogyakarta",
+            phone: "0811-7777-909",
+            open: "24 Jam",
+            harga: "Rp 230.000",
+            image: bis3,
+        },
+        {
+            name: "Air bus",
+            terminal: "Terminal Canggu",
+            location: "Yogyakarta",
+            phone: "0811-7777-909",
+            open: "24 Jam",
+            harga: "Rp 400.000",
+            image: bis4,
+        },
+        {
+            name: "Sinar Baru",
+            terminal: "Terminal Kuta",
+            location: "Yogyakarta",
+            phone: "0812-3344-5566",
+            open: "05.00 – 22.00 WITA",
+            harga: "Rp 290.000",
+            image: bis5,
+        },
+        {
+            name: "Rosalina",
+            terminal: "Terminal Denpasar",
+            location: "Yogyakarta",
+            phone: "0812-3344-5566",
+            open: "05.00 – 21.00 WITA",
+            harga: "Rp 500.000",
+            image: bis6,
+        },
+    ]
     return (
         <div className="w-full min-h-screen overflow-y-auto pb-20">
             <Navbar />
@@ -28,7 +90,53 @@ function Discount () {
                     </p>
                 </div>
 
-                
+                <div className="mt-8 w-full flex justify-center px-4">
+                    <div className="w-full max-w-5xl">
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 place-items-center">
+                            {busInBali.map((bus) => (
+                                <div
+                                    key={bus.name}
+                                    className="w-full max-w-[260px] rounded-xl shadow-sm bg-white hover:shadow-md transition overflow-hidden"
+                                    >
+                                    {/* IMAGE */}
+                                    <div className="w-full h-28 bg-gray-200 flex items-center justify-center">
+                                        <img
+                                            src={bus.image}
+                                            alt={bus.name}
+                                            className="w-full h-32 object-cover"
+                                        />
+                                    </div>
+
+                                    {/* CONTENT */}
+                                    <div className="p-3">
+                                        <h3 className="font-bold text-base mb-1">{bus.name}</h3>
+
+                                        <p className="text-bold text-orange-600">
+                                        <span className="font-medium"></span> {bus.harga}
+                                        </p>
+
+                                        <p className="text-sm text-gray-700">
+                                        <span className="font-medium">Terminal:</span> {bus.terminal}
+                                        </p>
+
+                                        <p className="text-sm text-gray-700">
+                                        <span className="font-medium">Lokasi:</span> {bus.location}
+                                        </p>
+
+                                        <p className="text-sm text-gray-700">
+                                        <span className="font-medium">No HP:</span> {bus.phone}
+                                        </p>
+
+                                        <p className="text-sm text-gray-700">
+                                        <span className="font-medium">Jam Operasional:</span> {bus.open}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
             <Footer />
         </div>
     );
