@@ -24,6 +24,12 @@ import TiketEdit from "./pages/admin/tiket/TiketEdit.jsx";
 import Pemesanan from "./pages/customer/Pemesanan.jsx";
 import ReviewPemesanan from "./pages/customer/ReviewPemesanan.jsx"; 
 import History from "./pages/customer/History.jsx";
+import Bali from "./components/landingpage/Bali.jsx"; 
+import Bandung from "./components/landingpage/Bandung.jsx";
+import Yogyakarta from "./components/landingpage/Yogyakarta.jsx";
+import Surabaya from "./components/landingpage/Surabaya.jsx"; 
+import Discount from "./components/landingpage/Discount.jsx";
+import Holiday from "./components/landingpage/Holiday.jsx";
 
 // routernya Admin
 function AdminRoute({ children }) {
@@ -78,6 +84,12 @@ function App() {
           <Route path="/admin/tiket/create" element={<AdminRoute><TiketCreate /></AdminRoute>} />
           <Route path="/admin/tiket/:id/edit" element={<AdminRoute><TiketEdit /></AdminRoute>} />
           <Route path="/history" element={<History />}/>
+          <Route path="/destinasi/bali" element={<Bali />}/>
+          <Route path="/destinasi/bandung" element={<Bandung />}/>
+          <Route path="/destinasi/yogyakarta" element={<Yogyakarta />}/>
+          <Route path="/destinasi/surabaya" element={<Surabaya />}/>
+          <Route path="/diskon" element={<Discount />}/>
+          <Route path="/holiday" element={<Holiday />}/>
         </Routes>
       </BrowserRouter>
     </AuthProvider>

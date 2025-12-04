@@ -1,31 +1,45 @@
+import { useNavigate } from "react-router-dom";
+
 import Bandung from "../../assets/destination/bandung.jpg";
 import Yogyakarta from "../../assets/destination/yogyakarta.jpg";
 import Surabaya from "../../assets/destination/surabaya.jpg";
 import Bali from "../../assets/destination/bali.jpg";
+
+import detailBali from "../../components/landingpage/Bali.jsx";
+import detailBandung from "../../components/landingpage/Bandung.jsx";
+import detailYogyakarta from "../../components/landingpage/Yogyakarta.jsx";
+import detailSurabaya from "../../components/landingpage/Surabaya.jsx";
+
 const destinations = [
   {
     city: "Bandung",
     caption: "150.000 akomodasi",
     image: Bandung,
+    path: detailBandung,
   },
   {
     city: "Yogyakarta",
     caption: "260.000 akomodasi",
     image: Yogyakarta,
+    path: detailYogyakarta,
   },
   {
     city: "Surabaya",
     caption: "350.000 akomodasi",
     image: Surabaya,
+    path: detailSurabaya,
   },
   {
     city: "Bali",
     caption: "750.000 akomodasi",
     image: Bali,
+    path: detailBali,
   },
 ];
 
 function DestinationsSection() {
+  const navigate = useNavigate();
+
   return (
     <section className="bg-white pb-16 pt-4">
       <div className="mx-auto max-w-6xl px-4">
@@ -46,6 +60,7 @@ function DestinationsSection() {
           {destinations.map((item) => (
             <article
               key={item.city}
+              onClick={() => Navigate(item.path)}
               className="group cursor-pointer overflow-hidden rounded-[20px] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
             >
               <div className="relative">
