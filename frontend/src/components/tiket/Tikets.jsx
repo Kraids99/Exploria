@@ -81,7 +81,7 @@ export default function Tikets({ fromCity, toCity, date }) {
             </div>
 
             <div className="text-center text-[11px] text-slate-500 md:text-left">
-              {tiket.durasi} jam
+              {tiket.durasi} menit
             </div>
 
             <div className="text-center md:text-left">

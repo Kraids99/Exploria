@@ -9,7 +9,7 @@ import {
   getPembayaranById,
   updatePembayaranStatus,
 } from "../../../api/customer/apiPembayaran.jsx";
-import { fetchPemesananById } from "../../../api/customer/apiPemesanan.jsx";
+import { getPemesananById } from "../../../api/customer/apiPemesanan.jsx";
 import { getTiketById } from "../../../api/customer/apiTiket.jsx";
 import { toast } from "react-toastify";
 

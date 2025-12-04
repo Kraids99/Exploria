@@ -76,21 +76,12 @@ class ReviewController extends Controller
         // Pastikan perjalanan sudah selesai dan masih dalam 30 hari review
         $tiket = $rincianTiket->tiket;
 
-        if (!$tiket || !$tiket->waktu_tiba) {
-            return response()->json(['message' => 'Data waktu tiba tidak ditemukan'], 422);
-        }
-
-        $tiba = Carbon::parse($tiket->waktu_tiba);
-
-        if (!$tiba || $tiba->isFuture()) {
-            return response()->json(['message' => 'Review hanya bisa setelah perjalanan selesai'], 422);
-        }
+        // fallback waktu selesai: waktu_tiba -> waktu_keberangkatan -> tanggal_pemesanan
+        $rawTiba = $tiket->waktu_tiba ?? $tiket->waktu_keberangkatan ?? $pembayaran->pemesanan?->tanggal_pemesanan;
+        $tiba = $rawTiba ? Carbon::parse($rawTiba) : now();
 
         $deadline = $tiba->copy()->addDays(30);
-
-        // ga boleh lebih besar dari deadline
-        // atau pakai now()->gt($deadline)
-        if ($deadline && now() > $deadline) {
+        if ($deadline && now()->greaterThan($deadline)) {
             return response()->json(['message' => 'Batas review 30 hari setelah tiba'], 422);
         }
 

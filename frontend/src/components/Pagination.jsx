@@ -1,19 +1,9 @@
 import React from "react";
 
-export default function Pagination({
-  page,
-  totalPages,
-  pageSize = 10,
-  onChange,
-}) {
-
-  // bagi total halaman dibagi sama pageSize kemudian dibulatkan ke atas
-  const totalPages = Math.max(1, Math.ceil(totalPages / pageSize));
-  
-  // kalau pagesnya cuma 1 ga ada brrti
+export default function Pagination({ page, totalItems, pageSize = 10, onChange }) {
+  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
   if (totalPages <= 1) return null;
 
-  // navigasinya
   const nav = (target) => {
     if (target < 1 || target > totalPages) return;
     onChange(target);

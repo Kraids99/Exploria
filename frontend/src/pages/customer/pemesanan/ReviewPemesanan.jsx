@@ -6,7 +6,7 @@ import Footer from "../../../components/default/Footer";
 import header from "../../../assets/busHeader.jpeg";
 import kursiIcon from "../../../assets/logoKursi.jpg";
 
-import { fetchPemesananById } from "../../../api/customer/apiPemesanan";
+import { getPemesananById } from "../../../api/customer/apiPemesanan.jsx";
 import { getTiketById } from "../../../api/customer/apiTiket";
 import { toast } from "react-toastify";
 import { FaArrowLeft } from "react-icons/fa";

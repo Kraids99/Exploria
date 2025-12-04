@@ -7,7 +7,7 @@ export async function fetchPemesanan() {
 }
 
 // detail pemesanan by id
-export async function fetchPemesananById(id) {
+export async function getPemesananById(id) {
   const res = await useAxios.get(`/pemesanan/${id}`);
   return res.data;
 }

@@ -28,7 +28,7 @@ class PemesananController extends Controller
             $data = Pemesanan::with(['user', 'rincianPemesanan.tiket', 'pembayaran'])->get();
         } else {
             // customer cuma bs liat data pesan sendiri
-            $data = Pemesanan::with(['rincianPemesanan.tiket', 'pembayaran'])->where('id_user', $user->id_user)->get();
+            $data = Pemesanan::with(['user', 'rincianPemesanan.tiket', 'pembayaran'])->where('id_user', $user->id_user)->get();
         }
         return response()->json($data);
     }
@@ -132,7 +132,7 @@ class PemesananController extends Controller
 
             return response()->json([
                 'message' => 'Pemesanan berhasil dibuat',
-                'data' => $pemesanan->load(['rincianPemesanan.tiket']),
+                'data' => $pemesanan->load(['user', 'rincianPemesanan.tiket']),
             ], 201);
         } catch (Exception $e) {
             DB::rollBack();

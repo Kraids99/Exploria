@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Footer from "../../../components/default/Footer";
 import Navbar from "../../../components/default/Navbar";
-import { fetchPemesanan, fetchPemesananById } from "../../../api/customer/apiPemesanan.jsx";
+import { fetchPemesanan, getPemesananById } from "../../../api/customer/apiPemesanan.jsx";
 import { createReview } from "../../../api/customer/apiReview.jsx";
 import { formatDate, formatTime } from "../../../lib/FormatWaktu.js";
 import { formatRupiah } from "../../../lib/FormatRupiah.js";
@@ -33,7 +33,7 @@ export default function History() {
             const id = order.id_pemesanan || order.id;
             if (!id) return order;
             try {
-              const detail = await fetchPemesananById(id);
+              const detail = await getPemesananById(id);
               return detail?.data ?? detail ?? order;
             } catch {
               return order;
@@ -159,7 +159,7 @@ export default function History() {
                     <div className="flex items-center gap-2">
                       {reviewSubmitted ? (
                         <span className="inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1 text-slate-700 font-semibold">
-                          Review tidak tersedia
+                          Review sudah dikirim
                         </span>
                       ) : canReview ? (
                         <button
