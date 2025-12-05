@@ -8,7 +8,7 @@ use App\Models\Pembayaran;
 use App\Models\Tiket;
 use App\Models\User;
 
-class review extends Model
+class Review extends Model
 {
     use HasFactory;
     protected $table = 'reviews';

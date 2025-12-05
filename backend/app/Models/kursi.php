@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Tiket;
 
-class kursi extends Model
+class Kursi extends Model
 {
     use HasFactory;
     protected $table = 'kursis';

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Tiket;
 use App\Models\Pemesanan;
 
-class rincianPemesanan extends Model
+class RincianPemesanan extends Model
 {
     use HasFactory;
     protected $table = 'rincian_pemesanans';

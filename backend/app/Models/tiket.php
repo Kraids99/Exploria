@@ -10,7 +10,7 @@ use App\Models\Kursi;
 use App\Models\RincianPemesanan;
 use App\Models\Review;
 
-class tiket extends Model
+class Tiket extends Model
 {
     use HasFactory;
     protected $primaryKey = 'id_tiket';
