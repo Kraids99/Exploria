@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Tiket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use App\Models\rincianPemesanan;
+use App\Models\RincianPemesanan;
 
 class TiketController extends Controller
 {

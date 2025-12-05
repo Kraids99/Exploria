@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Rute;
 use App\Models\DetailRute;
 
-class lokasi extends Model
+class Lokasi extends Model
 {
     use HasFactory;
     protected $table = 'lokasis';
