@@ -190,7 +190,7 @@ export default function TiketEdit() {
         waktu_tiba: dateTime(form.waktu_tiba),
       });
       navigate("/admin/tiket");
-      alertSuccess("Berhasil menambahkan tiket!");
+      alertSuccess("Berhasil mengubah tiket!");
     } catch (err) {
       const apiMessage = err?.response?.data?.message || "Gagal menyimpan perubahan.";
       setErrorMessage(apiMessage);

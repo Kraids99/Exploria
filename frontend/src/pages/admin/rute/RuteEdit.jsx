@@ -73,6 +73,8 @@ export default function RuteEdit() {
       return;
     }
 
+    alertSuccess("Berhasil Mengubah Rute!")
+
     try {
       await updateRute(id, form);
       navigate("/admin/rute");

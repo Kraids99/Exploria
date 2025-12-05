@@ -109,7 +109,7 @@ export default function CompanyCreate() {
 
       // buat debug kalau mau liat bentuk responsenya
       // console.log("error data", data);
-
+      
       if (data?.errors?.email_company?.length) {
         // dari Laravel validator 'email_company'
         // contoh isi: ["The email company has already been taken."]
