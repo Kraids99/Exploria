@@ -144,7 +144,7 @@ function Login() {
             Masuk ke akunmu
           </h1>
 
-          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+          <form onSubmit={handleSubmit} className="mt-6 space-y-4" noValidate>
             <div>
               <label className="block text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                 Email
