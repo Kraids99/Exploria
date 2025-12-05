@@ -31,7 +31,7 @@ function History() {
   const navigate = useNavigate();
 
   const handleBack = () => {
-    navigate(-1);
+    navigate('/');
   };
 
   // handler untuk lanjut pembayaran dari riwayat

@@ -719,12 +719,6 @@ function Profile() {
           <h3 className="text-base md:text-lg font-semibold text-slate-900">
             Keamanan Akun
           </h3>
-          {pwdError && (
-            <p className="mt-1 text-xs text-red-600">{pwdError}</p>
-          )}
-          {pwdMessage && (
-            <p className="mt-1 text-xs text-emerald-600">{pwdMessage}</p>
-          )}
         </div>
 
         <form onSubmit={handleSavePassword} className="space-y-4" noValidate>
