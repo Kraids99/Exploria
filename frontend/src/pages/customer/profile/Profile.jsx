@@ -485,6 +485,11 @@ function Profile() {
                 }
                 alt={profile.nama || "Avatar"}
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  // balek ke foto default
+                  e.target.onerror = null;
+                  e.target.src = defaultAvatar;
+                }}
               />
             </div>
             <label className="absolute inset-0 rounded-full cursor-pointer">
