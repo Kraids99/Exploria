@@ -33,6 +33,7 @@ import Bandung from "./components/detaillandingpage/destinasi/Bandung.jsx";
 import Yogyakarta from "./components/detaillandingpage/destinasi/Yogyakarta.jsx";
 import Surabaya from "./components/detaillandingpage/destinasi/Surabaya.jsx"; 
 import Discount from "./components/detaillandingpage/deals/Diskon.jsx";
+import Holiday from "./components/detaillandingpage/deals/Holiday.jsx"; 
 
 function LandingRoute() {
   const token = localStorage.getItem("token");
@@ -84,6 +85,7 @@ function App() {
           <Route path="/destinasi/yogyakarta" element={<Yogyakarta />}/>
           <Route path="/destinasi/surabaya" element={<Surabaya />}/>
           <Route path="/diskon" element={<Discount />}/>
+          <Route path="/holiday" element={<Holiday />}/>
       </Routes>
     </BrowserRouter>
   );

@@ -1,19 +1,13 @@
 import Navbar from "../../default/Navbar";
 import Footer from "../../default/Footer";
 
-import imgHoliday from "../../../assets/Holiday.jpg";
+import imgHoliday from "../../../assets/deals/Holiday.jpg";
 import bis1 from "../../../assets/bus/Bis1.jpg";
 import bis2 from "../../../assets/bus/Bis2.jpg";
 import bis3 from "../../../assets/bus/Bis3.jpg";
 import { FaArrowLeft } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
 
 function Holiday() {
-    const navigate = useNavigate();
-
-    const handleBack = () => {
-        navigate(-1);
-    };
     const busHoliday = [
         {
             name: "Sinar Jaya",
@@ -50,18 +44,6 @@ function Holiday() {
 
             <main className="flex-1 pb-10">
                 <section className="w-full flex justify-center mt-6 px-4">
-                    <div className="flex items-center gap-2 mb-3">
-                        <button
-                            type="button"
-                            onClick={handleBack}
-                            className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white h-9 w-9 shadow-sm hover:bg-slate-50 transition-colors"
-                        >
-                            <FaArrowLeft className="h-4 w-4 text-slate-700" />
-                        </button>
-                        <span className="text-xs text-slate-500 hidden sm:inline">
-                            Kembali
-                        </span>
-                    </div>
 
                     <div className="relative w-full max-w-5xl">
                         <img

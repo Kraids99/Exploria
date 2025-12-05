@@ -1,4 +1,4 @@
-// src/components/DealsSection.jsx
+
 import { useNavigate } from "react-router-dom";
 
 const deals = [
