@@ -1,8 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import NavbarAdmin from "../../../components/default/NavbarAdmin.jsx";
-import { Loader2, TrendingUp, AlertCircle } from "lucide-react";
+import { Loader2, TrendingUp, AlertCircle, Building2, Map, Ticket, MapPin } from "lucide-react";
 import Chart from "chart.js/auto";
 import { fetchPembayaran } from "../../../api/admin/apiAdminPembayaran.jsx";
+import { fetchCompanies } from "../../../api/admin/apiAdminCompany.jsx";
+import { fetchRute } from "../../../api/admin/apiAdminRute.jsx";
+import { fetchTiket } from "../../../api/admin/apiAdminTiket.jsx";
+import { fetchLokasi } from "../../../api/admin/apiAdminLokasi.jsx";
 import { formatRupiah } from "../../../lib/FormatRupiah.js";
 import { formatDate } from "../../../lib/FormatWaktu.js";
 
@@ -11,6 +15,13 @@ export default function Laporan() {
   const [days, setDays] = useState(7);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  // laporan untuk company, rute, tiket, lokasi
+  const [stats, setStats] = useState({
+    companies: 0,
+    rutes: 0,
+    tikets: 0,
+    lokasi: 0,
+  });
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
 
@@ -28,7 +39,13 @@ export default function Laporan() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetchPembayaran();
+      const [res, companies, rutes, tikets, lokasi] = await Promise.all([
+        fetchPembayaran(),
+        fetchCompanies(),
+        fetchRute(),
+        fetchTiket(),
+        fetchLokasi(),
+      ]);
       const items = Array.isArray(res) ? res : [];
       const cutoff = new Date();
       cutoff.setDate(cutoff.getDate() - (days - 1));
@@ -57,6 +74,13 @@ export default function Laporan() {
       }));
 
       setData(rows);
+      // ambik jumlah company, rute, tiket, lokasi
+      setStats({
+        companies: Array.isArray(companies) ? companies.length : 0,
+        rutes: Array.isArray(rutes) ? rutes.length : 0,
+        tikets: Array.isArray(tikets) ? tikets.length : 0,
+        lokasi: Array.isArray(lokasi) ? lokasi.length : 0,
+      });
     } catch (err) {
       setError(err?.message || "Gagal memuat data laporan");
     } finally {
@@ -109,6 +133,7 @@ export default function Laporan() {
     () => data.reduce((sum, d) => sum + (d.total || 0), 0),
     [data]
   );
+  const formatCount = (val) => Number(val || 0).toLocaleString("id-ID");
 
   return (
     <div className="min-h-screen flex bg-orange-50">
@@ -125,7 +150,7 @@ export default function Laporan() {
           </div>
         </div>
 
-        <div className="mt-6 grid gap-4 lg:grid-cols-3">
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           <div className="rounded-xl bg-white border border-orange-100 p-4 shadow-sm">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-orange-100 text-orange-700">
@@ -135,6 +160,62 @@ export default function Laporan() {
                 <p className="text-xs text-slate-600">Total Pendapatan</p>
                 <p className="text-lg font-semibold text-orange-900">
                   {formatRupiah(totalPendapatan)}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-xl bg-white border border-orange-100 p-4 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-orange-100 text-orange-700">
+                <Building2 className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-xs text-slate-600">Jumlah Company</p>
+                <p className="text-lg font-semibold text-orange-900">
+                  {formatCount(stats.companies)}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-xl bg-white border border-orange-100 p-4 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-orange-100 text-orange-700">
+                <Map className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-xs text-slate-600">Jumlah Rute</p>
+                <p className="text-lg font-semibold text-orange-900">
+                  {formatCount(stats.rutes)}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-xl bg-white border border-orange-100 p-4 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-orange-100 text-orange-700">
+                <Ticket className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-xs text-slate-600">Jumlah Tiket</p>
+                <p className="text-lg font-semibold text-orange-900">
+                  {formatCount(stats.tikets)}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-xl bg-white border border-orange-100 p-4 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-orange-100 text-orange-700">
+                <MapPin className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-xs text-slate-600">Jumlah Lokasi</p>
+                <p className="text-lg font-semibold text-orange-900">
+                  {formatCount(stats.lokasi)}
                 </p>
               </div>
             </div>

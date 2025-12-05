@@ -9,6 +9,7 @@ import { styleForm } from "../../../lib/FormStyles.js";
 export default function LokasiCreate() {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [form, setForm] = useState({ terminal: "", kota: "" });
 
   const handleChange = (field) => (e) => {

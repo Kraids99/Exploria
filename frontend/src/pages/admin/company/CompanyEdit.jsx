@@ -13,6 +13,7 @@ export default function CompanyEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({
     name: "",
